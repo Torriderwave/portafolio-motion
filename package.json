@@ -1,0 +1,17 @@
+{
+  "name": "portafolio-motion",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.4.13",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^6.0.3"
+  }
+}
