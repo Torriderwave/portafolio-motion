@@ -1,4 +1,5 @@
 ---
+// Pieza generativa de reemplazo. Animada solo mientras está en pantalla (ver script en index.astro).
 const { color = '#e5252a', type = 'Motion' } = Astro.props;
 ---
-<div class="art" data-t={type} style={`--c:${color}`} aria-hidden="true"><i class="a"></i><i class="b"></i></div>
+<div class="art" data-t={type} style={`--c:${color}`} aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></div>

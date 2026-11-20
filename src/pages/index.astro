@@ -1,192 +1,279 @@
 ---
 import Base from '../layouts/Base.astro';
 import Art from '../components/Art.astro';
-import { works, services, profile } from '../data/works';
+import { works as allWorks, services, profile } from '../data/works';
+import { CONTACT_URL } from '../data/contact';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const year = new Date().getFullYear();
+// Las fichas de plantilla (slug «ejemplo-N») no se publican; el dato queda intacto en works.ts.
+const works = allWorks.filter((w) => !/^ejemplo-\d+$/.test(w.slug));
+const hasWorks = works.length > 0;
 const types = Array.from(new Set(works.map((w) => w.type)));
+const contactHref = profile.email ? `mailto:${profile.email}` : CONTACT_URL;
+const contactExt = !profile.email;
+const ext = (on: boolean) => (on ? { target: '_blank', rel: 'noopener noreferrer' } : { rel: 'noopener' });
 const count = (t: string) => (t === 'Todo' ? works.length : works.filter((w) => w.type === t).length);
 const reel = profile.showreel;
 const hasReel = Boolean(reel.embed || reel.video);
 const isDemo = (w: (typeof works)[number]) => !w.thumb && !w.video && !w.embed;
 const n = (i: number) => String(i + 1).padStart(2, '0');
+const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'Contacto']];
 ---
 <Base title={`${profile.name} · ${profile.tagline}`} description={profile.bio}>
-  <header class="border-b border-rule">
-    <div class="mx-auto grid max-w-[1400px] grid-cols-2 gap-x-4 gap-y-1 px-5 py-3 text-[13px] sm:grid-cols-4">
-      <a href="#top" class="font-bold">{profile.name}</a>
-      <p class="hidden sm:block">{profile.tagline}</p>
-      <p class="hidden sm:block text-mute">{profile.availability}</p>
-      <nav class="flex justify-end gap-5">
-        <a class="hover:text-red" href="#trabajo">Trabajo</a>
-        <a class="hover:text-red" href="#servicios">Servicios</a>
-        <a class="hover:text-red" href="#contacto">Contacto</a>
-        <a class="hidden hover:text-red sm:block" href={profile.dev}>Dev ↗</a>
+  <header class="site-header">
+    <div class="wrap grid12 bar">
+      <a class="brand" href="#top" aria-label={`${profile.name}, inicio`}>{profile.name}<b>.</b></a>
+      <p class="bar-tag label">{profile.tagline}</p>
+      <p class="bar-avail label"><span class="avail-dot" aria-hidden="true"></span>{profile.availability}</p>
+      <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav"><span id="menu-lbl">Menú</span><span class="menu-ico" aria-hidden="true"></span></button>
+      <nav class="nav" id="nav" aria-label="Principal">
+        <ul>
+          {nav.map(([id, label], i) => <li><a href={`#${id}`}><span class="num">{n(i)}</span>{label}</a></li>)}
+          <li><a href={profile.dev} rel="noopener"><span class="num">↗</span>Dev<span aria-hidden="true">&nbsp;↗</span><span class="sr-only"> (portafolio de desarrollo)</span></a></li>
+        </ul>
       </nav>
     </div>
   </header>
 
-  <main id="top" class="mx-auto max-w-[1400px] px-5">
-    <section class="grid gap-x-4 gap-y-10 pb-16 pt-14 sm:pt-24 lg:grid-cols-12">
-      <h1 class="rise text-[clamp(3rem,10.5vw,10rem)] font-bold leading-[0.9] tracking-[-0.045em] lg:col-span-9">
-        Motion graphics y diseño<span class="text-red">.</span>
+  <main id="main">
+    <div id="top"></div>
+    <section class="wrap hero" aria-labelledby="h1">
+      <div class="hero-top label">
+        <span>Portafolio — {year}</span>
+        <span class="mute">Motion · Diseño</span>
+      </div>
+      <h1 id="h1" class="display">
+        <span class="ln"><span style="--i:0">Motion</span></span>
+        <span class="ln"><span style="--i:1">graphics y</span></span>
+        <span class="ln"><span style="--i:2">diseño<span class="red">.</span></span></span>
       </h1>
-      <div class="rise flex flex-col justify-end gap-5 text-[15px] lg:col-span-3" style="animation-delay:.12s">
-        <p>{profile.bio}</p>
-        <p class="text-mute">{[profile.location, new Date().getFullYear()].filter(Boolean).join(" · ")}</p>
-        <a href="#contacto" class="inline-block w-fit border-b border-ink pb-0.5 hover:border-red hover:text-red">Escríbeme →</a>
-      </div>
-    </section>
-
-    <section aria-label="Showreel" class="pb-20">
-      <div class="relative aspect-video w-full overflow-hidden bg-ink">
-        {hasReel
-          ? (reel.embed
-              ? <iframe src={reel.embed} class="absolute inset-0 h-full w-full" allowfullscreen title="Showreel" loading="lazy"></iframe>
-              : <video src={`${base}/media/${reel.video}`} controls playsinline class="absolute inset-0 h-full w-full"></video>)
-          : (<>
-              <Art color="#e5252a" type="Motion" />
-              <div class="absolute inset-x-0 bottom-0 flex items-end justify-between p-4 text-white sm:p-6">
-                <span class="text-2xl font-bold tracking-tight sm:text-4xl">Showreel {new Date().getFullYear()}</span>
-                <span class="text-xs sm:text-sm">Próximamente</span>
-              </div>
-            </>)}
-      </div>
-    </section>
-
-    <section id="trabajo" class="scroll-mt-4 pb-24">
-      <div class="flex flex-wrap items-end justify-between gap-4 border-t border-rule pt-3">
-        <h2 class="text-[13px] font-bold">Trabajo seleccionado <span class="text-mute">({works.length})</span></h2>
-        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
-          <div class="flex flex-wrap gap-x-4" role="group" aria-label="Filtrar por tipo">
-            {['Todo', ...types].map((t, i) => (
-              <button type="button" data-filter={t} aria-pressed={i === 0} class="filter underline-offset-4 hover:text-red aria-pressed:underline">{t}<sup class="ml-0.5 text-[10px] text-mute">{count(t)}</sup></button>
-            ))}
-          </div>
-          <div class="flex gap-3 border-l border-rule pl-5" role="group" aria-label="Vista">
-            <button type="button" data-view="list" aria-pressed="true" class="view underline-offset-4 hover:text-red aria-pressed:underline">Lista</button>
-            <button type="button" data-view="grid" aria-pressed="false" class="view underline-offset-4 hover:text-red aria-pressed:underline">Cuadrícula</button>
-          </div>
+      <div class="hero-foot grid12">
+        <p class="label mute">(Perfil)</p>
+        <p class="hero-lead">{profile.bio}</p>
+        <div>
+          <dl class="hero-meta label">
+            <dt>Disciplinas</dt><dd>{services.map((x) => x.name).join(' · ')}</dd>
+            {profile.location && <><dt>Ubicación</dt><dd>{profile.location}</dd></>}
+          </dl>
+          <a href={contactHref} class="cta" {...ext(contactExt)}><span>Escríbeme</span><span aria-hidden="true">→</span></a>
         </div>
       </div>
+    </section>
 
-      <div class="mt-0 grid gap-x-4 lg:grid-cols-12">
-        <ul id="works" data-view="list" class="group/list lg:col-span-7 [&[data-view=grid]]:col-span-12 [&[data-view=grid]]:mt-6 [&[data-view=grid]]:grid [&[data-view=grid]]:gap-x-4 [&[data-view=grid]]:gap-y-10 [&[data-view=grid]]:sm:grid-cols-2 [&[data-view=grid]]:lg:grid-cols-3">
+    <section class="wrap" aria-label="Showreel" style="padding-bottom:var(--s7)">
+      {hasReel
+        ? (<>
+            <div class="reel">
+              {reel.embed
+                ? <iframe src={reel.embed} allowfullscreen title="Showreel" loading="lazy"></iframe>
+                : <video src={`${base}/media/${reel.video}`} controls muted playsinline preload="metadata"></video>}
+            </div>
+            <div class="reel-cap label"><span>Showreel {year}</span></div>
+          </>)
+        : <p class="reel-line"><span>Showreel {year} — pronto</span></p>}
+    </section>
+
+    <section id="trabajo" class="wrap section" aria-labelledby="h-trabajo">
+      <div class="grid12 sec-head">
+        <span class="num">(01)</span>
+        <h2 id="h-trabajo">Trabajo seleccionado</h2>
+        {hasWorks && <span class="meta num">{String(works.length).padStart(2, '0')} {works.length === 1 ? 'proyecto' : 'proyectos'}</span>}
+      </div>
+      {!hasWorks && <p class="lead-empty">Selección en preparación</p>}
+      {hasWorks && (<>
+      <div class="tools">
+        <div class="chips" role="group" aria-label="Filtrar por tipo">
+          {['Todo', ...types].map((t, i) => (
+            <button type="button" data-filter={t} aria-pressed={i === 0} class="chip">{t}<sup>{count(t)}</sup></button>
+          ))}
+        </div>
+        <div class="views" role="group" aria-label="Vista">
+          <button type="button" data-view="list" aria-pressed="true" class="chip">Lista</button>
+          <button type="button" data-view="grid" aria-pressed="false" class="chip">Cuadrícula</button>
+        </div>
+      </div>
+      <p class="status" id="status" role="status" aria-live="polite">Mostrando {works.length} de {works.length}</p>
+
+      <div class="grid12 work-layout">
+        <ul id="works" class="works" data-view="list">
           {works.map((w, i) => (
-            <li class="work group/item border-b border-rule group-data-[view=grid]/list:border-0" data-type={w.type} data-i={i}>
-              <button type="button" data-slug={w.slug} class="open block w-full text-left">
-                <!-- Fila (vista lista) -->
-                <div class="row -mx-3 grid grid-cols-[2rem_1fr_auto] items-baseline gap-x-3 px-3 py-4 transition-colors group-data-[view=grid]/list:hidden hover:bg-ink hover:text-bg sm:grid-cols-[2.5rem_1fr_7rem_3rem]">
-                  <span class="text-[13px] tabular-nums opacity-60">{n(i)}</span>
-                  <span class="text-xl font-semibold tracking-tight sm:text-3xl">{w.title}</span>
-                  <span class="hidden text-[13px] sm:block">{w.type}</span>
-                  <span class="text-[13px] tabular-nums">{w.year}</span>
-                </div>
-                <!-- Tarjeta (vista cuadrícula) -->
-                <div class="card hidden group-data-[view=grid]/list:block">
-                  <div class="relative aspect-[4/3] overflow-hidden bg-soft">
-                    {w.thumb ? <img src={`${base}/media/${w.thumb}`} alt="" loading="lazy" class="h-full w-full object-cover" /> : <Art color={w.color} type={w.type} />}
-                    {isDemo(w) && <span class="absolute left-2 top-2 bg-bg px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">Ejemplo</span>}
-                  </div>
-                  <div class="mt-2 flex items-baseline justify-between gap-3 text-[13px]">
-                    <span class="font-semibold"><span class="mr-2 text-mute tabular-nums">{n(i)}</span>{w.title}</span>
-                    <span class="text-mute">{w.type} · {w.year}</span>
-                  </div>
-                </div>
+            <li class="work rv" data-type={w.type} data-i={i} style={`--d:${Math.min(i, 5) * 0.06}s`}>
+              <button type="button" data-slug={w.slug} class="open" aria-haspopup="dialog">
+                <span class="row">
+                  <span class="n num">{n(i)}</span>
+                  <span class="t">{w.title}<span class="sub">{w.type}</span></span>
+                  <span class="ty">{w.type}</span>
+                  <span class="yr num">{w.year}</span>
+                </span>
+                <span class="card">
+                  <span class="card-media">
+                    {w.thumb
+                      ? <img src={`${base}/media/${w.thumb}`} alt={`${w.title} — ${w.type}, ${w.year}`} width="800" height="600" loading="lazy" decoding="async" />
+                      : <Art color={w.color} type={w.type} />}
+                    {isDemo(w) && <span class="badge">Ejemplo</span>}
+                  </span>
+                  <span class="card-cap">
+                    <span class="num mute">{n(i)}</span>
+                    <span class="t">{w.title}</span>
+                    <span class="m">{w.type} · {w.year}</span>
+                  </span>
+                </span>
               </button>
             </li>
           ))}
         </ul>
 
-        <!-- Vista previa fija (solo lista, solo escritorio) -->
-        <aside id="preview" class="mt-6 hidden lg:col-span-5 lg:block [ul[data-view=grid]~&]:hidden" aria-hidden="true">
-          <div class="sticky top-6">
-            <div id="pv-media" class="relative aspect-[4/3] w-full overflow-hidden bg-soft"></div>
-            <div class="mt-3 flex justify-between text-[13px]"><span id="pv-title" class="font-semibold"></span><span id="pv-meta" class="text-mute"></span></div>
-            <p id="pv-hint" class="mt-1 text-[12px] text-mute">Pasa el cursor sobre un proyecto · clic para abrir</p>
+        <aside class="preview" aria-hidden="true">
+          <div class="preview-in">
+            <div id="pv-media" class="pv-media"></div>
+            <div class="pv-cap"><span id="pv-title" class="t"></span><span id="pv-meta" class="mute num"></span></div>
+            <p class="pv-hint">Pasa el cursor sobre un proyecto · clic para abrir</p>
           </div>
         </aside>
       </div>
+          </>)}
     </section>
 
-    <section id="servicios" class="scroll-mt-4 pb-24">
-      <h2 class="border-t border-rule pt-3 text-[13px] font-bold">Servicios</h2>
-      <ul class="mt-6">
+    <section id="servicios" class="wrap section" aria-labelledby="h-servicios">
+      <div class="grid12 sec-head">
+        <span class="num">(02)</span>
+        <h2 id="h-servicios">Servicios</h2>
+        <span class="meta num">{String(services.length).padStart(2, '0')} disciplinas</span>
+      </div>
+      <ul class="services">
         {services.map((s, i) => (
-          <li class="grid gap-x-4 gap-y-1 border-b border-rule py-5 sm:grid-cols-12">
-            <span class="text-[13px] tabular-nums text-mute sm:col-span-1">{n(i)}</span>
-            <h3 class="text-2xl font-semibold tracking-tight sm:col-span-4 sm:text-3xl">{s.name}</h3>
-            <p class="text-[15px] sm:col-span-4">{s.text}</p>
-            <p class="text-[13px] text-mute sm:col-span-3">{s.tools}</p>
+          <li class="svc rv" style={`--d:${i * 0.06}s`}>
+            <span class="n num">{n(i)}</span>
+            <h3>{s.name}</h3>
+            <p>{s.text}</p>
+            <p class="tl">{s.tools}</p>
           </li>
         ))}
       </ul>
     </section>
 
-    <section id="contacto" class="scroll-mt-4 pb-16">
-      <div class="border-t border-rule pt-3 text-[13px] font-bold">Contacto</div>
-      <p class="mt-6 text-[clamp(2.5rem,9vw,8.5rem)] font-bold leading-[0.92] tracking-[-0.045em]">Hablemos de tu proyecto<span class="text-red">.</span></p>
-      <div class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-lg">
-        {profile.email && <a class="border-b border-ink hover:border-red hover:text-red" href={`mailto:${profile.email}`}>{profile.email}</a>}
-        <a class="border-b border-ink hover:border-red hover:text-red" href={profile.github}>GitHub ↗</a>
-        <a class="border-b border-ink hover:border-red hover:text-red" href={profile.dev}>Portafolio de desarrollo ↗</a>
+    <section id="contacto" class="wrap section" aria-labelledby="h-contacto" style="padding-bottom:var(--s7)">
+      <div class="grid12 sec-head">
+        <span class="num">(03)</span>
+        <h2 id="h-contacto" class="sr-only">Contacto</h2>
+        <span class="meta"></span>
       </div>
+      <p class="contact-big rv" aria-hidden="true">Hablemos de tu proyecto<span class="redt">.</span></p>
+      <a class="cta-big" href={contactHref} {...ext(contactExt)}><span>{profile.email ? profile.email : 'Escríbeme por LinkedIn'}</span><span aria-hidden="true">{profile.email ? '→' : '↗'}</span></a>
+      <ul class="links">
+                <li><a class="link-row" href={profile.github} rel="noopener"><span>GitHub<small>Código y proyectos</small></span><span class="arr" aria-hidden="true">↗</span></a></li>
+        <li><a class="link-row" href={profile.dev} rel="noopener"><span>Portafolio de desarrollo<small>Proyectos de software</small></span><span class="arr" aria-hidden="true">↗</span></a></li>
+      </ul>
     </section>
   </main>
-  <footer class="border-t border-rule py-4 text-center text-[12px] text-mute">© {new Date().getFullYear()} {profile.name}</footer>
 
-  <dialog id="modal" aria-labelledby="m-title" class="m-auto max-h-[92vh] w-[min(1000px,94vw)] overflow-auto bg-bg p-0 text-ink">
-    <div class="sticky top-0 z-10 flex items-center justify-between border-b border-rule bg-bg px-4 py-2 text-[13px]">
-      <div class="flex gap-4"><button id="m-prev" type="button" class="hover:text-red">← Anterior</button><button id="m-next" type="button" class="hover:text-red">Siguiente →</button></div>
-      <button id="m-close" type="button" class="hover:text-red">Cerrar ✕</button>
+  <footer class="wrap grid12 site-footer">
+    <p>© {year} {profile.name}</p>
+    <ul aria-label="Enlaces">
+      {nav.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
+      <li><a href={profile.dev} rel="noopener">Portafolio de desarrollo ↗</a></li>
+      <li><a href={profile.github} rel="noopener">GitHub ↗</a></li>
+    </ul>
+    <a href="#top">Volver arriba ↑</a>
+  </footer>
+
+  {hasWorks && <dialog id="modal" aria-labelledby="m-title">
+    <div class="m-bar">
+      <div><button id="m-prev" type="button" class="m-btn">← Anterior</button><button id="m-next" type="button" class="m-btn">Siguiente →</button></div>
+      <div><span id="m-count" class="m-count num"></span><button id="m-close" type="button" class="m-btn">Cerrar ✕</button></div>
     </div>
-    <div id="m-body" class="p-5 sm:p-8"></div>
-  </dialog>
+    <div id="m-body" class="m-body"></div>
+  </dialog>}
 
   <script is:inline define:vars={{ works, base }}>
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const art = (w) => `<div class="art" data-t="${esc(w.type)}" style="--c:${esc(w.color)}"><i class="a"></i><i class="b"></i></div>`;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const art = (w) => `<div class="art" data-t="${esc(w.type)}" style="--c:${esc(w.color)}" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></div>`;
     const mediaOf = (w, big) => {
-      if (big && w.embed) return `<div class="aspect-video bg-ink"><iframe src="${esc(w.embed)}" class="h-full w-full" allowfullscreen title="${esc(w.title)}"></iframe></div>`;
-      if (big && w.video) return `<video src="${base}/media/${esc(w.video)}" controls autoplay playsinline class="w-full bg-ink"></video>`;
-      if (w.thumb) return `<img src="${base}/media/${esc(w.thumb)}" alt="${esc(w.title)}" class="${big ? 'w-full' : 'h-full w-full object-cover'}" />`;
-      return big ? `<div class="relative aspect-video overflow-hidden">${art(w)}</div>` : art(w);
+      if (big && w.embed) return `<iframe src="${esc(w.embed)}" allowfullscreen title="${esc(w.title)}"></iframe>`;
+      if (big && w.video) return `<video src="${base}/media/${esc(w.video)}" controls ${reduce ? '' : 'autoplay muted'} playsinline></video>`;
+      if (w.thumb) return `<img src="${base}/media/${esc(w.thumb)}" alt="${esc(w.title)} — ${esc(w.type)}, ${w.year}" />`;
+      return art(w);
     };
-    const list = document.getElementById('works');
-    const items = [...document.querySelectorAll('.work')];
-    const fbtn = [...document.querySelectorAll('.filter')], vbtn = [...document.querySelectorAll('.view')];
 
+    /* Arte: animar solo cuando está en pantalla */
+    const artIO = 'IntersectionObserver' in window && !reduce
+      ? new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('on', e.isIntersecting)), { rootMargin: '40px' }) : null;
+    const watchArt = (root) => artIO && root.querySelectorAll('.art').forEach((a) => artIO.observe(a));
+    watchArt(document);
+
+    /* Reveal on scroll */
+    const rvs = [...document.querySelectorAll('.rv')];
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+      rvs.forEach((el) => io.observe(el));
+    } else rvs.forEach((el) => el.classList.add('in'));
+
+    /* Menú móvil */
+    const mb = document.getElementById('menu-btn'), nav = document.getElementById('nav'), ml = document.getElementById('menu-lbl');
+    const setMenu = (o) => { nav.classList.toggle('open', o); mb.setAttribute('aria-expanded', String(o)); ml.textContent = o ? 'Cerrar' : 'Menú'; };
+    mb.addEventListener('click', () => setMenu(mb.getAttribute('aria-expanded') !== 'true'));
+    nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && mb.getAttribute('aria-expanded') === 'true') { setMenu(false); mb.focus(); } });
+    matchMedia('(min-width: 900px)').addEventListener('change', (m) => { if (m.matches) setMenu(false); });
+
+    /* Sección activa en la navegación */
+    if ('IntersectionObserver' in window) {
+      const links = [...nav.querySelectorAll('a[href^="#"]')];
+      const so = new IntersectionObserver((es) => es.forEach((e) => {
+        if (e.isIntersecting) links.forEach((a) => a.getAttribute('href') === '#' + e.target.id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
+      }), { rootMargin: '-45% 0px -50% 0px' });
+      document.querySelectorAll('main section[id]').forEach((s) => so.observe(s));
+    }
+
+    /* Filtros, vista, vista previa */
+    if (!document.getElementById('works')) { /* sin proyectos publicados */ } else {
+    const list = document.getElementById('works'), status = document.getElementById('status');
+    const items = [...document.querySelectorAll('.work')];
+    const fbtn = [...document.querySelectorAll('button[data-filter]')], vbtn = [...document.querySelectorAll('button[data-view]')];
+    const setView = (v) => { list.dataset.view = v; vbtn.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.view === v))); };
+    if (matchMedia('(max-width: 1023px)').matches) setView('grid');
     fbtn.forEach((b) => b.addEventListener('click', () => {
       fbtn.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      items.forEach((i) => { i.hidden = b.dataset.filter !== 'Todo' && i.dataset.type !== b.dataset.filter; });
+      let c = 0;
+      items.forEach((i) => { const h = b.dataset.filter !== 'Todo' && i.dataset.type !== b.dataset.filter; i.hidden = h; if (!h) { c++; i.classList.add('in'); } });
+      status.textContent = `Mostrando ${c} de ${items.length}`;
     }));
-    vbtn.forEach((b) => b.addEventListener('click', () => {
-      list.dataset.view = b.dataset.view;
-      vbtn.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    }));
+    vbtn.forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
 
-    // vista previa en lista
-    const pvm = document.getElementById('pv-media'), pvt = document.getElementById('pv-title'), pvmeta = document.getElementById('pv-meta'), pvh = document.getElementById('pv-hint');
-    const preview = (i) => { const w = works[i]; pvm.innerHTML = mediaOf(w, false); pvt.textContent = w.title; pvmeta.textContent = `${w.type} · ${w.year}`; pvh.hidden = true; };
+    const pvm = document.getElementById('pv-media'), pvt = document.getElementById('pv-title'), pvmeta = document.getElementById('pv-meta');
+    let pvi = -1;
+    const preview = (i) => {
+      if (i === pvi) return; pvi = i; const w = works[i];
+      pvm.innerHTML = mediaOf(w, false); watchArt(pvm);
+      pvt.textContent = w.title; pvmeta.textContent = `${w.type} · ${w.year}`;
+      items.forEach((el, k) => k === i ? el.setAttribute('data-active', '') : el.removeAttribute('data-active'));
+    };
     items.forEach((el, i) => { el.addEventListener('mouseenter', () => preview(i)); el.addEventListener('focusin', () => preview(i)); });
     if (works.length) preview(0);
 
-    const modal = document.getElementById('modal'), body = document.getElementById('m-body');
+    /* Modal */
+    const modal = document.getElementById('modal'), body = document.getElementById('m-body'), mcount = document.getElementById('m-count');
     let cur = 0;
     const visible = () => items.map((_, i) => i).filter((i) => !items[i].hidden);
     function show(i) {
       const w = works[i]; cur = i;
-      body.innerHTML = `${mediaOf(w, true)}
-        <div class="mt-6 grid gap-6 sm:grid-cols-12">
-          <h3 id="m-title" class="text-4xl font-bold leading-none tracking-[-0.04em] sm:col-span-7 sm:text-6xl">${esc(w.title)}</h3>
-          <dl class="space-y-3 text-[14px] sm:col-span-5">
-            <div class="border-t border-rule pt-2"><dt class="text-mute">Tipo · Año</dt><dd>${esc(w.type)} · ${w.year}</dd></div>
-            ${w.client ? `<div class="border-t border-rule pt-2"><dt class="text-mute">Cliente</dt><dd>${esc(w.client)}</dd></div>` : ''}
-            <div class="border-t border-rule pt-2"><dt class="text-mute">Rol</dt><dd>${esc(w.role)}</dd></div>
-            <div class="border-t border-rule pt-2"><dt class="text-mute">Herramientas</dt><dd>${w.tools.map(esc).join(', ')}</dd></div>
+      body.innerHTML = `<div class="m-media">${mediaOf(w, true)}</div>
+        <div class="m-grid grid12">
+          <h2 id="m-title" class="m-title">${esc(w.title)}</h2>
+          <dl class="m-dl">
+            <div><dt>Tipo · Año</dt><dd>${esc(w.type)} · ${w.year}</dd></div>
+            ${w.client ? `<div><dt>Cliente</dt><dd>${esc(w.client)}</dd></div>` : ''}
+            <div><dt>Rol</dt><dd>${esc(w.role)}</dd></div>
+            <div><dt>Herramientas</dt><dd>${w.tools.map(esc).join(', ')}</dd></div>
           </dl>
         </div>
-        <p class="mt-6 max-w-2xl text-[15px]">${esc(w.description)}</p>`;
+        <p class="m-desc">${esc(w.description)}</p>`;
+      mcount.textContent = `${String(i + 1).padStart(2, '0')} / ${String(works.length).padStart(2, '0')}`;
+      watchArt(body);
       if (!modal.open) modal.showModal();
+      document.getElementById('m-close').focus();
+      modal.scrollTop = 0;
       history.replaceState(null, '', '#' + w.slug);
     }
     function step(d) { const v = visible(); if (!v.length) return; show(v[(v.indexOf(cur) + d + v.length) % v.length]); }
@@ -198,5 +285,6 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
     modal.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
     modal.addEventListener('close', () => { body.innerHTML = ''; history.replaceState(null, '', location.pathname + location.search); });
     const hi = works.findIndex((w) => '#' + w.slug === location.hash); if (hi >= 0) show(hi);
+    }
   </script>
 </Base>
