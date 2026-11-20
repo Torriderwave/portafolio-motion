@@ -8,159 +8,189 @@ const count = (t: string) => (t === 'Todo' ? works.length : works.filter((w) => 
 const reel = profile.showreel;
 const hasReel = Boolean(reel.embed || reel.video);
 const isDemo = (w: (typeof works)[number]) => !w.thumb && !w.video && !w.embed;
+const n = (i: number) => String(i + 1).padStart(2, '0');
 ---
 <Base title={`${profile.name} · ${profile.tagline}`} description={profile.bio}>
-  <header class="sticky top-0 z-30 border-b border-line/70 bg-bg/85 backdrop-blur">
-    <nav class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 text-sm">
-      <a href="#top" class="font-display text-base font-bold tracking-tight">{profile.name}<span class="text-hot">.</span></a>
-      <div class="flex items-center gap-5 text-mute sm:gap-7">
-        <a class="hover:text-fg" href="#trabajo">Trabajo</a>
-        <a class="hover:text-fg" href="#servicios">Servicios</a>
-        <a class="hover:text-fg" href="#contacto">Contacto</a>
-        <a class="hidden hover:text-fg sm:block" href={profile.dev}>Desarrollo ↗</a>
-      </div>
-    </nav>
+  <header class="border-b border-rule">
+    <div class="mx-auto grid max-w-[1400px] grid-cols-2 gap-x-4 gap-y-1 px-5 py-3 text-[13px] sm:grid-cols-4">
+      <a href="#top" class="font-bold">{profile.name}</a>
+      <p class="hidden sm:block">{profile.tagline}</p>
+      <p class="hidden sm:block text-mute">{profile.availability}</p>
+      <nav class="flex justify-end gap-5">
+        <a class="hover:text-red" href="#trabajo">Trabajo</a>
+        <a class="hover:text-red" href="#servicios">Servicios</a>
+        <a class="hover:text-red" href="#contacto">Contacto</a>
+        <a class="hidden hover:text-red sm:block" href={profile.dev}>Dev ↗</a>
+      </nav>
+    </div>
   </header>
 
-  <main id="top" class="mx-auto max-w-6xl px-5">
-    <section class="pb-14 pt-16 sm:pt-24">
-      <h1 class="rise max-w-4xl font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-        Motion graphics y diseño para marcas <span class="text-hot">que se mueven.</span>
+  <main id="top" class="mx-auto max-w-[1400px] px-5">
+    <section class="grid gap-x-4 gap-y-10 pb-16 pt-14 sm:pt-24 lg:grid-cols-12">
+      <h1 class="rise text-[clamp(3rem,10.5vw,10rem)] font-bold leading-[0.9] tracking-[-0.045em] lg:col-span-9">
+        Motion graphics y diseño<span class="text-red">.</span>
       </h1>
-      <p class="rise mt-6 max-w-xl text-lg text-mute" style="animation-delay:.1s">{profile.bio}</p>
-      <div class="rise mt-8 flex flex-wrap gap-3 text-sm" style="animation-delay:.2s">
-        <a href="#trabajo" class="rounded-full bg-fg px-5 py-2.5 font-medium text-bg transition hover:bg-hot hover:text-white">Ver trabajo</a>
-        <a href="#contacto" class="rounded-full border border-line px-5 py-2.5 transition hover:border-fg">Contacto</a>
+      <div class="rise flex flex-col justify-end gap-5 text-[15px] lg:col-span-3" style="animation-delay:.12s">
+        <p>{profile.bio}</p>
+        <p class="text-mute">{[profile.location, new Date().getFullYear()].filter(Boolean).join(" · ")}</p>
+        <a href="#contacto" class="inline-block w-fit border-b border-ink pb-0.5 hover:border-red hover:text-red">Escríbeme →</a>
       </div>
     </section>
 
     <section aria-label="Showreel" class="pb-20">
-      <div class="relative aspect-video w-full overflow-hidden rounded-2xl border border-line bg-panel">
+      <div class="relative aspect-video w-full overflow-hidden bg-ink">
         {hasReel
           ? (reel.embed
               ? <iframe src={reel.embed} class="absolute inset-0 h-full w-full" allowfullscreen title="Showreel" loading="lazy"></iframe>
               : <video src={`${base}/media/${reel.video}`} controls playsinline class="absolute inset-0 h-full w-full"></video>)
           : (<>
-              <Art color="#ff5b3a" />
-              <div class="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/60 to-transparent p-5 text-sm">
-                <span class="font-display text-lg font-bold">Showreel</span>
-                <span class="rounded-full bg-black/40 px-3 py-1 text-xs backdrop-blur">Próximamente</span>
+              <Art color="#e5252a" type="Motion" />
+              <div class="absolute inset-x-0 bottom-0 flex items-end justify-between p-4 text-white sm:p-6">
+                <span class="text-2xl font-bold tracking-tight sm:text-4xl">Showreel {new Date().getFullYear()}</span>
+                <span class="text-xs sm:text-sm">Próximamente</span>
               </div>
             </>)}
       </div>
     </section>
 
-    <section id="trabajo" class="scroll-mt-20 pb-20">
-      <div class="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-4">
-        <h2 class="font-display text-2xl font-bold">Trabajo seleccionado</h2>
-        <div class="flex flex-wrap gap-1 text-sm" role="group" aria-label="Filtrar por tipo">
-          {['Todo', ...types].map((t, i) => (
-            <button type="button" data-filter={t} aria-pressed={i === 0} class="filter rounded-full px-3 py-1 text-mute transition hover:text-fg aria-pressed:bg-fg aria-pressed:text-bg">
-              {t} <span class="text-xs opacity-60">{count(t)}</span>
-            </button>
-          ))}
+    <section id="trabajo" class="scroll-mt-4 pb-24">
+      <div class="flex flex-wrap items-end justify-between gap-4 border-t border-rule pt-3">
+        <h2 class="text-[13px] font-bold">Trabajo seleccionado <span class="text-mute">({works.length})</span></h2>
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
+          <div class="flex flex-wrap gap-x-4" role="group" aria-label="Filtrar por tipo">
+            {['Todo', ...types].map((t, i) => (
+              <button type="button" data-filter={t} aria-pressed={i === 0} class="filter underline-offset-4 hover:text-red aria-pressed:underline">{t}<sup class="ml-0.5 text-[10px] text-mute">{count(t)}</sup></button>
+            ))}
+          </div>
+          <div class="flex gap-3 border-l border-rule pl-5" role="group" aria-label="Vista">
+            <button type="button" data-view="list" aria-pressed="true" class="view underline-offset-4 hover:text-red aria-pressed:underline">Lista</button>
+            <button type="button" data-view="grid" aria-pressed="false" class="view underline-offset-4 hover:text-red aria-pressed:underline">Cuadrícula</button>
+          </div>
         </div>
       </div>
 
-      <ul class="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-2">
-        {works.map((w) => (
-          <li class="work" data-type={w.type}>
-            <button type="button" data-slug={w.slug} class="open group block w-full text-left">
-              <div class="relative aspect-video overflow-hidden rounded-xl border border-line bg-panel">
-                {w.thumb
-                  ? <img src={`${base}/media/${w.thumb}`} alt="" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]" />
-                  : <Art color={w.color} />}
-                {w.video && <video src={`${base}/media/${w.video}`} muted loop playsinline preload="none" class="preview absolute inset-0 h-full w-full object-cover opacity-0 transition group-hover:opacity-100"></video>}
-                {isDemo(w) && <span class="absolute right-3 top-3 rounded-full bg-black/50 px-2.5 py-0.5 text-[11px] backdrop-blur">Ejemplo</span>}
-                {(w.video || w.embed) && <span class="absolute bottom-3 left-3 grid h-9 w-9 place-items-center rounded-full bg-hot text-xs text-white" aria-hidden="true">▶</span>}
-              </div>
-              <div class="mt-3 flex items-baseline justify-between gap-4">
-                <h3 class="font-display text-lg font-semibold transition group-hover:text-hot">{w.title}</h3>
-                <span class="shrink-0 text-sm text-mute">{w.type} · {w.year}</span>
-              </div>
-            </button>
+      <div class="mt-0 grid gap-x-4 lg:grid-cols-12">
+        <ul id="works" data-view="list" class="group/list lg:col-span-7 [&[data-view=grid]]:col-span-12 [&[data-view=grid]]:mt-6 [&[data-view=grid]]:grid [&[data-view=grid]]:gap-x-4 [&[data-view=grid]]:gap-y-10 [&[data-view=grid]]:sm:grid-cols-2 [&[data-view=grid]]:lg:grid-cols-3">
+          {works.map((w, i) => (
+            <li class="work group/item border-b border-rule group-data-[view=grid]/list:border-0" data-type={w.type} data-i={i}>
+              <button type="button" data-slug={w.slug} class="open block w-full text-left">
+                <!-- Fila (vista lista) -->
+                <div class="row -mx-3 grid grid-cols-[2rem_1fr_auto] items-baseline gap-x-3 px-3 py-4 transition-colors group-data-[view=grid]/list:hidden hover:bg-ink hover:text-bg sm:grid-cols-[2.5rem_1fr_7rem_3rem]">
+                  <span class="text-[13px] tabular-nums opacity-60">{n(i)}</span>
+                  <span class="text-xl font-semibold tracking-tight sm:text-3xl">{w.title}</span>
+                  <span class="hidden text-[13px] sm:block">{w.type}</span>
+                  <span class="text-[13px] tabular-nums">{w.year}</span>
+                </div>
+                <!-- Tarjeta (vista cuadrícula) -->
+                <div class="card hidden group-data-[view=grid]/list:block">
+                  <div class="relative aspect-[4/3] overflow-hidden bg-soft">
+                    {w.thumb ? <img src={`${base}/media/${w.thumb}`} alt="" loading="lazy" class="h-full w-full object-cover" /> : <Art color={w.color} type={w.type} />}
+                    {isDemo(w) && <span class="absolute left-2 top-2 bg-bg px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">Ejemplo</span>}
+                  </div>
+                  <div class="mt-2 flex items-baseline justify-between gap-3 text-[13px]">
+                    <span class="font-semibold"><span class="mr-2 text-mute tabular-nums">{n(i)}</span>{w.title}</span>
+                    <span class="text-mute">{w.type} · {w.year}</span>
+                  </div>
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <!-- Vista previa fija (solo lista, solo escritorio) -->
+        <aside id="preview" class="mt-6 hidden lg:col-span-5 lg:block [ul[data-view=grid]~&]:hidden" aria-hidden="true">
+          <div class="sticky top-6">
+            <div id="pv-media" class="relative aspect-[4/3] w-full overflow-hidden bg-soft"></div>
+            <div class="mt-3 flex justify-between text-[13px]"><span id="pv-title" class="font-semibold"></span><span id="pv-meta" class="text-mute"></span></div>
+            <p id="pv-hint" class="mt-1 text-[12px] text-mute">Pasa el cursor sobre un proyecto · clic para abrir</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="servicios" class="scroll-mt-4 pb-24">
+      <h2 class="border-t border-rule pt-3 text-[13px] font-bold">Servicios</h2>
+      <ul class="mt-6">
+        {services.map((s, i) => (
+          <li class="grid gap-x-4 gap-y-1 border-b border-rule py-5 sm:grid-cols-12">
+            <span class="text-[13px] tabular-nums text-mute sm:col-span-1">{n(i)}</span>
+            <h3 class="text-2xl font-semibold tracking-tight sm:col-span-4 sm:text-3xl">{s.name}</h3>
+            <p class="text-[15px] sm:col-span-4">{s.text}</p>
+            <p class="text-[13px] text-mute sm:col-span-3">{s.tools}</p>
           </li>
         ))}
       </ul>
     </section>
 
-    <section id="servicios" class="scroll-mt-20 border-t border-line py-16">
-      <h2 class="font-display text-2xl font-bold">Qué hago</h2>
-      <ul class="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-        {services.map((s) => (
-          <li class="bg-bg p-6">
-            <h3 class="font-display text-lg font-semibold">{s.name}</h3>
-            <p class="mt-2 text-sm text-mute">{s.text}</p>
-            <p class="mt-4 text-xs text-mute/80">{s.tools}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section id="contacto" class="scroll-mt-20 border-t border-line py-20">
-      <h2 class="max-w-3xl font-display text-4xl font-bold leading-tight tracking-tight sm:text-6xl">¿Tienes algo en mente? <span class="text-hot">Hablemos.</span></h2>
-      <div class="mt-8 flex flex-wrap items-center gap-3 text-sm">
-        {profile.email && <a class="rounded-full bg-fg px-5 py-2.5 font-medium text-bg hover:bg-hot hover:text-white" href={`mailto:${profile.email}`}>{profile.email}</a>}
-        <a class="rounded-full border border-line px-5 py-2.5 hover:border-fg" href={profile.github}>GitHub ↗</a>
-        <a class="rounded-full border border-line px-5 py-2.5 hover:border-fg" href={profile.dev}>Portafolio de desarrollo ↗</a>
+    <section id="contacto" class="scroll-mt-4 pb-16">
+      <div class="border-t border-rule pt-3 text-[13px] font-bold">Contacto</div>
+      <p class="mt-6 text-[clamp(2.5rem,9vw,8.5rem)] font-bold leading-[0.92] tracking-[-0.045em]">Hablemos de tu proyecto<span class="text-red">.</span></p>
+      <div class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-lg">
+        {profile.email && <a class="border-b border-ink hover:border-red hover:text-red" href={`mailto:${profile.email}`}>{profile.email}</a>}
+        <a class="border-b border-ink hover:border-red hover:text-red" href={profile.github}>GitHub ↗</a>
+        <a class="border-b border-ink hover:border-red hover:text-red" href={profile.dev}>Portafolio de desarrollo ↗</a>
       </div>
     </section>
   </main>
-  <footer class="border-t border-line py-6 text-center text-xs text-mute">© {new Date().getFullYear()} {profile.name}</footer>
+  <footer class="border-t border-rule py-4 text-center text-[12px] text-mute">© {new Date().getFullYear()} {profile.name}</footer>
 
-  <dialog id="modal" aria-labelledby="m-title" class="m-auto max-h-[92vh] w-[min(980px,94vw)] overflow-auto rounded-2xl border border-line bg-panel p-0 text-fg">
-    <div class="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-panel/95 px-4 py-2 backdrop-blur">
-      <div class="flex gap-1">
-        <button id="m-prev" type="button" aria-label="Anterior" class="rounded px-3 py-1 text-mute hover:text-fg">←</button>
-        <button id="m-next" type="button" aria-label="Siguiente" class="rounded px-3 py-1 text-mute hover:text-fg">→</button>
-      </div>
-      <button id="m-close" type="button" aria-label="Cerrar" class="rounded px-3 py-1 text-xl text-mute hover:text-fg">✕</button>
+  <dialog id="modal" aria-labelledby="m-title" class="m-auto max-h-[92vh] w-[min(1000px,94vw)] overflow-auto bg-bg p-0 text-ink">
+    <div class="sticky top-0 z-10 flex items-center justify-between border-b border-rule bg-bg px-4 py-2 text-[13px]">
+      <div class="flex gap-4"><button id="m-prev" type="button" class="hover:text-red">← Anterior</button><button id="m-next" type="button" class="hover:text-red">Siguiente →</button></div>
+      <button id="m-close" type="button" class="hover:text-red">Cerrar ✕</button>
     </div>
-    <div id="m-body" class="p-5 sm:p-6"></div>
+    <div id="m-body" class="p-5 sm:p-8"></div>
   </dialog>
 
   <script is:inline define:vars={{ works, base }}>
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const buttons = [...document.querySelectorAll('.filter')];
+    const art = (w) => `<div class="art" data-t="${esc(w.type)}" style="--c:${esc(w.color)}"><i class="a"></i><i class="b"></i></div>`;
+    const mediaOf = (w, big) => {
+      if (big && w.embed) return `<div class="aspect-video bg-ink"><iframe src="${esc(w.embed)}" class="h-full w-full" allowfullscreen title="${esc(w.title)}"></iframe></div>`;
+      if (big && w.video) return `<video src="${base}/media/${esc(w.video)}" controls autoplay playsinline class="w-full bg-ink"></video>`;
+      if (w.thumb) return `<img src="${base}/media/${esc(w.thumb)}" alt="${esc(w.title)}" class="${big ? 'w-full' : 'h-full w-full object-cover'}" />`;
+      return big ? `<div class="relative aspect-video overflow-hidden">${art(w)}</div>` : art(w);
+    };
+    const list = document.getElementById('works');
     const items = [...document.querySelectorAll('.work')];
-    buttons.forEach((b) => b.addEventListener('click', () => {
-      const f = b.dataset.filter;
-      buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      items.forEach((i) => { i.hidden = f !== 'Todo' && i.dataset.type !== f; });
+    const fbtn = [...document.querySelectorAll('.filter')], vbtn = [...document.querySelectorAll('.view')];
+
+    fbtn.forEach((b) => b.addEventListener('click', () => {
+      fbtn.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      items.forEach((i) => { i.hidden = b.dataset.filter !== 'Todo' && i.dataset.type !== b.dataset.filter; });
+    }));
+    vbtn.forEach((b) => b.addEventListener('click', () => {
+      list.dataset.view = b.dataset.view;
+      vbtn.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     }));
 
-    // vista previa en hover
-    document.querySelectorAll('.open').forEach((el) => {
-      const v = el.querySelector('.preview'); if (!v) return;
-      el.addEventListener('mouseenter', () => v.play().catch(() => {}));
-      el.addEventListener('mouseleave', () => { v.pause(); v.currentTime = 0; });
-    });
+    // vista previa en lista
+    const pvm = document.getElementById('pv-media'), pvt = document.getElementById('pv-title'), pvmeta = document.getElementById('pv-meta'), pvh = document.getElementById('pv-hint');
+    const preview = (i) => { const w = works[i]; pvm.innerHTML = mediaOf(w, false); pvt.textContent = w.title; pvmeta.textContent = `${w.type} · ${w.year}`; pvh.hidden = true; };
+    items.forEach((el, i) => { el.addEventListener('mouseenter', () => preview(i)); el.addEventListener('focusin', () => preview(i)); });
+    if (works.length) preview(0);
 
     const modal = document.getElementById('modal'), body = document.getElementById('m-body');
     let cur = 0;
-    const visible = () => works.map((w, i) => i).filter((i) => !items[i].hidden);
+    const visible = () => items.map((_, i) => i).filter((i) => !items[i].hidden);
     function show(i) {
       const w = works[i]; cur = i;
-      let media;
-      if (w.embed) media = `<div class="aspect-video overflow-hidden rounded-xl bg-black"><iframe src="${esc(w.embed)}" class="h-full w-full" allowfullscreen title="${esc(w.title)}"></iframe></div>`;
-      else if (w.video) media = `<video src="${base}/media/${esc(w.video)}" controls autoplay playsinline class="w-full rounded-xl bg-black"></video>`;
-      else if (w.thumb) media = `<img src="${base}/media/${esc(w.thumb)}" alt="${esc(w.title)}" class="w-full rounded-xl" />`;
-      else media = `<div class="relative aspect-video overflow-hidden rounded-xl"><div class="art" style="--c:${esc(w.color)}"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div></div>`;
-      body.innerHTML = `${media}
-        <div class="mt-5 grid gap-6 sm:grid-cols-[1fr_16rem]">
-          <div><h3 id="m-title" class="font-display text-2xl font-bold">${esc(w.title)}</h3>
-            <p class="mt-3 text-mute">${esc(w.description)}</p></div>
-          <dl class="space-y-3 text-sm">
-            <div><dt class="text-mute">Tipo</dt><dd>${esc(w.type)} · ${w.year}</dd></div>
-            ${w.client ? `<div><dt class="text-mute">Cliente</dt><dd>${esc(w.client)}</dd></div>` : ''}
-            <div><dt class="text-mute">Rol</dt><dd>${esc(w.role)}</dd></div>
-            <div><dt class="text-mute">Herramientas</dt><dd>${w.tools.map(esc).join(', ')}</dd></div>
-          </dl></div>`;
+      body.innerHTML = `${mediaOf(w, true)}
+        <div class="mt-6 grid gap-6 sm:grid-cols-12">
+          <h3 id="m-title" class="text-4xl font-bold leading-none tracking-[-0.04em] sm:col-span-7 sm:text-6xl">${esc(w.title)}</h3>
+          <dl class="space-y-3 text-[14px] sm:col-span-5">
+            <div class="border-t border-rule pt-2"><dt class="text-mute">Tipo · Año</dt><dd>${esc(w.type)} · ${w.year}</dd></div>
+            ${w.client ? `<div class="border-t border-rule pt-2"><dt class="text-mute">Cliente</dt><dd>${esc(w.client)}</dd></div>` : ''}
+            <div class="border-t border-rule pt-2"><dt class="text-mute">Rol</dt><dd>${esc(w.role)}</dd></div>
+            <div class="border-t border-rule pt-2"><dt class="text-mute">Herramientas</dt><dd>${w.tools.map(esc).join(', ')}</dd></div>
+          </dl>
+        </div>
+        <p class="mt-6 max-w-2xl text-[15px]">${esc(w.description)}</p>`;
       if (!modal.open) modal.showModal();
       history.replaceState(null, '', '#' + w.slug);
     }
-    function step(d) { const v = visible(); if (!v.length) return; const k = v.indexOf(cur); show(v[(k + d + v.length) % v.length]); }
-    document.querySelectorAll('.open').forEach((el, i) => el.addEventListener('click', () => show(i)));
+    function step(d) { const v = visible(); if (!v.length) return; show(v[(v.indexOf(cur) + d + v.length) % v.length]); }
+    items.forEach((el, i) => el.querySelector('.open').addEventListener('click', () => show(i)));
     document.getElementById('m-prev').addEventListener('click', () => step(-1));
     document.getElementById('m-next').addEventListener('click', () => step(1));
     document.getElementById('m-close').addEventListener('click', () => modal.close());

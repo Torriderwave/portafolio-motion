@@ -1,4 +1,4 @@
 ---
-const { color = '#ff5b3a' } = Astro.props;
+const { color = '#e5252a', type = 'Motion' } = Astro.props;
 ---
-<div class="art" style={`--c:${color}`} aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+<div class="art" data-t={type} style={`--c:${color}`} aria-hidden="true"><i class="a"></i><i class="b"></i></div>

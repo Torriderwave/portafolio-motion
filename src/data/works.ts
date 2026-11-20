@@ -18,7 +18,7 @@ export type Work = {
 };
 
 export const works: Work[] = [
-  { slug: 'ejemplo-1', title: 'Título del proyecto 1', type: 'Motion', year: 2026, role: 'Animación y dirección', tools: ['After Effects', 'Blender'], description: 'Describe aquí el concepto, el reto y el resultado.', color: '#ff3d2e' },
+  { slug: 'ejemplo-1', title: 'Título del proyecto 1', type: 'Motion', year: 2026, role: 'Animación y dirección', tools: ['After Effects', 'Blender'], description: 'Describe aquí el concepto, el reto y el resultado.', color: '#e5252a' },
   { slug: 'ejemplo-2', title: 'Título del proyecto 2', type: 'Branding', year: 2026, role: 'Identidad visual', tools: ['Illustrator', 'Figma'], description: 'Logo, paleta, tipografía y aplicaciones.', color: '#1d3fff' },
   { slug: 'ejemplo-3', title: 'Título del proyecto 3', type: 'Motion', year: 2025, role: 'Motion design', tools: ['After Effects'], description: 'Pieza animada para redes o producto.', color: '#121212' },
   { slug: 'ejemplo-4', title: 'Título del proyecto 4', type: 'UI / Web', year: 2025, role: 'Diseño de interfaz', tools: ['Figma'], description: 'Diseño de pantallas y sistema de componentes.', color: '#0c8f5c' },
@@ -36,6 +36,8 @@ export const services = [
 export const profile = {
   name: 'Pablo',
   tagline: 'Motion graphics & diseño',
+  availability: 'Disponible para proyectos y colaboraciones',
+  location: '', // tu ciudad o país (opcional)
   bio: 'Animo y diseño identidades, interfaces y piezas en movimiento para marcas y productos digitales.',
   github: 'https://github.com/Torriderwave',
   dev: 'https://torriderwave.github.io/portafolio-dev/',
