@@ -28,8 +28,8 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
       <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav"><span id="menu-lbl">Menú</span><span class="menu-ico" aria-hidden="true"></span></button>
       <nav class="nav" id="nav" aria-label="Principal">
         <ul>
-          {nav.map(([id, label], i) => <li><a href={`#${id}`}><span class="num">{n(i)}</span>{label}</a></li>)}
-          <li><a href={profile.dev} rel="noopener"><span class="num">↗</span>Dev<span aria-hidden="true">&nbsp;↗</span><span class="sr-only"> (portafolio de desarrollo)</span></a></li>
+          {nav.map(([id, label], i) => <li style={`--i:${i}`}><a href={`#${id}`}><span class="num">{n(i)}</span>{label}</a></li>)}
+          <li style={`--i:${nav.length}`}><a href={profile.dev} rel="noopener"><span class="num">↗</span>Dev<span aria-hidden="true">&nbsp;↗</span><span class="sr-only"> (portafolio de desarrollo)</span></a></li>
         </ul>
       </nav>
     </div>
@@ -45,9 +45,9 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
       <h1 id="h1" class="display">
         <span class="ln"><span style="--i:0">Motion</span></span>
         <span class="ln"><span style="--i:1">graphics y</span></span>
-        <span class="ln"><span style="--i:2">diseño<span class="red">.</span></span></span>
+        <span class="ln"><span style="--i:2">diseño<span class="red dot">.</span></span></span>
       </h1>
-      <div class="hero-foot grid12">
+      <div class="hero-foot grid12 hl">
         <p class="label mute">(Perfil)</p>
         <p class="hero-lead">{profile.bio}</p>
         <div>
@@ -55,7 +55,7 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
             <dt>Disciplinas</dt><dd>{services.map((x) => x.name).join(' · ')}</dd>
             {profile.location && <><dt>Ubicación</dt><dd>{profile.location}</dd></>}
           </dl>
-          <a href={contactHref} class="cta" {...ext(contactExt)}><span>Escríbeme</span><span aria-hidden="true">→</span></a>
+          <a href={contactHref} class="cta" data-magnet data-cursor="Escribir" {...ext(contactExt)}><span>Escríbeme</span><span aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
@@ -73,23 +73,38 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
         : <p class="reel-line"><span>Showreel {year} — pronto</span></p>}
     </section>
 
+    <div class="mq" aria-hidden="true" data-live>
+      <div class="mq-shift"><div class="mq-track">
+        {[0, 1, 2].map(() => (
+          <div class="mq-g">{services.map((s) => <span class="mq-i">{s.name}<i class="sq"></i></span>)}</div>
+        ))}
+      </div></div>
+    </div>
+
     <section id="trabajo" class="wrap section" aria-labelledby="h-trabajo">
-      <div class="grid12 sec-head">
+      <div class="grid12 sec-head hl hl-v">
         <span class="num">(01)</span>
-        <h2 id="h-trabajo">Trabajo seleccionado</h2>
+        <h2 id="h-trabajo" class="mask"><span>Trabajo seleccionado</span></h2>
         {hasWorks && <span class="meta num">{String(works.length).padStart(2, '0')} {works.length === 1 ? 'proyecto' : 'proyectos'}</span>}
       </div>
-      {!hasWorks && <p class="lead-empty">Selección en preparación</p>}
+      {!hasWorks && (
+        <div class="prep" data-live>
+          <p class="lead-empty">Selección en preparación<span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></p>
+          <span class="prep-rule" aria-hidden="true"><i></i></span>
+        </div>
+      )}
       {hasWorks && (<>
       <div class="tools">
-        <div class="chips" role="group" aria-label="Filtrar por tipo">
+        <div class="chips" role="group" aria-label="Filtrar por tipo" data-slider>
           {['Todo', ...types].map((t, i) => (
             <button type="button" data-filter={t} aria-pressed={i === 0} class="chip">{t}<sup>{count(t)}</sup></button>
           ))}
+          <span class="ind" aria-hidden="true"></span>
         </div>
-        <div class="views" role="group" aria-label="Vista">
+        <div class="views" role="group" aria-label="Vista" data-slider>
           <button type="button" data-view="list" aria-pressed="true" class="chip">Lista</button>
           <button type="button" data-view="grid" aria-pressed="false" class="chip">Cuadrícula</button>
+          <span class="ind" aria-hidden="true"></span>
         </div>
       </div>
       <p class="status" id="status" role="status" aria-live="polite">Mostrando {works.length} de {works.length}</p>
@@ -98,7 +113,7 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
         <ul id="works" class="works" data-view="list">
           {works.map((w, i) => (
             <li class="work rv" data-type={w.type} data-i={i} style={`--d:${Math.min(i, 5) * 0.06}s`}>
-              <button type="button" data-slug={w.slug} class="open" aria-haspopup="dialog">
+              <button type="button" data-slug={w.slug} class="open" data-cursor="Abrir" aria-haspopup="dialog">
                 <span class="row">
                   <span class="n num">{n(i)}</span>
                   <span class="t">{w.title}<span class="sub">{w.type}</span></span>
@@ -135,16 +150,16 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     </section>
 
     <section id="servicios" class="wrap section" aria-labelledby="h-servicios">
-      <div class="grid12 sec-head">
+      <div class="grid12 sec-head hl hl-v">
         <span class="num">(02)</span>
-        <h2 id="h-servicios">Servicios</h2>
+        <h2 id="h-servicios" class="mask"><span>Servicios</span></h2>
         <span class="meta num">{String(services.length).padStart(2, '0')} disciplinas</span>
       </div>
       <ul class="services">
         {services.map((s, i) => (
-          <li class="svc rv" style={`--d:${i * 0.06}s`}>
+          <li class="svc rv hl hl-v" style={`--d:${i * 0.06}s`}>
             <span class="n num">{n(i)}</span>
-            <h3>{s.name}</h3>
+            <h3>{s.name}<span class="arr" aria-hidden="true">→</span></h3>
             <p>{s.text}</p>
             <p class="tl">{s.tools}</p>
           </li>
@@ -153,28 +168,28 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     </section>
 
     <section id="contacto" class="wrap section" aria-labelledby="h-contacto" style="padding-bottom:var(--s7)">
-      <div class="grid12 sec-head">
+      <div class="grid12 sec-head hl hl-v">
         <span class="num">(03)</span>
         <h2 id="h-contacto" class="sr-only">Contacto</h2>
         <span class="meta"></span>
       </div>
-      <p class="contact-big rv" aria-hidden="true">Hablemos de tu proyecto<span class="redt">.</span></p>
-      <a class="cta-big" href={contactHref} {...ext(contactExt)}><span>{profile.email ? profile.email : 'Escríbeme por LinkedIn'}</span><span aria-hidden="true">{profile.email ? '→' : '↗'}</span></a>
+      <p class="contact-big" aria-hidden="true"><span class="mw"><span>Hablemos</span></span> <span class="mw"><span>de</span></span> <span class="mw"><span>tu</span></span> <span class="mw"><span>proyecto<span class="redt">.</span></span></span></p>
+      <a class="cta-big rv" data-magnet data-cursor="Escribir" href={contactHref} {...ext(contactExt)}><span>{profile.email ? profile.email : 'Escríbeme por LinkedIn'}</span><span aria-hidden="true">{profile.email ? '→' : '↗'}</span></a>
       <ul class="links">
-                <li><a class="link-row" href={profile.github} rel="noopener"><span>GitHub<small>Código y proyectos</small></span><span class="arr" aria-hidden="true">↗</span></a></li>
-        <li><a class="link-row" href={profile.dev} rel="noopener"><span>Portafolio de desarrollo<small>Proyectos de software</small></span><span class="arr" aria-hidden="true">↗</span></a></li>
+                <li><a class="link-row hl hl-v" data-cursor="Visitar" href={profile.github} rel="noopener"><span>GitHub<small>Código y proyectos</small></span><span class="arr" aria-hidden="true">↗</span></a></li>
+        <li><a class="link-row hl hl-v" data-cursor="Visitar" href={profile.dev} rel="noopener"><span>Portafolio de desarrollo<small>Proyectos de software</small></span><span class="arr" aria-hidden="true">↗</span></a></li>
       </ul>
     </section>
   </main>
 
-  <footer class="wrap grid12 site-footer">
+  <footer class="wrap grid12 site-footer hl hl-v">
     <p>© {year} {profile.name}</p>
     <ul aria-label="Enlaces">
       {nav.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
       <li><a href={profile.dev} rel="noopener">Portafolio de desarrollo ↗</a></li>
       <li><a href={profile.github} rel="noopener">GitHub ↗</a></li>
     </ul>
-    <a href="#top">Volver arriba ↑</a>
+    <a href="#top" class="up-link">Volver arriba <span class="up" aria-hidden="true">↑</span></a>
   </footer>
 
   {hasWorks && <dialog id="modal" aria-labelledby="m-title">
@@ -202,12 +217,40 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     const watchArt = (root) => artIO && root.querySelectorAll('.art').forEach((a) => artIO.observe(a));
     watchArt(document);
 
-    /* Reveal on scroll */
-    const rvs = [...document.querySelectorAll('.rv')];
+    const sd = document.documentElement.classList.contains('sd');
+    const raf = (f) => requestAnimationFrame(f);
+
+    /* Reveal / hairlines / máscaras: nativo con view() (clase .sd); si no, IntersectionObserver mínimo */
+    const rvs = [...document.querySelectorAll('.rv, .hl-v, .mask, .mw')];
+    if (!sd) {
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+        rvs.forEach((el) => io.observe(el));
+      } else rvs.forEach((el) => el.classList.add('in'));
+    }
+
+    /* Elementos con animación infinita: solo corren mientras están en pantalla */
     if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-      rvs.forEach((el) => io.observe(el));
-    } else rvs.forEach((el) => el.classList.add('in'));
+      const lv = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('live', e.isIntersecting)), { rootMargin: '80px' });
+      document.querySelectorAll('[data-live]').forEach((el) => lv.observe(el));
+    }
+
+    /* Indicador deslizante (transform-only): sitúa una barra bajo un elemento */
+    const place = (ind, el) => {
+      if (!el) { ind.style.opacity = '0'; return; }
+      const cs = getComputedStyle(el), l = parseFloat(cs.paddingLeft) || 0, r = parseFloat(cs.paddingRight) || 0;
+      ind.style.opacity = '1';
+      ind.style.transform = `translate(${el.offsetLeft + l}px, ${el.offsetTop + el.offsetHeight - (parseFloat(ind.dataset.b) || 10)}px) scaleX(${Math.max(1, el.offsetWidth - l - r)})`;
+    };
+    const sliders = [];
+    const mkSlider = (group, ind, cur) => {
+      const s = { group, ind, cur, go: () => place(ind, cur()) };
+      sliders.push(s); s.go();
+      raf(() => raf(() => ind.classList.add('ready')));
+      return s;
+    };
+    addEventListener('resize', () => raf(() => sliders.forEach((s) => s.go())), { passive: true });
+    document.fonts && document.fonts.ready.then(() => sliders.forEach((s) => s.go()));
 
     /* Menú móvil */
     const mb = document.getElementById('menu-btn'), nav = document.getElementById('nav'), ml = document.getElementById('menu-lbl');
@@ -217,13 +260,51 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     addEventListener('keydown', (e) => { if (e.key === 'Escape' && mb.getAttribute('aria-expanded') === 'true') { setMenu(false); mb.focus(); } });
     matchMedia('(min-width: 900px)').addEventListener('change', (m) => { if (m.matches) setMenu(false); });
 
-    /* Sección activa en la navegación */
+    /* Sección activa en la navegación + indicador deslizante (escritorio) */
+    const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const navInd = document.createElement('span'); navInd.className = 'ind'; navInd.setAttribute('aria-hidden', 'true'); navInd.dataset.b = '9'; nav.append(navInd);
+    const curLink = () => links.find((a) => a.getAttribute('aria-current') === 'true') || null;
+    const navS = mkSlider(nav, navInd, curLink);
+    links.forEach((a) => {
+      a.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') place(navInd, a); });
+      a.addEventListener('focus', () => place(navInd, a));
+      a.addEventListener('pointerleave', navS.go);
+      a.addEventListener('blur', navS.go);
+    });
     if ('IntersectionObserver' in window) {
-      const links = [...nav.querySelectorAll('a[href^="#"]')];
       const so = new IntersectionObserver((es) => es.forEach((e) => {
-        if (e.isIntersecting) links.forEach((a) => a.getAttribute('href') === '#' + e.target.id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
+        if (!e.isIntersecting) return;
+        links.forEach((a) => a.getAttribute('href') === '#' + e.target.id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
+        navS.go();
       }), { rootMargin: '-45% 0px -50% 0px' });
-      document.querySelectorAll('main section[id]').forEach((s) => so.observe(s));
+      document.querySelectorAll('main > section').forEach((s) => so.observe(s));
+    }
+
+    /* Cursor con etiqueta y CTA magnético: solo puntero fino, sin movimiento reducido */
+    if (!reduce && matchMedia('(pointer: fine) and (hover: hover)').matches) {
+      const c = document.createElement('div'); c.className = 'cursor'; c.setAttribute('aria-hidden', 'true');
+      const ct = document.createElement('span'); c.append(ct); document.body.append(c);
+      let px = 0, py = 0, label = '', pend = false;
+      const flush = () => { pend = false; c.style.transform = `translate3d(${px}px, ${py}px, 0)`; };
+      addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        px = e.clientX; py = e.clientY; c.classList.toggle('flip', px > innerWidth - 160);
+        if (!pend) { pend = true; raf(flush); }
+      }, { passive: true });
+      document.addEventListener('pointerover', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        const t = e.target.closest && e.target.closest('[data-cursor]');
+        if (t) { if (t.dataset.cursor !== label) { label = t.dataset.cursor; ct.textContent = label; } c.classList.add('on'); } else c.classList.remove('on');
+      }, { passive: true });
+      document.documentElement.addEventListener('pointerleave', () => c.classList.remove('on'));
+
+      document.querySelectorAll('[data-magnet]').forEach((el) => {
+        let rect = null, mx = 0, my = 0, p2 = false;
+        const move = () => { p2 = false; rect = rect || el.getBoundingClientRect(); const dx = (mx - rect.left) / rect.width - .5, dy = (my - rect.top) / rect.height - .5; el.style.setProperty('--mx', (dx * 10).toFixed(1) + 'px'); el.style.setProperty('--my', (dy * 6).toFixed(1) + 'px'); };
+        el.addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; if (!p2) { p2 = true; raf(move); } }, { passive: true });
+        el.addEventListener('pointerenter', () => { rect = null; });
+        el.addEventListener('pointerleave', () => { el.style.removeProperty('--mx'); el.style.removeProperty('--my'); rect = null; });
+      });
     }
 
     /* Filtros, vista, vista previa */
@@ -231,13 +312,29 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     const list = document.getElementById('works'), status = document.getElementById('status');
     const items = [...document.querySelectorAll('.work')];
     const fbtn = [...document.querySelectorAll('button[data-filter]')], vbtn = [...document.querySelectorAll('button[data-view]')];
-    const setView = (v) => { list.dataset.view = v; vbtn.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.view === v))); };
+    const pressed = (arr) => () => arr.find((x) => x.getAttribute('aria-pressed') === 'true');
+    const fs = mkSlider(null, document.querySelector('.chips .ind'), pressed(fbtn));
+    const vs = mkSlider(null, document.querySelector('.views .ind'), pressed(vbtn));
+    const setView = (v) => { list.dataset.view = v; vbtn.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.view === v))); vs.go(); };
     if (matchMedia('(max-width: 1023px)').matches) setView('grid');
+    let busy = 0;
+    const applyFilter = (f) => {
+      const ok = (i) => f === 'Todo' || i.dataset.type === f;
+      const next = items.filter(ok), shown = items.filter((i) => !i.hidden);
+      status.textContent = `Mostrando ${next.length} de ${items.length}`;
+      clearTimeout(busy);
+      const finish = () => {
+        items.forEach((i) => { i.hidden = !ok(i); i.classList.remove('fx-out', 'fx-in'); });
+        void list.offsetWidth;
+        next.forEach((i, k) => { i.style.setProperty('--k', k); i.classList.add('fx-in'); });
+      };
+      if (reduce || !shown.length) return finish();
+      shown.forEach((i) => i.classList.add('fx-out'));
+      busy = setTimeout(finish, 170);
+    };
     fbtn.forEach((b) => b.addEventListener('click', () => {
       fbtn.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      let c = 0;
-      items.forEach((i) => { const h = b.dataset.filter !== 'Todo' && i.dataset.type !== b.dataset.filter; i.hidden = h; if (!h) { c++; i.classList.add('in'); } });
-      status.textContent = `Mostrando ${c} de ${items.length}`;
+      fs.go(); applyFilter(b.dataset.filter);
     }));
     vbtn.forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
 
@@ -254,7 +351,7 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
 
     /* Modal */
     const modal = document.getElementById('modal'), body = document.getElementById('m-body'), mcount = document.getElementById('m-count');
-    let cur = 0;
+    let cur = 0, opener = null, closing = 0;
     const visible = () => items.map((_, i) => i).filter((i) => !items[i].hidden);
     function show(i) {
       const w = works[i]; cur = i;
@@ -271,7 +368,7 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
         <p class="m-desc">${esc(w.description)}</p>`;
       mcount.textContent = `${String(i + 1).padStart(2, '0')} / ${String(works.length).padStart(2, '0')}`;
       watchArt(body);
-      if (!modal.open) modal.showModal();
+      if (!modal.open) { opener = document.activeElement; modal.showModal(); }
       document.getElementById('m-close').focus();
       modal.scrollTop = 0;
       history.replaceState(null, '', '#' + w.slug);
@@ -280,10 +377,17 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     items.forEach((el, i) => el.querySelector('.open').addEventListener('click', () => show(i)));
     document.getElementById('m-prev').addEventListener('click', () => step(-1));
     document.getElementById('m-next').addEventListener('click', () => step(1));
-    document.getElementById('m-close').addEventListener('click', () => modal.close());
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
+    const closeModal = () => {
+      if (!modal.open || closing) return;
+      if (reduce) return modal.close();
+      closing = 1; modal.setAttribute('data-closing', '');
+      setTimeout(() => { modal.removeAttribute('data-closing'); closing = 0; modal.close(); }, 230);
+    };
+    document.getElementById('m-close').addEventListener('click', closeModal);
+    modal.addEventListener('cancel', (e) => { e.preventDefault(); closeModal(); });
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     modal.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
-    modal.addEventListener('close', () => { body.innerHTML = ''; history.replaceState(null, '', location.pathname + location.search); });
+    modal.addEventListener('close', () => { body.innerHTML = ''; history.replaceState(null, '', location.pathname + location.search); if (opener && opener.isConnected) opener.focus(); opener = null; });
     const hi = works.findIndex((w) => '#' + w.slug === location.hash); if (hi >= 0) show(hi);
     }
   </script>
