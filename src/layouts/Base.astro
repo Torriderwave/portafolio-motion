@@ -38,7 +38,7 @@ const fontCss = `@font-face{font-family:"Inter Variable";font-style:normal;font-
     <link rel="preload" href={sgUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
     <style is:inline set:html={fontCss}></style>
-    <script is:inline>document.documentElement.classList.add('js')</script>
+    <script is:inline>(function(d){var c=d.documentElement.classList;c.add('js');try{if(CSS.supports('animation-timeline: view()')&&matchMedia('(prefers-reduced-motion: no-preference)').matches)c.add('sd')}catch(e){}})(document)</script>
   </head>
   <body>
     <a class="skip" href="#main">Saltar al contenido</a>
