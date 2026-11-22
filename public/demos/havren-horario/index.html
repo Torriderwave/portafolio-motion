@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Havren — intro de app (colegio ficticio Monteclaro)</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#0c2420}canvas{display:block;width:100%;height:100%}</style></head>
+<body><canvas id="c" role="img" aria-label="Una cuadrícula de horario se ordena y forma la H de Havren"></canvas>
+<script>
+/* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
+const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
+const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;return x=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1,t=x;for(let i=0;i<24;i++){const v=f(a,c,t);if(Math.abs(v-x)<1e-5)break;v<x?lo=t:hi=t;t=(lo+hi)/2}return f(b,d,t)}};
+const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+if(cap){draw(0);return}
+if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
+let t0=performance.now(),on=true;
+document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
+if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const cv=document.getElementById('c');
+const COLS=15,ROWS=9,CELL=58,GAP=8,R=11;
+const inH=(c,r)=>[3,4,10,11].includes(c)||(r>=3&&r<=5&&c>=5&&c<=9);
+const pal=['#1d5f57','#2a7a6e','#16443e','#235e54','#337d70'];
+const rand=rng(7),cells=[];
+for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const h=inH(c,r);cells.push({c,r,h,col:pal[Math.floor(rand()*pal.length)],j:rand(),tall:rand()<.18&&r<ROWS-1})}
+const eO=bez(.2,.8,.2,1),hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>{const A=hex(a),B=hex(b);return`rgb(${A.map((v,i)=>Math.round(L(v,B[i],t))).join()})`};
+const rr=(x,c,px,py,w,h,r)=>{x.beginPath();x.roundRect(px,py,w,h,r);x.fill()};
+play(6800,t=>{t/=1000;
+ const[x,w,h]=fit(cv),k=Math.min(w/1600,h/900);x.clearRect(0,0,w,h);
+ const bg=x.createRadialGradient(w/2,h*.46,0,w/2,h*.46,Math.max(w,h)*.7);bg.addColorStop(0,'#123a33');bg.addColorStop(1,'#0a1d1a');x.fillStyle=bg;x.fillRect(0,0,w,h);
+ x.save();x.translate(w/2,h/2-24*k);x.scale(k,k);
+ const gw=COLS*(CELL+GAP)-GAP,gh=ROWS*(CELL+GAP)-GAP;
+ for(const o of cells){
+  const cx=-gw/2+o.c*(CELL+GAP)+CELL/2,cy=-gh/2+o.r*(CELL+GAP)+CELL/2;
+  // 1) ola diagonal: cada bloque del horario aparece con resorte
+  const d=(o.c+o.r)*.05+o.j*.18,s1=sp(S(.15+d,.9+d,t),1.3,5.5);
+  // 2) orden: lo que no es H se encoge y se apaga desde el centro hacia afuera
+  const dist=Math.hypot(o.c-7,o.r-4)/9,k2=S(1.9+dist*.7,2.9+dist*.7,t),e2=eO(k2);
+  let sc=s1*(o.h?1:L(1,.3,e2)),col=o.h?mix(o.col,'#f4eee0',eO(S(2.2+dist*.5,3.1+dist*.5,t))):mix(o.col,'#0f2f29',e2);
+  // 3) barrido dorado sobre la H, queda un bloque "ahora"
+  if(o.h){const g=S(3.4+(o.c+o.r)*.07,3.9+(o.c+o.r)*.07,t);const pulse=Math.sin(g*Math.PI);col=pulse>.02?mix('#f4eee0','#d9aa4a',pulse):col;
+   if(o.c===7&&o.r===4&&t>3.9)col=mix('#f4eee0','#d9aa4a',eO(S(4.3,4.9,t)))}
+  if(sc<=.002)continue;
+  const ww=CELL*sc,hh=(o.tall&&!o.h?CELL*L(1,1,0):CELL)*sc;x.fillStyle=col;
+  rr(x,0,cx-ww/2,cy-hh/2,ww,hh,R*sc);
+ }
+ x.restore();
+ // etiqueta del colegio ficticio
+ const a=eO(S(4.6,5.8,t));x.save();x.globalAlpha=a;x.fillStyle='#f4eee0';x.textAlign='center';
+ x.font=`600 ${Math.round(26*k)}px ui-sans-serif,system-ui,"Segoe UI",Helvetica,Arial,sans-serif`;
+ if('letterSpacing'in x)x.letterSpacing=(L(.8,.34,a)*26*k)+'px';
+ x.fillText('MONTECLARO',w/2+(L(.8,.34,a)*13*k),h/2+gh/2*k-24*k+64*k);x.restore();
+});
+</script></body></html>

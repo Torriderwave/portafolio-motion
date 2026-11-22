@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MConnect — spot 9:16 (10 s, concepto)</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#151326}canvas{display:block;width:100%;height:100%}</style></head>
+<body><canvas id="c" role="img" aria-label="Spot de MConnect: Lejos. Cerca. Tu círculo cercano."></canvas>
+<script>
+/* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
+const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
+const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;return x=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1,t=x;for(let i=0;i<24;i++){const v=f(a,c,t);if(Math.abs(v-x)<1e-5)break;v<x?lo=t:hi=t;t=(lo+hi)/2}return f(b,d,t)}};
+const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+if(cap){draw(0);return}
+if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
+let t0=performance.now(),on=true;
+document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
+if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const cv=document.getElementById('c'),FN='ui-sans-serif,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif';
+const COL=['#c6b8ff','#f3bea9','#86e0cf','#ff9db0','#a898ff','#ffd0bd'],CR='#f3eefc';
+const eO=bez(.16,.84,.2,1),eI=bez(.7,0,.15,1);
+const rd=rng(5),CX=540,CY=900,RR=310;
+const amb=Array.from({length:26},()=>({x:rd()*1080,y:rd()*1920,r:3+rd()*9,c:COL[Math.floor(rd()*6)],p:rd()*6.28,s:.3+rd()*.7}));
+const key=COL.map((c,i)=>{const a=(-90+60*i)*Math.PI/180,L0=i%2?{x:150+i*20,y:760+i*170}:{x:900-i*20,y:640+i*160};return{c,sx:L0.x,sy:L0.y,tx:CX+Math.cos(a)*RR,ty:CY+Math.sin(a)*RR,d:2.5+i*.13,k:(i%2?-1:1)*(220+i*30)}});
+const pos=(o,t)=>{const dr=1-S(o.d,o.d+.6,t);if(t<o.d)return[o.sx+Math.sin(t*.9+o.k)*40,o.sy+Math.cos(t*.7+o.k)*40];const k=S(o.d,o.d+1.7,t),e=eI(k),s=sp(S(o.d+.5,o.d+1.9,t),1,5),m=L(e,s,S(.6,1,k)),u=1-m;
+ return[u*u*(o.sx+Math.sin(o.d*.9+o.k)*40*dr)+2*u*m*(CX+o.k)+m*m*o.tx,u*u*(o.sy+Math.cos(o.d*.7+o.k)*40*dr)+2*u*m*(o.sy+o.k*1.2)+m*m*o.ty]};
+const M1=new Path2D('M-98 56V-4A49 49 0 0 1 0 -4'),M2=new Path2D('M0 -4A49 49 0 0 1 98 -4V56'),LEN=222;
+function line(x,s,by,size,t,a,b,col,wgt=800,ls=0){x.font=`${wgt} ${size}px ${FN}`;const ws=[...s].map(c=>x.measureText(c).width+ls),tot=ws.reduce((p,q)=>p+q,0);let px=CX-tot/2;
+ [...s].forEach((c,i)=>{const kin=eO(S(a+i*.06,a+.6+i*.06,t)),kout=eI(S(b+i*.04,b+.5+i*.04,t));if(kin>0&&kout<1){x.save();x.translate(px+ws[i]/2,by);x.beginPath();x.rect(-ws[i],-size*1.0,ws[i]*2,size*1.28);x.clip();x.fillStyle=col;x.textAlign='center';x.fillText(c,0,(1-kin)*size*1.1-kout*size*1.1);x.restore()}px+=ws[i]})}
+play(10000,t=>{t/=1000;const[x,w,h]=fit(cv),k=Math.min(w/1080,h/1920);
+ const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#151326');g.addColorStop(1,'#1f1945');x.fillStyle=g;x.fillRect(0,0,w,h);
+ x.save();x.translate((w-1080*k)/2,(h-1920*k)/2);x.scale(k,k);
+ // presencias de fondo a la deriva
+ amb.forEach(o=>{x.globalAlpha=(.3+.2*Math.sin(t*o.s+o.p))*(1-.6*S(3.5,5,t));x.fillStyle=o.c;x.beginPath();x.arc(o.x+Math.sin(t*.4*o.s+o.p)*60,((o.y-t*30*o.s)%1920+1920)%1920,o.r,0,6.283);x.fill()});x.globalAlpha=1;
+ // palabras
+ line(x,'LEJOS.',470,210,t,.3,2.4,CR);line(x,'CERCA.',470,210,t,3.0,6.2,CR);
+ // las seis presencias viajan al círculo (con estela)
+ const pp=key.map(o=>pos(o,t));
+ key.forEach((o,i)=>{if(t<o.d+.05)return;for(let s=9;s>=1;s--){const q=pos(o,Math.max(o.d,t-s*.03));x.globalAlpha=.07*(10-s)/9*S(o.d,o.d+.3,t);x.fillStyle=o.c;x.beginPath();x.arc(q[0],q[1],L(8,20,1-s/10),0,6.283);x.fill()}});x.globalAlpha=1;
+ // círculo: aristas entre vecinos + pulsos
+ for(let i=0;i<6;i++){const a=pp[i],b=pp[(i+1)%6],p=eO(S(4.3+i*.1,5.2+i*.1,t));if(p<=0)continue;x.strokeStyle='rgba(198,184,255,.5)';x.lineWidth=3;x.beginPath();x.moveTo(a[0],a[1]);x.lineTo(L(a[0],b[0],p),L(a[1],b[1],p));x.stroke()}
+ if(t>5.2)for(let j=0;j<2;j++){const u=((t-5.2)*.35+j/2)%1*6,i=Math.floor(u),f=u-i,a=pp[i%6],b=pp[(i+1)%6];x.fillStyle='#86e0cf';x.shadowColor='#86e0cf';x.shadowBlur=30;x.beginPath();x.arc(L(a[0],b[0],f),L(a[1],b[1],f),9,0,6.283);x.fill();x.shadowBlur=0}
+ key.forEach((o,i)=>{const p=pp[i],r=L(12,24,S(o.d,o.d+1.5,t))*S(0,.8,t);x.fillStyle=o.c;x.beginPath();x.arc(p[0],p[1],r,0,6.283);x.fill()});
+ // nodo central, halos, M
+ const nd=sp(S(4.9,5.8,t),1.4,5);x.fillStyle='#86e0cf';x.beginPath();x.arc(CX,CY+30,22*nd,0,6.283);x.fill();
+ for(let i=0;i<2;i++){const p=S(5+i*.35,6.5+i*.35,t);x.strokeStyle='#86e0cf';x.globalAlpha=(1-p)*.6*(p>0);x.lineWidth=3;x.beginPath();x.arc(CX,CY+30,22+p*230,0,6.283);x.stroke()}x.globalAlpha=1;
+ x.save();x.translate(CX,CY);const ms=1.5+.05*Math.sin(S(6.8,7.6,t)*Math.PI);x.scale(ms,ms);x.lineCap='round';x.lineWidth=22;x.setLineDash([LEN,LEN]);
+ x.strokeStyle='#c6b8ff';x.lineDashOffset=LEN*(1-eO(S(5.7,6.6,t)));if(t>5.7)x.stroke(M1);x.strokeStyle='#f3bea9';x.lineDashOffset=LEN*(1-eO(S(5.9,6.8,t)));if(t>5.9)x.stroke(M2);x.restore();
+ // cierre de marca
+ const w2=eO(S(7.2,8.2,t));x.globalAlpha=w2;x.fillStyle=CR;x.font=`700 118px ${FN}`;x.textAlign='center';if('letterSpacing'in x)x.letterSpacing=L(30,2,w2)+'px';x.fillText('MConnect',CX+L(15,1,w2),1420);if('letterSpacing'in x)x.letterSpacing='0px';
+ const w3=eO(S(8.0,8.9,t));x.globalAlpha=w3;x.fillStyle='#c6b8ff';x.font=`500 50px ${FN}`;x.fillText('Tu círculo cercano.',CX,1510+(1-w3)*24);x.globalAlpha=1;
+ x.restore()},{hold:1500});
+</script></body></html>

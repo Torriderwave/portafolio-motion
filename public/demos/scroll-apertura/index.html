@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apertura — hero guiado por scroll (CSS scroll-timeline)</title>
+<style>
+:root{--ink:#0e0e10;--hot:#ff4b2b;--paper:#efeae0;--e1:cubic-bezier(.7,0,.1,1);--e2:cubic-bezier(.16,.84,.2,1)}
+*{box-sizing:border-box}
+html{background:var(--ink)}body{margin:0;height:500vh;font-family:ui-sans-serif,system-ui,"Segoe UI",Helvetica,Arial,sans-serif}
+.stage{position:fixed;inset:0;overflow:hidden;background:var(--ink);color:var(--paper)}
+.stage>*{position:absolute}
+.rings{inset:0;display:grid;place-items:center}
+.rings i{position:absolute;width:60vmin;height:60vmin;border:2px solid rgba(239,234,224,.34);border-radius:50%;scale:1}
+.rings i:nth-child(2){width:84vmin;height:84vmin}.rings i:nth-child(3){width:112vmin;height:112vmin}.rings i:nth-child(4){width:150vmin;height:150vmin}
+.word{inset:0;display:flex;align-items:center;justify-content:center;gap:1.2vmin;font:800 24vmin/1 ui-sans-serif,system-ui,Helvetica,Arial,sans-serif;letter-spacing:-.04em;text-transform:uppercase}
+.word b{display:block;font-weight:inherit;translate:0 0;opacity:1}
+.iris{inset:0;background:var(--hot);color:var(--ink);clip-path:circle(150% at 50% 50%);display:grid;place-items:center}
+.iris .o{position:absolute;border:2px solid rgba(14,14,16,.28);border-radius:50%;width:78vmin;height:78vmin}.iris .o2{width:110vmin;height:110vmin;border-color:rgba(14,14,16,.16)}.iris .d{position:absolute;left:0;top:0;width:5vmin;height:5vmin;border-radius:50%;background:var(--ink);offset-path:circle(39vmin at 50vw 50vh);offset-distance:0%;offset-rotate:0deg;translate:-50% -50%}
+.iris .in{display:flex;overflow:hidden;padding:2vmin 4vmin;font:800 15vmin/1 ui-sans-serif,system-ui,Helvetica,Arial,sans-serif;letter-spacing:-.05em;text-transform:uppercase}
+.iris .in b{display:block;font-weight:inherit;translate:0 0}
+.tape{left:-10vw;width:120vw;height:11vmin;display:flex;align-items:center;white-space:nowrap;overflow:hidden;font:700 5vmin/1 ui-sans-serif,system-ui,Helvetica,Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;mix-blend-mode:difference;color:#efeae0;border-block:1px solid currentColor;opacity:.9}
+.tape span{display:block;translate:0 0}
+.t1{top:20%;rotate:-7deg}.t2{bottom:19%;rotate:5deg}
+.bar{left:5vmin;right:5vmin;bottom:4vmin;height:2px;background:rgba(239,234,224,.25);mix-blend-mode:difference}.bar i{display:block;height:100%;background:#fff;transform-origin:0 50%;scale:1 1}
+@supports (animation-timeline:scroll()){
+ .stage *,.stage{animation-fill-mode:both;animation-timing-function:linear}
+ .rings i{animation:rg linear both;animation-timeline:scroll(root);animation-range:0% 70%}
+ .rings i:nth-child(2){animation-range:4% 74%}.rings i:nth-child(3){animation-range:8% 78%}.rings i:nth-child(4){animation-range:12% 82%}
+ @keyframes rg{from{scale:.2;opacity:0}30%{opacity:1}to{scale:1.35;rotate:25deg}}
+ .word b{animation:win var(--e2) both,wout var(--e1) both;animation-timeline:scroll(root),scroll(root);animation-range:calc(var(--n)*2%) calc(24% + var(--n)*2%),30% 58%}
+ @keyframes win{from{translate:0 70vh;rotate:calc(var(--n) * 14deg - 21deg);opacity:0}}
+ @keyframes wout{to{translate:calc((var(--n) - 1.5)*34vmin) calc((var(--n) - 1.5)*-4vmin);scale:1.6;opacity:0;filter:blur(1.5vmin)}}
+ .iris{animation:ir var(--e1) both;animation-timeline:scroll(root);animation-range:30% 68%}
+ @keyframes ir{from{clip-path:circle(0% at 50% 50%)}}
+ .iris .in b{animation:up var(--e2) both;animation-timeline:scroll(root);animation-range:calc(48% + var(--n)*2.6%) calc(70% + var(--n)*2.6%)}
+ .iris .o{animation:orr linear both;animation-timeline:scroll(root);animation-range:30% 100%}.iris .d{animation:dd var(--e1) both;animation-timeline:scroll(root);animation-range:52% 100%}
+ @keyframes orr{from{scale:.3;rotate:-40deg}}@keyframes dd{from{offset-distance:-25%;opacity:0}20%{opacity:1}}
+ @keyframes up{from{translate:0 120%;rotate:8deg}}
+ .tape span{animation:tp linear both;animation-timeline:scroll(root)}
+ .t1 span{--a:0vw;--b:-60vw}.t2 span{--a:-60vw;--b:0vw}
+ @keyframes tp{from{translate:var(--a) 0}to{translate:var(--b) 0}}
+ .tape{animation:tf linear both;animation-timeline:scroll(root);animation-range:0% 100%}
+ @keyframes tf{0%{opacity:0}12%{opacity:.9}88%{opacity:.9}100%{opacity:0}}
+ .bar i{animation:pr linear both;animation-timeline:scroll(root)}
+ @keyframes pr{from{scale:0 1}}
+}
+@media (prefers-reduced-motion:reduce){.stage *{animation:none!important}.word{opacity:0}.tape{opacity:0}.rings i{scale:1}}
+</style></head>
+<body>
+<div class="stage" aria-hidden="true">
+ <div class="rings"><i></i><i></i><i></i><i></i></div>
+ <div class="word"><b style="--n:0">A</b><b style="--n:1">B</b><b style="--n:2">R</b><b style="--n:3">E</b></div>
+ <div class="iris"><i class="o"></i><i class="o o2"></i><i class="d"></i><div class="in"><b style="--n:0">A</b><b style="--n:1">d</b><b style="--n:2">e</b><b style="--n:3">n</b><b style="--n:4">t</b><b style="--n:5">r</b><b style="--n:6">o</b></div></div>
+ <div class="tape t1"><span>Abre · Abre · Abre · Abre · Abre · Abre · Abre · Abre · Abre · Abre · Abre · Abre ·</span></div>
+ <div class="tape t2"><span>Adentro · Adentro · Adentro · Adentro · Adentro · Adentro · Adentro · Adentro ·</span></div>
+ <div class="bar"><i></i></div>
+</div>
+<script>
+/* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
+const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
+const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;return x=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1,t=x;for(let i=0;i<24;i++){const v=f(a,c,t);if(Math.abs(v-x)<1e-5)break;v<x?lo=t:hi=t;t=(lo+hi)/2}return f(b,d,t)}};
+const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+if(cap){draw(0);return}
+if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
+let t0=performance.now(),on=true;
+document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
+if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const root=document.scrollingElement,mx=()=>root.scrollHeight-innerHeight,ease=bez(.4,0,.6,1);
+const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+window.__D=8000;
+window.__seek=t=>{root.scrollTop=mx()*ease(Math.min(1,t/8000));return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))};
+if(!cap&&!rm&&CSS.supports('animation-timeline','scroll()')){
+ // autopiloto: baja, sostiene y rebobina; en cuanto la persona toca el scroll, se detiene
+ let go=true,t0=performance.now();['wheel','touchstart','keydown','pointerdown'].forEach(e=>addEventListener(e,()=>go=false,{passive:true,once:true}));
+ const rw=bez(.7,0,.2,1);
+ const f=n=>{if(!go)return;const t=(n-t0)%11400;const p=t<8000?ease(t/8000):t<9400?1:t<11000?1-rw((t-9400)/1600):0;root.scrollTop=mx()*p;requestAnimationFrame(f)};requestAnimationFrame(f);
+}
+</script></body></html>

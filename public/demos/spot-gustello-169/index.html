@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gustello — spot 16:9 (12 s, concepto)</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#e05a00}canvas{display:block;width:100%;height:100%}</style></head>
+<body><canvas id="c" role="img" aria-label="Spot de Gustello: Pedido, Cocina, Mesa. Del pedido a la mesa."></canvas>
+<script>
+/* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
+const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
+const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;return x=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1,t=x;for(let i=0;i<24;i++){const v=f(a,c,t);if(Math.abs(v-x)<1e-5)break;v<x?lo=t:hi=t;t=(lo+hi)/2}return f(b,d,t)}};
+const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+if(cap){draw(0);return}
+if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
+let t0=performance.now(),on=true;
+document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
+if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const cv=document.getElementById('c'),FN='ui-sans-serif,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif';
+const OR='#e05a00',CR='#fff1e0',DK='#14100d';
+// logo G (viewBox 512×480): arcos concéntricos, bandeja y cloche
+const GP={o:'M335 78A200 200 0 1 0 418 262',i:'M292 134A122 122 0 1 0 336 250',p:'M226 248H476',d:'M298 214C300 164 340 140 384 140S468 164 470 214Z',s:'M384 112c-12-12 12-22 0-34s12-22 0-34'};
+const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),LEN={};
+for(const k in GP){const p=document.createElementNS(svg.namespaceURI,'path');p.setAttribute('d',GP[k]);svg.appendChild(p);LEN[k]=p.getTotalLength()}
+const P2={};for(const k in GP)P2[k]=new Path2D(GP[k]);
+const eO=bez(.16,.84,.2,1),eI=bez(.7,0,.15,1),eX=bez(.9,0,.1,1);
+function logo(x,cx,cy,h,t,col,bgc){ // t: tiempo local
+ x.save();x.translate(cx-h*.52,cy-h/2);const s=h/480;x.scale(s,s);x.strokeStyle=col;x.fillStyle=col;x.lineCap='round';
+ const dr=(k,a,b,w)=>{const p=eO(S(a,b,t));if(p<=0)return;x.lineWidth=w;x.setLineDash([LEN[k],LEN[k]]);x.lineDashOffset=LEN[k]*(1-p);x.stroke(P2[k])};
+ dr('o',0,1.1,30);dr('i',.25,1.25,30);dr('p',.95,1.35,26);
+ const dp=sp(S(1.2,2.1,t),1.5,5);if(dp>0){x.setLineDash([]);x.save();x.translate(384,214);x.scale(1+.12*(1-dp)*0,dp);x.translate(-384,-214-(1-dp)*30);x.fill(P2.d);x.restore();
+  x.beginPath();x.arc(384,128-(1-dp)*30,10*dp,0,6.283);x.fill();
+  const sd=S(1.7,2.6,t);if(sd>0){x.lineWidth=7;x.setLineDash([LEN.s,LEN.s]);x.lineDashOffset=LEN.s*(1-eO(sd));x.globalAlpha=.9;x.save();x.translate(0,-(1-eO(sd))*8);x.stroke(P2.s);x.restore()}}
+ x.restore()}
+function word(x,str,cx,by,size,t,fn,col,wgt=900,ls=0){ // palabra letra por letra; mask:true = sube desde una línea recortada
+ x.font=`${wgt} ${size}px ${FN}`;x.textBaseline='alphabetic';const ws=[...str].map(c=>x.measureText(c).width+ls),tot=ws.reduce((a,b)=>a+b,0);let px=cx-tot/2;
+ [...str].forEach((c,i)=>{const r=fn(i,t,size);if(r.a>0){x.save();x.translate(px+ws[i]/2,by);
+   if(r.mask){x.beginPath();x.rect(-ws[i],-size*1.02,ws[i]*2,size*1.3);x.clip()}
+   x.globalAlpha=r.a;x.translate(0,r.dy||0);x.rotate(r.rot||0);x.scale(r.sx||1,r.sy||1);x.fillStyle=col;x.textAlign='center';x.fillText(c,0,0);x.restore()}px+=ws[i]});return tot}
+function ticket(x,cx,cy,w,h,rot,col,line){x.save();x.translate(cx,cy);x.rotate(rot);x.fillStyle=col;x.beginPath();x.moveTo(-w/2,-h/2);x.lineTo(w/2,-h/2);x.lineTo(w/2,h/2);for(let i=0;i<=10;i++)x.lineTo(w/2-w*i/10,h/2+(i%2?-16:0));x.closePath();x.fill();
+ x.fillStyle=line;for(let i=0;i<9;i++){const ww=w*(.35+((i*37)%5)*.1);x.fillRect(-w/2+30,-h/2+50+i*44,ww,10);x.fillRect(w/2-90,-h/2+50+i*44,60,10)}x.restore()}
+// --- escenas (t local, segundos) ---
+function s1(x,t){x.fillStyle=OR;x.fillRect(0,0,1920,1080);
+ [[1210,460,-.12,0],[1480,590,.1,.15],[560,640,.08,.3],[330,430,-.07,.45],[960,720,.03,.6]].forEach(([px,py,r,d],i)=>{const e=eO(S(.1+d,1.1+d,t));ticket(x,px+(1-e)*700,py+(1-e)*-120+Math.sin(t*1.4+i)*6,300,560,r+(1-e)*.2,'rgba(120,35,0,.28)','rgba(255,241,224,.35)')});
+ word(x,'PEDIDO',960,640,430,t,(i,t,sz)=>{const k=S(.25+i*.07,.95+i*.07,t),p=sp(k,1.1,5.5);return{a:k>0?1:0,dy:(p-1)*-0+(1-p)*-900,rot:(1-p)*(i%2?.5:-.5)}},CR);
+ const u=eI(S(1.3,1.9,t));x.fillStyle=CR;x.fillRect(960-640,700,1280*u,16)}
+function s2(x,t){x.fillStyle=DK;x.fillRect(0,0,1920,1080);
+ for(let i=0;i<4;i++){const p=((t*.45+i/4)%1);x.strokeStyle=OR;x.globalAlpha=(1-p)*.5;x.lineWidth=3;x.beginPath();x.arc(960,560,80+p*760,0,6.283);x.stroke()}x.globalAlpha=1;
+ x.strokeStyle='rgba(224,90,0,.8)';x.lineWidth=5;x.lineCap='round';
+ for(let i=0;i<9;i++){const bx=330+i*158,k=S(.2+i*.06,1.2+i*.06,t);if(k<=0)continue;x.globalAlpha=.55*Math.sin(Math.PI*Math.min(1,k*1.0))+.0;x.beginPath();for(let y=0;y<=14;y++){const yy=1010-y*30*k-0,xx=bx+Math.sin(y*.5+t*3+i)*(10+y*2.2);y?x.lineTo(xx,yy):x.moveTo(xx,yy)}x.stroke()}x.globalAlpha=1;
+ x.font=`900 360px ${FN}`;
+ word(x,'COCINA',960,690,360,t,(i,t,size)=>{const k=S(.3+i*.08,.95+i*.08,t);return{a:1,mask:true,dy:(1-eO(k))*size*1.05}},CR);
+ const u=eI(S(1.2,1.8,t));x.fillStyle=OR;x.fillRect(960-390,742,780*u,14)}
+function s3(x,t){x.fillStyle=CR;x.fillRect(0,0,1920,1080);
+ word(x,'MESA',960,380,380,t,(i,t)=>{const k=S(.1+i*.09,.8+i*.09,t),p=sp(k,1,5);return{a:k>0?1:0,sx:L(.5,1,p),sy:L(1.7,1,p),dy:(1-p)*60}},OR);
+ const cx=960,cy=840,pl=eO(S(.2,1.1,t));x.save();x.translate(cx,cy+(1-pl)*500);
+ x.fillStyle=DK;x.beginPath();x.arc(0,0,420,0,6.283);x.fill();x.strokeStyle=OR;x.lineWidth=8;x.beginPath();x.arc(0,0,340,0,6.283);x.stroke();
+ x.strokeStyle='rgba(255,241,224,.7)';x.lineWidth=6;x.lineCap='round';const a0=t*1.2;x.beginPath();x.arc(0,0,380,a0,a0+.7);x.stroke();x.beginPath();x.arc(0,0,380,a0+3.14,a0+3.14+.35);x.stroke();
+ const dp=sp(S(1.1,2.0,t),1.3,5.5),dy=(1-dp)*-760;if(dp>0){x.translate(0,-70+dy);const sq=1+.14*Math.max(0,1-Math.abs(S(1.1,1.45,t)*2-1)*2)*0;x.fillStyle=OR;x.beginPath();x.moveTo(-250,0);x.bezierCurveTo(-250,-190,-130,-260,0,-260);x.bezierCurveTo(130,-260,250,-190,250,0);x.closePath();x.fill();x.beginPath();x.arc(0,-282,24,0,6.283);x.fill();x.fillStyle='rgba(255,241,224,.28)';x.beginPath();x.ellipse(-110,-150,26,80,.5,0,6.283);x.fill()}
+ x.restore()}
+function s4(x,t){x.fillStyle=OR;x.fillRect(0,0,1920,1080);logo(x,610,470,470,t,CR);
+ const wm=word(x,'Gustello',1275,520,172,t,(i,t)=>{const k=S(.9+i*.06,1.5+i*.06,t);return{a:k>0?1:0,mask:true,dy:(1-eO(k))*190}},CR,800,-3);
+ const k=eO(S(2.0,2.7,t));x.globalAlpha=k;x.fillStyle=CR;x.font=`600 54px ${FN}`;x.textAlign='center';x.fillText('Del pedido a la mesa.',1275,610+(1-k)*24);x.globalAlpha=1}
+const SC=[s1,s2,s3,s4],T=[0,2.6,5.4,8.0],WD=.6;
+const wipe=(x,n,p)=>{x.beginPath();
+ if(n===1){const e=L(-400,2300,eX(p));x.moveTo(0,0);x.lineTo(e+220,0);x.lineTo(e-220,1080);x.lineTo(0,1080)}
+ else if(n===2){x.arc(960,540,eX(p)*1250,0,6.283)}
+ else{for(let j=0;j<5;j++)x.rect(0,j*216,1920*eI(S(j*.07,j*.07+.55,p)),217)}
+ x.clip()};
+play(12000,t=>{t/=1000;const[x,w,h]=fit(cv),k=Math.min(w/1920,h/1080);x.save();x.translate((w-1920*k)/2,(h-1080*k)/2);x.scale(k,k);x.beginPath();x.rect(0,0,1920,1080);x.clip();
+ let i=0;while(i<3&&t>=T[i+1]+WD)i++;
+ if(i<3&&t>=T[i+1]){SC[i](x,t-T[i]);x.save();wipe(x,i+1,S(T[i+1],T[i+1]+WD,t));SC[i+1](x,t-T[i+1]);x.restore()}else SC[i](x,t-T[i]);
+ x.restore()},{hold:1200});
+</script></body></html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cuerda — microinteracción con física de resorte</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#120f1a;cursor:crosshair;touch-action:none}canvas{display:block;width:100%;height:100%}
+p{position:fixed;left:0;right:0;bottom:7vmin;margin:0;text-align:center;font:600 max(11px,1.7vmin)/1 ui-sans-serif,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;letter-spacing:.4em;text-transform:uppercase;color:#f1ebff;opacity:.55;pointer-events:none;transition:opacity .6s}p.off{opacity:0}</style></head>
+<body><canvas id="c" role="img" aria-label="Tres cuerdas de colores siguen al puntero con física de resorte"></canvas><p id="h">Tocar</p>
+<script>
+/* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
+const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
+const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;return x=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1,t=x;for(let i=0;i<24;i++){const v=f(a,c,t);if(Math.abs(v-x)<1e-5)break;v<x?lo=t:hi=t;t=(lo+hi)/2}return f(b,d,t)}};
+const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+if(cap){draw(0);return}
+if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
+let t0=performance.now(),on=true;
+document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
+if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const cv=document.getElementById('c'),hint=document.getElementById('h'),N=56,VW=1600,VH=900;
+// tres cuerdas verlet (largo, damping y gravedad distintos) colgadas del mismo cursor
+const ropes=[{c:'#c6b8ff',k:70,z:9.5,w:17,dl:5,am:0},{c:'#f3bea9',k:42,z:7.2,w:14,dl:7,am:34},{c:'#86e0cf',k:26,z:5.4,w:11,dl:9,am:-46}];
+let simT=0,hd,hist,rings=[],ptr=null,lastUse=-1e9;
+const rnd=rng(11),way=Array.from({length:12},()=>[VW*(.2+rnd()*.6),VH*(.2+rnd()*.6)]);
+const reset=()=>{simT=0;rings=[];hd=ropes.map(()=>({x:VW/2,y:VH/2,vx:0,vy:0}));hist=ropes.map(()=>[])};reset();
+const target=t=>[VW/2+500*Math.sin(.85*t+.4)+170*Math.sin(2.3*t),VH/2+250*Math.sin(1.25*t)+80*Math.sin(3.1*t+1)];
+let sc=1,ox=0,oy=0;const toV=(cx,cy)=>[(cx-ox)/sc,(cy-oy)/sc];
+addEventListener('pointermove',e=>{ptr=[e.clientX,e.clientY];lastUse=performance.now()});
+addEventListener('pointerdown',e=>{ptr=[e.clientX,e.clientY];lastUse=performance.now();const v=toV(e.clientX,e.clientY);rings.push({x:v[0],y:v[1],t:simT})});
+const step=(dt,tg)=>{simT+=dt;
+ ropes.forEach((r,i)=>{const h=hd[i],o=i*95,q=simT*1.3+i*2.1,gx=tg[0]+Math.cos(q)*o,gy=tg[1]+Math.sin(q)*o*.8;h.vx+=(r.k*(gx-h.x)-r.z*h.vx)*dt;h.vy+=(r.k*(gy-h.y)-r.z*h.vy)*dt;h.x+=h.vx*dt;h.y+=h.vy*dt;hist[i].unshift([h.x,h.y]);if(hist[i].length>N*r.dl+2)hist[i].pop()})};
+play(8000,t=>{
+ const[x,w,h]=fit(cv),cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,auto=!ptr||performance.now()-lastUse>2200||cap||rm;
+ sc=Math.min(w/VW,h/VH);ox=(w-VW*sc)/2;oy=(h-VH*sc)/2;
+ if(t/1000<simT-.01)reset();
+ while(simT<t/1000-1e-6){step(1/120,auto?target(simT):toV(ptr[0],ptr[1]))}
+ hint.classList.toggle('off',!auto);
+ x.clearRect(0,0,w,h);const g=x.createRadialGradient(w/2,h/2,0,w/2,h/2,Math.max(w,h)*.7);g.addColorStop(0,'#1d1730');g.addColorStop(1,'#0e0b15');x.fillStyle=g;x.fillRect(0,0,w,h);
+ x.fillStyle='rgba(241,235,255,.1)';for(let i=1;i<24;i++)for(let j=1;j<14;j++)x.fillRect(w*i/24-1,h*j/14-1,2,2);
+ x.save();x.translate(ox,oy);x.scale(sc,sc);x.lineCap='round';x.lineJoin='round';
+ ropes.slice().reverse().forEach(r=>{const hs=hist[ropes.indexOf(r)],P=[];
+  for(let i=0;i<N;i++){const q=hs[Math.min(i*r.dl,hs.length-1)]||[VW/2,VH/2],k=i/N,w=Math.sin(i*.45-simT*5)*r.am*k;P.push([q[0]+w*.7,q[1]+w])}
+  x.strokeStyle=r.c;for(let i=N-1;i>0;i--){const k=1-i/N;x.globalAlpha=.25+.75*k;x.lineWidth=Math.max(1.5,r.w*Math.pow(k,.9)*1.15);x.beginPath();x.moveTo(P[i-1][0],P[i-1][1]);x.lineTo(P[i][0],P[i][1]);x.stroke()}
+  x.globalAlpha=1;x.fillStyle=r.c;x.beginPath();x.arc(P[0][0],P[0][1],r.w*1.1,0,6.283);x.fill()});
+ x.globalAlpha=1;
+ rings=rings.filter(o=>simT-o.t<1.2);rings.forEach(o=>{const p=(simT-o.t)/1.2;x.strokeStyle='#f1ebff';x.globalAlpha=(1-p)*.6;x.lineWidth=3;x.beginPath();x.arc(o.x,o.y,14+bez(.1,.9,.2,1)(p)*220,0,6.283);x.stroke()});
+ x.restore();x.globalAlpha=1;
+},{replay:false,hold:0});
+</script></body></html>

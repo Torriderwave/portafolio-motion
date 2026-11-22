@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rumbo — bumper para redes 1:1 (marca ficticia)</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#f4efe6}
+.sc{position:absolute;inset:0;perspective:1500px;perspective-origin:50% 50%;display:grid;place-items:center}
+.ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.f{position:absolute;display:grid;place-items:center;left:0;top:0;backface-visibility:hidden;font:900 var(--fs)/1 ui-sans-serif,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:-.03em;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+.sh{position:absolute;left:50%;bottom:7%;width:56%;height:5%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(20,18,15,.28),transparent)}
+</style></head>
+<body><div class="sc" id="sc" role="img" aria-label="Rumbo: un cilindro de palabras gira en pasos"><div class="ring" id="back"></div><div class="ring" id="ring"></div></div><div class="sh" id="sh"></div>
+<script>
+/* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
+const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
+const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;return x=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1,t=x;for(let i=0;i<24;i++){const v=f(a,c,t);if(Math.abs(v-x)<1e-5)break;v<x?lo=t:hi=t;t=(lo+hi)/2}return f(b,d,t)}};
+const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+if(cap){draw(0);return}
+if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
+let t0=performance.now(),on=true;
+document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
+if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const $=id=>document.getElementById(id);
+const COL=[['#ff5a36','#f4efe6'],['#f4efe6','#14120f'],['#14120f','#d9f25c'],['#d9f25c','#14120f']];
+const N=8,WORDS=['RUMBO','→','RUMBO','→','RUMBO','→','RUMBO','→'];
+let U=0;
+const build=(ring,words,r,h,fs,out)=>{ring.innerHTML='';return words.map((w,i)=>{const e=document.createElement('div'),c=COL[i%4];e.className='f';e.textContent=w;e.style.cssText+=`width:${h*(w==='→'?1.4:3.4)}px;height:${h}px;margin:${-h/2}px 0 0 ${-h*(w==='→'?.7:1.7)}px;--fs:${h*.78}px;background:${out?'transparent':c[0]};color:${out?'rgba(20,18,15,.28)':c[1]};${out?'box-shadow:inset 0 0 0 2px rgba(20,18,15,.22)':''}`;ring.appendChild(e);return e})};
+let F=[],B=[];
+const layout=()=>{U=Math.min(innerWidth,innerHeight);const h=U*.215,r=h/2/Math.tan(Math.PI/N);F=build($('ring'),WORDS,r,h,0,false);B=build($('back'),WORDS,r*1.62,h*1.5,0,true);$('sh').style.width='56%'};
+layout();addEventListener('resize',layout);
+const step=bez(.75,0,.15,1);
+play(6400,t=>{t/=1000;const h=U*.215,r=h/2/Math.tan(Math.PI/N);
+ // 8 pasos de 45°, cada uno con arranque seco y asentamiento con rebote
+ const i=Math.min(N-1,Math.floor(t/.8)),f=S(i*.8+.06,i*.8+.74,t),rot=(i+(t>=6.4?1:sp(f,1.0,4.5)))*(360/N);
+ const wob=Math.sin(t*2)*2;
+ const ring=$('ring'),back=$('back');
+ ring.style.transform=`translateZ(${-r*1.35}px) rotateY(-14deg) rotateX(${-rot}deg) rotateZ(${wob*.4}deg)`;
+ back.style.transform=`translateZ(${-r*2.9}px) rotateY(-14deg) rotateX(${rot*.5}deg)`;
+ F.forEach((e,k)=>{e.style.transform=`rotateX(${k*360/N}deg) translateZ(${r}px)`});
+ const rb=h*1.5/2/Math.tan(Math.PI/N)*1.62;B.forEach((e,k)=>{e.style.transform=`rotateX(${k*360/N}deg) translateZ(${rb}px)`});
+ $('sh').style.opacity=.9;
+});
+</script></body></html>
