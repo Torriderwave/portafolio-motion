@@ -18,6 +18,7 @@
  <g transform="translate(800 330)"><circle r="150" stroke-width="46"/><circle id="eye" cx="0" cy="0" r="38" fill="#14120f" stroke="none"/></g>
  <g id="wm" stroke-width="22" transform="translate(502 650) scale(1.28)"></g>
 </g>
+<circle id="glint" cx="800" cy="330" r="150" fill="none" stroke="#f1ede4" stroke-width="12" stroke-linecap="round" stroke-dasharray="70 872" opacity="0"/>
 <circle id="dot" cx="800" cy="330" r="0" fill="#e8452c"/></g>
 </svg>
 <script>
@@ -42,16 +43,27 @@ const wm=$('wm');
 [['c',0],['M8 94V6H38A22 22 0 0 1 38 50H8M30 50L58 94',110],['M8 94V6H34A21 21 0 0 1 34 48H8M8 48H38A23 23 0 0 1 38 94H8',200],['M52 6H8V94H52M8 50H44',288]].forEach(([d,x])=>{const g=mk(wm,'g',{transform:`translate(${x} 0)`});d==='c'?mk(g,'circle',{cx:44,cy:50,r:40}):mk(g,'path',{d,'stroke-linejoin':'miter'})});
 wm.setAttribute('transform','translate(574 646) scale(1.26)');
 const eO=bez(.16,.84,.2,1);
-play(6400,t=>{t/=1000;
- // el umbral del ruido baja = la tinta "sangra" y se condensa; el desplazamiento se asienta
- const thr=L(1.05,.12,eO(S(.2,3.3,t))),sc=L(120,0,bez(.3,0,.1,1)(S(.2,3.6,t)));
+const ex=bez(.6,0,.9,.5),D=8600;
+play(D,t=>{t/=1000;
+ // entra: la tinta sangra y se condensa · sale: se disuelve con otro ritmo (ruido más fino) y solo queda la gota, que cae y reinicia el ciclo
+ const inn=S(.2,3.3,t),out=ex(S(6.0,7.0,t));
+ const thr=t<6?L(1.05,.12,eO(inn)):L(.12,1.05,out),sc=t<6?L(120,0,bez(.3,0,.1,1)(S(.2,3.6,t))):L(0,150,out);
  $('cm').setAttribute('values',`0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  22 0 0 0 ${-22*thr}`);
  $('dm').setAttribute('scale',sc);
- $('tb').setAttribute('baseFrequency',`${.011+.006*(1-S(0,3.6,t))} .014`);
- $('eye').setAttribute('r',38*sp(S(1.2,2.4,t),1.2,5));
- // la gota de color cae al ojo y rebota
- const d=S(3.9,4.9,t),y=L(-300,330,bez(.55,0,1,.6)(S(3.9,4.35,t)));
- $('dot').setAttribute('cy',t<4.35?y:330);$('dot').setAttribute('r',t<3.9?0:t<4.35?16:16+22*sp(S(4.35,5.4,t),1.1,5));
- $('cam').style.transform=`scale(${1+.035*S(0,6.4,t)})`;
-});
+ $('tb').setAttribute('baseFrequency',`${.011+.006*(1-S(0,3.6,t))+.01*S(6,7,t)} .014`);
+ // el ojo mira alrededor (pequeña órbita) y respira
+ const look=S(3.6,4.4,t)*(1-S(5.8,6.2,t)),la=t*1.6;
+ $('eye').setAttribute('cx',Math.cos(la)*10*look);$('eye').setAttribute('cy',Math.sin(la*1.3)*7*look);
+ $('eye').setAttribute('r',38*sp(S(1.2,2.4,t),1.2,5)*(1+.05*Math.sin(t*3)*look));
+ // destello que recorre el anillo mientras el logo respira
+ const gl=S(3.8,4.4,t)*(1-S(5.6,6.0,t));$('glint').setAttribute('opacity',gl);$('glint').style.transformOrigin='800px 330px';$('glint').style.transform=`rotate(${(t-3.8)*150-90}deg)`;
+ // gota roja: cae al ojo, rebota, late; al final se encoge y cae fuera de cuadro
+ let y=330,r=0;
+ if(t>=3.9&&t<4.35){y=L(-300,330,bez(.55,0,1,.6)(S(3.9,4.35,t)));r=16}
+ else if(t>=4.35&&t<7.0){r=16+22*sp(S(4.35,5.4,t),1.1,5);r*=1+.07*Math.sin((t-5.4)*5.2)*S(5.4,5.8,t);y=330}
+ else if(t>=7.0&&t<8.0){const a=S(7.0,7.25,t);r=L(38,16,eO(a));y=330+(t<7.25?0:L(0,1000,bez(.6,0,1,.5)(S(7.25,7.95,t))))}
+ $('dot').setAttribute('cx',800+(y===330||t>4.35&&t<7.0?Math.cos(la)*10*look:0));$('dot').setAttribute('cy',y+(t>4.35&&t<7.0?Math.sin(la*1.3)*7*look-0:0));$('dot').setAttribute('r',r);
+ // el cuerpo de la cámara respira una vez por ciclo, sin salto al reiniciar
+ $('cam').style.transform=`scale(${1+.04*Math.pow(Math.sin(Math.PI*t/(D/1000)),2)})`;
+},{hold:0,still:5400});
 </script></body></html>

@@ -360,6 +360,7 @@ dialog::backdrop { background: rgb(14 14 14 / .82); }
 .m-alt .m-btn { padding-left: 0; text-decoration: underline; text-underline-offset: .25em; }
 .card-media video.hv, .pv-media video.hv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s var(--ease); pointer-events: none; }
 .pv-media > video.hv { animation: none; }
+.card-media video.hv.hv-contain, .pv-media video.hv.hv-contain { object-fit: contain; }
 .card-media video.hv.on, .pv-media video.hv.on { opacity: 1; }
 @media (min-width: 900px) {
   .m-body { padding: var(--s5) var(--s5) var(--s6); }

@@ -16,7 +16,7 @@ export const pieces = {
   'mconnect-circulo':  { w: 1280, h: 720,  thumbAt: 5.4, crf: 24 },
   'havren-horario':    { w: 1280, h: 720,  thumbAt: 5.4, crf: 24 },
   'scroll-apertura':   { w: 1280, h: 720,  thumbAt: 5.2, crf: 24 },
-  'cuerda-resorte':    { w: 1280, h: 720,  thumbAt: 5.0, crf: 24 },
+  'cuerda-resorte':    { w: 1280, h: 720,  thumbAt: 3.9, crf: 24 },
   'loader-morph':      { w: 1280, h: 720,  thumbAt: 5.9, crf: 24 },
   'spot-gustello-169': { w: 1280, h: 720,  thumbAt: 10.0, crf: 25 },
   'spot-mconnect-916': { w: 720,  h: 1280, thumbAt: 8.6, crf: 25, bg: '#19152f' },
@@ -38,7 +38,7 @@ for (const slug of list) {
   const page = await ctx.newPage();
   page.on('console', (m) => m.type() === 'error' && errs.push(m.text())); page.on('pageerror', (e) => errs.push(String(e)));
   await page.goto(`file://${root}/public/demos/${slug}/index.html?cap`); await page.waitForFunction(() => window.__seek && window.__D);
-  await page.evaluate(() => document.fonts && document.fonts.ready);
+  await page.evaluate(() => document.fonts && document.fonts.ready); await page.waitForTimeout(800); // imágenes de marca (webp) y fuentes
   D = await page.evaluate(() => window.__D); n = Math.round((D / 1000) * FPS);
   for (let i = 0; i <= n; i++) {
     await page.evaluate((t) => window.__seek(t), (i / FPS) * 1000);

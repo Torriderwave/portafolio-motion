@@ -224,6 +224,8 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
         v = document.createElement('video');
         v.className = 'hv'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none'; v.setAttribute('aria-hidden', 'true'); v.tabIndex = -1;
         v.src = `${base}/media/${w.video}`;
+        /* spots 16:9 y 9:16: sin recorte, con el color de la pieza de fondo (el resto conserva cover) */
+        if (w.hoverFit === 'contain') { v.classList.add('hv-contain'); v.style.backgroundColor = w.color; }
         v.addEventListener('playing', () => v.classList.add('on'));
         host.append(v);
       }

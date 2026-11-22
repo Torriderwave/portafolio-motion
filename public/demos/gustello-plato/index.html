@@ -19,6 +19,7 @@ document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=perform
 if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
 const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
 const cv=document.getElementById('c'),FN='ui-sans-serif,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif';
+const GL=new Image();GL.src='../_brand/gustello-cream-s.webp';
 const OR='#e05a00',CR='#fff1e0',DK='#14100d',CX=540,CY=560,RI=300,NB=30,G=2600,DT=1/240;
 const PAL=[CR,DK,'#f5b700','#a82f00','#7fae3c',CR,'#f5b700'];
 let bs=[],simT=0;
@@ -56,6 +57,6 @@ play(7000,t=>{t/=1000;const[x,w,h]=fit(cv),k=Math.min(w,h)/1080;
   x.fillStyle=DK;x.beginPath();x.arc(0,-440,32,0,6.283);x.fill();x.fillStyle='rgba(224,90,0,.22)';x.beginPath();x.ellipse(-150,-210,30,110,.45,0,6.283);x.fill();x.restore()}
  // vapor
  const sv=S(5.2,6.4,t);if(sv>0){x.strokeStyle=CR;x.lineCap='round';x.lineWidth=9;for(let i=0;i<3;i++){const bx=CX-90+i*90,e=eO(S(5.2+i*.12,6.2+i*.12,t));x.globalAlpha=.8*Math.sin(Math.PI*Math.min(1,e*1))*1+.0;x.beginPath();for(let y=0;y<=12;y++){const yy=CY-480-y*20*e,xx=bx+Math.sin(y*.55+t*4+i*2)*(8+y*1.6)*e;y?x.lineTo(xx,yy):x.moveTo(xx,yy)}x.stroke()}x.globalAlpha=1}
- const lt=eO(S(5.6,6.4,t));x.globalAlpha=lt;x.fillStyle=CR;x.font=`700 38px ${FN}`;x.textAlign='center';if('letterSpacing'in x)x.letterSpacing='14px';x.fillText('GUSTELLO',CX+7,1005);if('letterSpacing'in x)x.letterSpacing='0px';x.globalAlpha=1;
+ const lt=eO(S(5.6,6.4,t));if(GL.complete){const W=380,H=W*GL.naturalHeight/GL.naturalWidth;x.globalAlpha=lt;x.drawImage(GL,CX-W/2,945+(1-lt)*14,W,H);x.globalAlpha=1}
  x.restore()},{hold:1500});
 </script></body></html>
