@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tirador — interruptor de tema con cuerda (componente web)</title>
+<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Tirador — interruptor de tema con cuerda (componente web)</title>
 <style>html,body{margin:0;height:100%;overflow:hidden;background:#efe9dd}canvas{display:block;width:100%;height:100%;touch-action:none;cursor:default}</style></head>
 <body><canvas id="c" role="img" aria-label="Interruptor de tema: una cuerda con cuentas que se tira hacia abajo para cambiar entre día y noche"></canvas>
 <script>
@@ -10,16 +10,24 @@ const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;ret
 const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
 const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+/* acabado: grano de película (24 fps), viñeta, micro-shake de impacto */
+let _g;const grain=(x,w,h,t,a=.09)=>{if(!_g){_g=document.createElement('canvas');_g.width=_g.height=180;const g=_g.getContext('2d'),d=g.createImageData(180,180),r=rng(9);for(let i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=r()*255|0;d.data[i+3]=255}g.putImageData(d,0,0)}
+ const r=rng(Math.floor(t*24)+1),ox=r()*180|0,oy=r()*180|0;x.save();x.globalAlpha=a;x.globalCompositeOperation='overlay';x.translate(-ox,-oy);x.fillStyle=x.createPattern(_g,'repeat');x.fillRect(ox,oy,w,h);x.restore()};
+const vig=(x,w,h,a=.5)=>{const g=x.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.78);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${a})`);x.fillStyle=g;x.fillRect(0,0,w,h)};
+const film=t=>{const e=document.getElementById('film');if(e){const r=rng(Math.floor(t*24)+3);e.style.backgroundPosition=`${r()*220|0}px ${r()*220|0}px`}};
+const shake=(t,t0,a=6,d=.3)=>{const k=S(t0,t0+d,t);if(k<=0||k>=1)return[0,0];const e=(1-k)*(1-k)*a;return[Math.sin(k*67)*e,Math.cos(k*59)*e]};
+const FONTS=()=>document.fonts?Promise.all(['300 40px Display','italic 300 40px Display','500 20px Sans'].map(f=>document.fonts.load(f,'AÁaáÍí0'))):Promise.resolve();
 function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+window.__D=D;
+FONTS().then(()=>{window.__seek=t=>{draw(C(t,0,D));return rf()};
 if(cap){draw(0);return}
 if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
 let t0=performance.now(),on=true;
 document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
 if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
-const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)})}
 const cv=document.getElementById('c'),VW=1600,VH=900,HX=1180,HY=64,N=24,SEG=17,FN='ui-sans-serif,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif';
-const TH=[{bg:'#efe9dd',ink:'#1b1a20',card:'#e2dbcb',ac:'#ff5a36',word:'DÍA'},{bg:'#15131d',ink:'#efe9ff',card:'#201d2e',ac:'#c6b8ff',word:'NOCHE'}];
+const TH=[{bg:'#e9e3d6',ink:'#15141a',card:'#ddd5c4',ac:'#c4421d',word:'Día'},{bg:'#0d0c11',ink:'#e8e1d2',card:'#17151d',ac:'#c9a96a',word:'Noche'}];
 const AUTO=[[1.3,2.2,132],[5.2,6.1,132]],eP=bez(.3,0,.2,1),eI=bez(.7,0,.15,1);
 const rn=rng(4),stars=Array.from({length:46},()=>[rn()*VW,70+rn()*520,.6+rn()*1.8,rn()*6.28]);
 let P,hy,hv,clk,toggles,grab,prevGrab,pull,px,ptr,lastUse=-1e9,hover=false,liveT=0,lastNow=0;
@@ -42,10 +50,10 @@ function scene(x,th,par,sw){
  // astro (capa media, paralaje)
  x.save();x.translate(430-par*.06,330);x.fillStyle=th.ac;
  if(dark){x.beginPath();x.arc(0,0,190,0,6.283);x.fill();x.fillStyle=th.bg;x.beginPath();x.arc(78,-44,168,0,6.283);x.fill()}
- else{x.beginPath();x.arc(0,0,150,0,6.283);x.fill();x.strokeStyle=th.ac;x.lineWidth=10;x.lineCap='round';for(let i=0;i<16;i++){const a=i*Math.PI/8+clk*.2,l=i%2?34:58;x.beginPath();x.moveTo(Math.cos(a)*188,Math.sin(a)*188);x.lineTo(Math.cos(a)*(188+l),Math.sin(a)*(188+l));x.stroke()}}
+ else{x.beginPath();x.arc(0,0,150,0,6.283);x.fill();x.strokeStyle=th.ac;x.lineWidth=4;x.lineCap='round';for(let i=0;i<16;i++){const a=i*Math.PI/8+clk*.2,l=i%2?34:58;x.beginPath();x.moveTo(Math.cos(a)*188,Math.sin(a)*188);x.lineTo(Math.cos(a)*(188+l),Math.sin(a)*(188+l));x.stroke()}}
  x.restore();
  // palabra (capa frontal)
- x.fillStyle=th.ink;x.font=`900 250px ${FN}`;x.textBaseline='alphabetic';x.fillText(th.word,96-par*.1,800);
+ x.fillStyle=th.ink;x.font='italic 300 400px Display,serif';x.textBaseline='alphabetic';x.fillText(th.word,86-par*.1,812);
  // panel de interfaz + interruptor-estado
  x.fillStyle=th.card;x.beginPath();x.roundRect(1010-par*.04,650,500,200,22);x.fill();
  x.fillStyle=th.ink;x.globalAlpha=.22;[[1050,686,300],[1050,718,220],[1050,750,260]].forEach(b=>{x.beginPath();x.roundRect(b[0]-par*.04,b[1],b[2],14,7);x.fill()});x.globalAlpha=1;
@@ -76,7 +84,7 @@ play(8000,t=>{
  x.strokeStyle='rgba(255,255,255,.45)';x.lineWidth=6;x.beginPath();x.moveTo(B.x-6-uy*0+0,B.y+4);x.lineTo(ex-6,ey-4);x.stroke();
  // estado: anillo de tensión hasta el umbral
  const hot=grab||hover;if(hot||tn>0){x.strokeStyle=tr.ac;x.globalAlpha=.25+.75*tn;x.lineWidth=4;x.beginPath();x.arc((B.x+ex)/2,(B.y+ey)/2,34+tn*6,-Math.PI/2,-Math.PI/2+6.283*tn);x.stroke();x.globalAlpha=1}
- x.restore()},{replay:false,hold:0,still:4000});
+ x.restore();vig(x,w,h,.45);grain(x,w,h,clk,.09)},{replay:false,hold:0,still:4000});
 // puntero / táctil
 const toV=e=>{const r=cv.getBoundingClientRect(),sc=Math.min(r.width/VW,r.height/VH);return[(e.clientX-r.left-(r.width-VW*sc)/2)/sc,(e.clientY-r.top-(r.height-VH*sc)/2)/sc]};
 let down=false,y0=0;

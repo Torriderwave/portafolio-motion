@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Orbe — logo reveal con tinta (marca ficticia)</title>
-<style>html,body{margin:0;height:100%;overflow:hidden;background:#f1ede4}svg{position:absolute;inset:0;width:100%;height:100%;display:block}</style></head>
+<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Orbe — logo reveal con tinta (marca ficticia)</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#f1ede4}svg{position:absolute;inset:0;width:100%;height:100%;display:block}#film{position:fixed;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.2;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}.vg{position:fixed;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 48%,transparent 52%,rgba(60,40,20,.28))}</style></head>
 <body>
 <svg id="s" viewBox="0 0 1600 900" role="img" aria-label="Orbe: logotipo que aparece como tinta sobre papel">
 <defs>
@@ -18,9 +18,10 @@
  <g transform="translate(800 330)"><circle r="150" stroke-width="46"/><circle id="eye" cx="0" cy="0" r="38" fill="#14120f" stroke="none"/></g>
  <g id="wm" stroke-width="22" transform="translate(502 650) scale(1.28)"></g>
 </g>
+<circle id="rip" cx="800" cy="330" r="0" fill="none" stroke="#14120f" stroke-width="3" opacity="0"/>
 <circle id="glint" cx="800" cy="330" r="150" fill="none" stroke="#f1ede4" stroke-width="12" stroke-linecap="round" stroke-dasharray="70 872" opacity="0"/>
 <circle id="dot" cx="800" cy="330" r="0" fill="#e8452c"/></g>
-</svg>
+</svg><div class="vg"></div><div id="film"></div>
 <script>
 /* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
 const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
@@ -28,14 +29,22 @@ const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;ret
 const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
 const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+/* acabado: grano de película (24 fps), viñeta, micro-shake de impacto */
+let _g;const grain=(x,w,h,t,a=.09)=>{if(!_g){_g=document.createElement('canvas');_g.width=_g.height=180;const g=_g.getContext('2d'),d=g.createImageData(180,180),r=rng(9);for(let i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=r()*255|0;d.data[i+3]=255}g.putImageData(d,0,0)}
+ const r=rng(Math.floor(t*24)+1),ox=r()*180|0,oy=r()*180|0;x.save();x.globalAlpha=a;x.globalCompositeOperation='overlay';x.translate(-ox,-oy);x.fillStyle=x.createPattern(_g,'repeat');x.fillRect(ox,oy,w,h);x.restore()};
+const vig=(x,w,h,a=.5)=>{const g=x.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.78);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${a})`);x.fillStyle=g;x.fillRect(0,0,w,h)};
+const film=t=>{const e=document.getElementById('film');if(e){const r=rng(Math.floor(t*24)+3);e.style.backgroundPosition=`${r()*220|0}px ${r()*220|0}px`}};
+const shake=(t,t0,a=6,d=.3)=>{const k=S(t0,t0+d,t);if(k<=0||k>=1)return[0,0];const e=(1-k)*(1-k)*a;return[Math.sin(k*67)*e,Math.cos(k*59)*e]};
+const FONTS=()=>document.fonts?Promise.all(['300 40px Display','italic 300 40px Display','500 20px Sans'].map(f=>document.fonts.load(f,'AÁaáÍí0'))):Promise.resolve();
 function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+window.__D=D;
+FONTS().then(()=>{window.__seek=t=>{draw(C(t,0,D));return rf()};
 if(cap){draw(0);return}
 if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
 let t0=performance.now(),on=true;
 document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
 if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
-const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)})}
 const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id);
 const mk=(p,n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
 const wm=$('wm');
@@ -64,6 +73,7 @@ play(D,t=>{t/=1000;
  else if(t>=7.0&&t<8.0){const a=S(7.0,7.25,t);r=L(38,16,eO(a));y=330+(t<7.25?0:L(0,1000,bez(.6,0,1,.5)(S(7.25,7.95,t))))}
  $('dot').setAttribute('cx',800+(y===330||t>4.35&&t<7.0?Math.cos(la)*10*look:0));$('dot').setAttribute('cy',y+(t>4.35&&t<7.0?Math.sin(la*1.3)*7*look-0:0));$('dot').setAttribute('r',r);
  // el cuerpo de la cámara respira una vez por ciclo, sin salto al reiniciar
- $('cam').style.transform=`scale(${1+.04*Math.pow(Math.sin(Math.PI*t/(D/1000)),2)})`;
+ const rp=S(4.35,5.2,t);$('rip').setAttribute('r',40+eO(rp)*210);$('rip').setAttribute('opacity',rp>0&&rp<1?(1-rp)*.5:0);film(t);const sk=shake(t,4.35,4,.3);
+ $('cam').style.transform=`translate(${sk[0]}px,${sk[1]}px) scale(${1+.04*Math.pow(Math.sin(Math.PI*t/(D/1000)),2)})`;
 },{hold:0,still:5400});
 </script></body></html>

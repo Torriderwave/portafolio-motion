@@ -13,16 +13,16 @@ const CHROME = process.env.CHROME || `${process.env.HOME}/.cache/ms-playwright/c
 // w,h: tamaño de grabación · thumbAt: segundo del fotograma representativo · bg: color de relleno del jpg (si no cubre 4:3) · crf
 export const pieces = {
   'alyron-reveal':     { w: 1280, h: 720,  thumbAt: 5.2, crf: 24 },
-  'mconnect-circulo':  { w: 1280, h: 720,  thumbAt: 5.4, crf: 24 },
+  'mconnect-circulo':  { w: 1280, h: 720,  thumbAt: 6.9, crf: 24 },
   'havren-horario':    { w: 1280, h: 720,  thumbAt: 5.4, crf: 24 },
   'scroll-apertura':   { w: 1280, h: 720,  thumbAt: 5.2, crf: 24 },
   'cuerda-resorte':    { w: 1280, h: 720,  thumbAt: 3.9, crf: 24 },
-  'loader-morph':      { w: 1280, h: 720,  thumbAt: 5.9, crf: 24 },
-  'spot-gustello-169': { w: 1280, h: 720,  thumbAt: 10.0, crf: 25 },
+  'loader-morph':      { w: 1280, h: 720,  thumbAt: 3.45, crf: 24 },
+  'spot-gustello-169': { w: 1280, h: 720,  thumbAt: 10.4, crf: 25 },
   'spot-mconnect-916': { w: 720,  h: 1280, thumbAt: 8.6, crf: 25, bg: '#19152f' },
   'spot-alyron-11':    { w: 720,  h: 720,  thumbAt: 7.4, crf: 25, bg: '#0a1424' },
   'logo-orbe-tinta':   { w: 1280, h: 720,  thumbAt: 5.4, crf: 24 },
-  'social-rumbo':      { w: 720,  h: 720,  thumbAt: 1.6, crf: 24, bg: '#f4efe6' },
+  'social-rumbo':      { w: 720,  h: 720,  thumbAt: 2.5, crf: 24, bg: '#0b0d0c' },
   'gustello-plato':    { w: 720,  h: 720,  thumbAt: 6.3, crf: 24, bg: '#e05a00' },
 };
 const FPS = 30;
@@ -50,12 +50,18 @@ for (const slug of list) {
   mkdirSync(`${root}/public/media`, { recursive: true });
   const mp4 = `${root}/public/media/${slug}.mp4`, jpg = `${root}/public/media/${slug}.jpg`;
   if (!only) execFileSync('ffmpeg', ['-y', '-v', 'error', '-framerate', String(FPS), '-i', `${dir}/f%04d.png`, '-c:v', 'libx264', '-preset', 'slower', '-crf', String(p.crf), '-pix_fmt', 'yuv420p', '-an', '-movflags', '+faststart', mp4]);
-  // miniatura 800×600: 16:9 recorta al centro; 1:1 y 9:16 se encajan sobre el color de marca (sin cortar texto)
-  const src = `${dir}/f${String(Math.min(thumbF, n)).padStart(4, '0')}.png`;
-  const vf = p.w <= p.h
-    ? `scale=-2:600,pad=800:600:(ow-iw)/2:0:color=${p.bg || 'black'}`
-    : `scale=800:600:force_original_aspect_ratio=increase,crop=800:600`;
-  let q = 3; for (;;) { execFileSync('ffmpeg', ['-y', '-v', 'error', '-i', src, '-vf', vf, '-q:v', String(q), '-frames:v', '1', jpg]); if (statSync(jpg).size < 115000 || q >= 12) break; q += 2; }
+  // miniatura 800×600: 16:9 recorta al centro; 1:1 y 9:16 se componen como póster 4:3 (la pieza se vuelve a renderizar en un viewport 4:3, así el fondo/viñeta/grano se extienden de verdad, sin bandas)
+  let q = 3;
+  if (p.w <= p.h) {
+    const c2 = await browser.newContext({ viewport: { width: 1200, height: 900 }, deviceScaleFactor: 1, reducedMotion: 'no-preference' });
+    const pg = await c2.newPage(); await pg.goto(`file://${root}/public/demos/${slug}/index.html?cap`); await pg.waitForFunction(() => window.__seek && window.__D); await pg.waitForTimeout(800);
+    await pg.evaluate((t) => window.__seek(t), p.thumbAt * 1000);
+    await pg.screenshot({ path: `${dir}/poster.png`, type: 'png' }); await c2.close();
+    for (;;) { execFileSync('ffmpeg', ['-y', '-v', 'error', '-i', `${dir}/poster.png`, '-vf', 'scale=800:600', '-q:v', String(q), '-frames:v', '1', jpg]); if (statSync(jpg).size < 85000 || q >= 12) break; q += 2; }
+  } else {
+    const src = `${dir}/f${String(Math.min(thumbF, n)).padStart(4, '0')}.png`;
+    for (;;) { execFileSync('ffmpeg', ['-y', '-v', 'error', '-i', src, '-vf', 'scale=800:600:force_original_aspect_ratio=increase,crop=800:600', '-q:v', String(q), '-frames:v', '1', jpg]); if (statSync(jpg).size < 85000 || q >= 12) break; q += 2; }
+  }
   console.log(slug, `${D}ms`, 'mp4', (statSync(mp4).size / 1024).toFixed(0) + 'KB', 'jpg', (statSync(jpg).size / 1024).toFixed(0) + 'KB', errs.length ? 'ERRORES: ' + errs.join(' | ') : 'sin errores');
 }
 await browser.close();

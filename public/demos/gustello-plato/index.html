@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gustello — pieza para redes 1:1: llenar el plato</title>
+<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Gustello — pieza para redes 1:1: llenar el plato</title>
 <style>html,body{margin:0;height:100%;overflow:hidden;background:#e05a00}canvas{display:block;width:100%;height:100%}</style></head>
 <body><canvas id="c" role="img" aria-label="Fichas de colores caen en un plato; una cloche lo cubre y sale vapor. Gustello."></canvas>
 <script>
@@ -10,18 +10,26 @@ const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;ret
 const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
 const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+/* acabado: grano de película (24 fps), viñeta, micro-shake de impacto */
+let _g;const grain=(x,w,h,t,a=.09)=>{if(!_g){_g=document.createElement('canvas');_g.width=_g.height=180;const g=_g.getContext('2d'),d=g.createImageData(180,180),r=rng(9);for(let i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=r()*255|0;d.data[i+3]=255}g.putImageData(d,0,0)}
+ const r=rng(Math.floor(t*24)+1),ox=r()*180|0,oy=r()*180|0;x.save();x.globalAlpha=a;x.globalCompositeOperation='overlay';x.translate(-ox,-oy);x.fillStyle=x.createPattern(_g,'repeat');x.fillRect(ox,oy,w,h);x.restore()};
+const vig=(x,w,h,a=.5)=>{const g=x.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.78);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${a})`);x.fillStyle=g;x.fillRect(0,0,w,h)};
+const film=t=>{const e=document.getElementById('film');if(e){const r=rng(Math.floor(t*24)+3);e.style.backgroundPosition=`${r()*220|0}px ${r()*220|0}px`}};
+const shake=(t,t0,a=6,d=.3)=>{const k=S(t0,t0+d,t);if(k<=0||k>=1)return[0,0];const e=(1-k)*(1-k)*a;return[Math.sin(k*67)*e,Math.cos(k*59)*e]};
+const FONTS=()=>document.fonts?Promise.all(['300 40px Display','italic 300 40px Display','500 20px Sans'].map(f=>document.fonts.load(f,'AÁaáÍí0'))):Promise.resolve();
 function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-window.__D=D;window.__seek=t=>{draw(C(t,0,D));return rf()};
+window.__D=D;
+FONTS().then(()=>{window.__seek=t=>{draw(C(t,0,D));return rf()};
 if(cap){draw(0);return}
 if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
 let t0=performance.now(),on=true;
 document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
 if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
-const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)}
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)})}
 const cv=document.getElementById('c'),FN='ui-sans-serif,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif';
 const GL=new Image();GL.src='../_brand/gustello-cream-s.webp';
-const OR='#e05a00',CR='#fff1e0',DK='#14100d',CX=540,CY=560,RI=300,NB=30,G=2600,DT=1/240;
-const PAL=[CR,DK,'#f5b700','#a82f00','#7fae3c',CR,'#f5b700'];
+const OR='#c9520c',CR='#f2e7d5',DK='#14100d',CX=540,CY=560,RI=300,NB=30,G=2600,DT=1/240;
+const PAL=[CR,DK,'#c9962e','#8e2f12','#6b7a3a',CR,'#c9962e'];
 let bs=[],simT=0;
 const reset=()=>{simT=0;const r=rng(33);bs=Array.from({length:NB},(_,i)=>({r:25+r()*14,x:CX+(r()-.5)*380,y:-90,vx:(r()-.5)*160,vy:0,a:r()*6.28,w:0,sp:.35+i*.078,g:i%5,c:PAL[i%PAL.length],on:false}))};reset();
 const phys=()=>{simT+=DT;
@@ -34,7 +42,7 @@ const phys=()=>{simT+=DT;
    else if(Math.abs(b.x-CX)+b.r>RI){const s=Math.sign(b.x-CX);b.x=CX+s*(RI-b.r);if(b.vx*s>0)b.vx*=-.3}}
   for(let i=0;i<A.length;i++)for(let j=i+1;j<A.length;j++){const a=A[i],b=A[j],dx=b.x-a.x,dy=b.y-a.y,m=a.r+b.r;if(dx*dx+dy*dy<m*m){const d=Math.hypot(dx,dy)||1,nx=dx/d,ny=dy/d,o=(m-d)/2;a.x-=nx*o;a.y-=ny*o;b.x+=nx*o;b.y+=ny*o;const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rv<0){const im=-(1.3)*rv/2;a.vx-=im*nx;a.vy-=im*ny;b.vx+=im*nx;b.vy+=im*ny;a.w+=rv*.002;b.w-=rv*.002}}}}
  for(const b of A){b.vx*=.9985;b.vy*=.9985;b.w*=.99}};
-function disc(x,b){x.save();x.translate(b.x,b.y);x.rotate(b.a);const r=b.r,c=b.c,ink=(c===DK||c==='#a82f00')?CR:DK;x.fillStyle=c;x.beginPath();x.arc(0,0,r,0,6.283);x.fill();x.fillStyle=ink;x.strokeStyle=ink;x.lineWidth=r*.16;
+function disc(x,b){x.save();x.translate(b.x,b.y);x.rotate(b.a);const r=b.r,c=b.c,ink=(c===DK||c==='#8e2f12')?CR:DK;x.fillStyle=c;x.beginPath();x.arc(0,0,r,0,6.283);x.fill();const sg=x.createRadialGradient(-r*.35,-r*.4,0,0,0,r);sg.addColorStop(0,'rgba(255,255,255,.22)');sg.addColorStop(1,'rgba(0,0,0,.28)');x.fillStyle=sg;x.beginPath();x.arc(0,0,r,0,6.283);x.fill();x.fillStyle=ink;x.fillStyle=ink;x.strokeStyle=ink;x.lineWidth=r*.16;
  if(b.g===0){x.beginPath();x.arc(0,0,r*.55,0,6.283);x.stroke()}
  else if(b.g===1){x.beginPath();x.arc(r*.18,0,r*.26,0,6.283);x.fill()}
  else if(b.g===2){for(let k=-1;k<=1;k++){x.fillRect(-r*.7,k*r*.4-r*.07,r*1.4,r*.14)}}
@@ -44,7 +52,7 @@ function disc(x,b){x.save();x.translate(b.x,b.y);x.rotate(b.a);const r=b.r,c=b.c
 const eO=bez(.16,.84,.2,1);
 play(7000,t=>{t/=1000;const[x,w,h]=fit(cv),k=Math.min(w,h)/1080;
  if(t<simT-.01)reset();while(simT<Math.min(t,4.6)-1e-6)phys();
- x.fillStyle=OR;x.fillRect(0,0,w,h);x.save();x.translate((w-1080*k)/2,(h-1080*k)/2);x.scale(k,k);x.translate(65,100);x.scale(.88,.88);
+ const bgg=x.createRadialGradient(w/2,h*.4,0,w/2,h*.4,Math.max(w,h)*.8);bgg.addColorStop(0,'#d8620f');bgg.addColorStop(.55,'#9a3a08');bgg.addColorStop(1,'#2e0f04');x.fillStyle=bgg;x.fillRect(0,0,w,h);const sk=shake(t,4.7,8,.4);x.save();x.translate((w-1080*k)/2+sk[0],(h-1080*k)/2+sk[1]);x.scale(k,k);x.translate(65,100);x.scale(.88,.88);
  // base y sombra
  x.fillStyle='rgba(90,25,0,.35)';x.beginPath();x.ellipse(CX,905,330,26,0,0,6.283);x.fill();x.fillStyle=CR;x.beginPath();x.ellipse(CX,880,170,20,0,0,6.283);x.fill();
  // plato
@@ -58,5 +66,5 @@ play(7000,t=>{t/=1000;const[x,w,h]=fit(cv),k=Math.min(w,h)/1080;
  // vapor
  const sv=S(5.2,6.4,t);if(sv>0){x.strokeStyle=CR;x.lineCap='round';x.lineWidth=9;for(let i=0;i<3;i++){const bx=CX-90+i*90,e=eO(S(5.2+i*.12,6.2+i*.12,t));x.globalAlpha=.8*Math.sin(Math.PI*Math.min(1,e*1))*1+.0;x.beginPath();for(let y=0;y<=12;y++){const yy=CY-480-y*20*e,xx=bx+Math.sin(y*.55+t*4+i*2)*(8+y*1.6)*e;y?x.lineTo(xx,yy):x.moveTo(xx,yy)}x.stroke()}x.globalAlpha=1}
  const lt=eO(S(5.6,6.4,t));if(GL.complete){const W=380,H=W*GL.naturalHeight/GL.naturalWidth;x.globalAlpha=lt;x.drawImage(GL,CX-W/2,945+(1-lt)*14,W,H);x.globalAlpha=1}
- x.restore()},{hold:1500});
+ x.restore();vig(x,w,h,.5);grain(x,w,h,t,.1)},{hold:1500});
 </script></body></html>
