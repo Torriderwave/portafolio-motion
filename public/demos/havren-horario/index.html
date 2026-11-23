@@ -1,8 +1,47 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Havren — intro de app (colegio ficticio Monteclaro)</title>
-<style>html,body{margin:0;height:100%;overflow:hidden;background:#0c2420}canvas{display:block;width:100%;height:100%}</style></head>
-<body><canvas id="c" role="img" aria-label="Una cuadrícula de horario se ordena y forma la H de Havren"></canvas>
+<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Havren — lanzamiento: horario, generador y calificaciones (colegio ficticio Monteclaro)</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#071a1d}
+#stage{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:50% 50%;overflow:hidden;perspective:2600px;background:radial-gradient(1100px 800px at 50% 38%,#1c525b,#0f2e33 55%,#061619)}
+#cam{position:absolute;left:800px;top:450px;width:0;height:0;transform-style:preserve-3d}
+.dv{position:absolute;top:-400px;width:390px;height:800px;border-radius:60px;background:linear-gradient(145deg,#2c3a3d,#091214 55%,#222f32);box-shadow:0 70px 110px rgba(0,0,0,.55),inset 0 0 0 1.5px rgba(246,244,240,.16)}
+.sc{position:absolute;inset:11px;border-radius:50px;overflow:hidden;background:linear-gradient(180deg,#14393f,#0f2e33 45%,#0a2226);color:#f6f4f0;font:500 14px/1.35 Manrope,sans-serif}
+.sc.lt{background:#14393f}.isl{position:absolute;left:50%;top:13px;width:100px;height:28px;margin-left:-50px;border-radius:15px;background:#000;z-index:9}
+.s{position:absolute;inset:0;visibility:hidden}
+.bar{position:absolute;left:20px;right:20px;top:52px;display:flex;align-items:center;gap:10px}.hm{display:flex;gap:3px;align-items:center}.hm i{display:block;width:6px;height:24px;background:#f6f4f0;border-radius:2px}.hm i+i{width:6px;height:6px;border-radius:2px;margin-left:-3px;margin-right:-3px}.crest{width:26px;height:30px;border-radius:6px 6px 13px 13px;background:#a93c2a;display:grid;place-items:center;font:400 14px Caslon;color:#f6f4f0;margin-left:6px}
+.bell,.av{margin-left:auto;width:38px;height:38px;border-radius:50%;border:1px solid rgba(246,244,240,.18);display:grid;place-items:center;font:700 12px Manrope;position:relative}.av{margin-left:8px}.bell b{position:absolute;right:-2px;top:-4px;width:16px;height:16px;border-radius:50%;background:#a93c2a;font-size:10px;display:grid;place-items:center}
+.eb{font:700 11px Manrope;letter-spacing:.2em;text-transform:uppercase;color:#a9bdbf}.big{font:400 54px/1 Caslon,serif;letter-spacing:-.01em}.big em{color:#e7d3a6}
+.chipd{display:inline-block;padding:5px 12px;border:1px dashed rgba(246,244,240,.35);border-radius:999px;font:700 10.5px Manrope;letter-spacing:.16em;color:#a9bdbf}
+.pad{position:absolute;left:20px;right:20px}.st{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}.st small{color:#a9bdbf;font-size:12px}.st b{display:block;font:400 40px/1.05 Caslon}.st span{color:#a9bdbf;font-size:12px}
+.gl{border-radius:26px;background:rgba(246,244,240,.07);border:1px solid rgba(246,244,240,.14);padding:16px}.gl h3{margin:0;font:400 24px Caslon;display:flex;justify-content:space-between;align-items:baseline}.gl h3 small{font:500 12px Manrope;color:#a9bdbf}
+.pill{display:block;text-align:center;padding:13px;border-radius:999px;background:#f6f4f0;color:#142229;font:700 14px Manrope}.pill.o{background:none;color:#f6f4f0;border:1px solid rgba(246,244,240,.3)}
+.dock{position:absolute;left:12px;right:12px;bottom:16px;height:62px;border-radius:32px;background:rgba(246,244,240,.07);border:1px solid rgba(246,244,240,.16);display:flex;justify-content:space-around;align-items:center;font:700 9.5px Manrope;color:#a9bdbf}.dock span{padding:8px 9px 6px;border-radius:22px;text-align:center}.dock span:before{content:"";display:block;width:16px;height:14px;margin:0 auto 3px;border:2px solid currentColor;border-radius:4px}.dock span.sel{background:#1c525b;color:#f6f4f0}
+.seg{display:flex;padding:4px;border-radius:999px;border:1px solid rgba(246,244,240,.16);margin-bottom:14px}.seg span{flex:1;text-align:center;padding:9px;border-radius:999px;font:500 13px Manrope;color:#a9bdbf}.seg span.on{background:#f6f4f0;color:#142229}
+.selx{display:inline-block;padding:9px 14px;border-radius:999px;border:1px solid rgba(246,244,240,.18);font:500 13px Manrope;margin:0 6px 8px 0;background:rgba(246,244,240,.06)}.days{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}.days span{padding:6px 10px;border-radius:999px;border:1px solid rgba(246,244,240,.16);font-size:12px;color:#a9bdbf}.days b{color:#f6f4f0;margin-right:4px}
+.sch{position:relative;padding:8px 14px}.pr{display:flex;gap:14px;padding:0;height:44px;box-sizing:border-box;align-items:center}.pr time{width:46px;color:#a9bdbf;font:500 13px Manrope}.pr div b{display:block;font:500 15px Manrope}.pr div span{font-size:12px;color:#a9bdbf}
+.now{position:absolute;left:62px;right:14px;height:54px;border-radius:18px;background:#1c525b;border:1px solid rgba(231,211,166,.55);top:0;box-shadow:0 8px 22px rgba(0,0,0,.3)}.now i{position:absolute;left:14px;bottom:8px;height:3px;border-radius:2px;background:#f6f4f0;width:0}.ah{position:absolute;right:14px;font:700 10.5px Manrope;letter-spacing:.16em;color:#e7d3a6}
+.por{background:#f3f1ec;color:#142229;position:absolute;left:0;right:0;bottom:0;border-radius:28px 28px 0 0;padding:16px 20px;box-sizing:border-box}.por h2{margin:6px 0 4px;font:400 34px/1.05 Caslon;color:#142229}.por p{margin:0 0 10px;color:#4b5a5e;font-size:13px}
+.sel2{padding:11px 14px;border-radius:12px;border:1px solid #ddd3c2;background:#fff;font:700 14px Manrope;margin-bottom:10px;display:flex;justify-content:space-between}.seg3{display:flex;background:#ece7dc;border-radius:12px;padding:3px;margin:6px 0 12px}.seg3 span{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font:700 12px Manrope;color:#4b5a5e}.seg3 span.on{background:#fff;color:#142229}
+.btn{display:inline-block;padding:13px 18px;border-radius:12px;background:#1c525b;color:#fff;font:700 14px Manrope}.btn.t{background:none;color:#4b5a5e}.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;margin:10px 0}.chk i{width:20px;height:20px;border-radius:6px;background:#1c525b;flex:none;color:#fff;display:grid;place-items:center;font-size:13px;font-style:normal}
+.okb{background:#e5efe9;border-radius:14px;padding:12px 14px;margin:8px 0;font:700 14px Manrope}.okb span{display:block;font:500 12.5px Manrope;color:#4b5a5e;margin-top:3px}.ld{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ddd3c2;font:500 13px Manrope;gap:10px}.ld b{font-weight:700}.ld .m{width:80px;height:6px;border-radius:3px;background:#ddd3c2;margin-top:7px;flex:none;overflow:hidden}.ld .m i{display:block;height:100%;background:#1c525b}
+.crs{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #e6dfd2}.crs b{display:block;font:700 14px Manrope}.crs span{font-size:12px;color:#4b5a5e}.crs em{font:700 11px Manrope;background:#f1e6cf;color:#8a6420;padding:3px 9px;border-radius:999px;font-style:normal}
+.amb{background:#f1e6cf;border-radius:14px;padding:12px 14px;margin:8px 0}.amb b{font:700 14px Manrope}.amb span{display:block;font-size:12.5px;color:#4b5a5e;margin:2px 0 8px}.amb span.btn{color:#fff}
+.tapd{position:absolute;width:56px;height:56px;border-radius:50%;border:3px solid #e7d3a6;opacity:0}.por .tapd{border-color:#1c525b}
+.cell{position:absolute;width:50px;height:50px;border-radius:10px;background:#f6f4f0}
+.rmb{position:absolute;left:70px;bottom:56px;display:none;font:400 40px Caslon,serif;color:#f6f4f0;z-index:7}.rmb small{display:block;font:700 12px Manrope;letter-spacing:.3em;text-transform:uppercase;color:#a9bdbf;margin-bottom:6px}@media (prefers-reduced-motion:reduce){.rmb{display:block}}
+.cp{position:absolute;left:70px;bottom:70px;width:430px;visibility:hidden;z-index:5}.cp small{display:block;font:700 12px Manrope;letter-spacing:.3em;text-transform:uppercase;color:#a9bdbf;margin-bottom:14px}.cp h2{margin:0;font:400 54px/1.05 Caslon,serif;color:#f6f4f0}.cp h2 em{color:#e7d3a6}.cp p{margin:14px 0 0;font:500 16px/1.45 Manrope;color:#c3d2d3}
+#end{left:0;bottom:auto;top:0;width:1600px;height:900px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:96px;box-sizing:border-box;text-align:center;z-index:6}#end h2{font-size:92px;margin:0}#end p{margin:14px auto 0}
+#film{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.2;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}.vg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 48%,transparent 52%,rgba(0,0,0,.5))}
+</style></head><body>
+<div id="stage"><div id="cells"></div>
+ <section class="cp" data-a="4.4" data-b="8.5"><small>01 — Inicio</small><h2>Hola, <em>Dirección</em></h2><p>El día del colegio, en una sola mirada: alumnos, docentes y lo que falta por revisar.</p></section>
+ <section class="cp" data-a="9.1" data-b="13.3"><small>02 — Horario de hoy</small><h2>La línea de <em>ahora</em></h2><p>Qué clase toca, con quién, y cuánto falta para la siguiente.</p></section>
+ <section class="cp" data-a="14.0" data-b="19.1"><small>03 — Generador v2</small><h2>Una semana completa, <em>sin choques</em></h2><p>Cada maestro cubre su carga docente; lo que no cabe se avisa.</p></section>
+ <section class="cp" data-a="19.9" data-b="24.0"><small>04 — Calificaciones</small><h2>Notas <em>con control</em></h2><p>Unidades cerradas y cambios de nota por solicitud.</p></section>
+ <section class="cp" id="end" data-a="26.4" data-b="99"><div><h2>Monteclaro</h2><p>Havren · el colegio, en orden.</p></div></section>
+ <div class="rmb"><small>Havren · lanzamiento</small>Monteclaro</div><div id="cam"><div id="rail"></div></div><div class="vg"></div><div id="film"></div>
+</div>
 <script>
 /* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
 const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
@@ -26,39 +65,78 @@ let t0=performance.now(),on=true;
 document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
 if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
 const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)})}
-const cv=document.getElementById('c');
-const COLS=15,ROWS=9,CELL=58,GAP=8,R=11;
-const inH=(c,r)=>[3,4,10,11].includes(c)||(r>=3&&r<=5&&c>=5&&c<=9);
-const pal=['#1d5f57','#2a7a6e','#16443e','#235e54','#337d70'];
-const rand=rng(7),cells=[];
-for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const h=inH(c,r);cells.push({c,r,h,col:pal[Math.floor(rand()*pal.length)],j:rand(),tall:rand()<.18&&r<ROWS-1})}
-const eO=bez(.2,.8,.2,1),hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>{const A=hex(a),B=hex(b);return`rgb(${A.map((v,i)=>Math.round(L(v,B[i],t))).join()})`};
-const rr=(x,c,px,py,w,h,r)=>{x.beginPath();x.roundRect(px,py,w,h,r);x.fill()};
-play(6800,t=>{t/=1000;
- const[x,w,h]=fit(cv),k=Math.min(w/1600,h/900);x.clearRect(0,0,w,h);
- const bg=x.createRadialGradient(w/2,h*.46,0,w/2,h*.46,Math.max(w,h)*.7);bg.addColorStop(0,'#123a33');bg.addColorStop(1,'#0a1d1a');x.fillStyle=bg;x.fillRect(0,0,w,h);
- const sh=shake(t,3.0,6,.35),pk=1+.055*S(0,6.8,t)+.02*Math.exp(-6*Math.max(0,t-3.0))*(t>3?1:0);x.save();x.translate(w/2+sh[0],h/2-24*k+sh[1]);x.scale(k*pk,k*pk);
- const gw=COLS*(CELL+GAP)-GAP,gh=ROWS*(CELL+GAP)-GAP;
- for(const o of cells){
-  const cx=-gw/2+o.c*(CELL+GAP)+CELL/2,cy=-gh/2+o.r*(CELL+GAP)+CELL/2;
-  // 1) ola diagonal: cada bloque del horario aparece con resorte
-  const d=(o.c+o.r)*.05+o.j*.18,s1=sp(S(.15+d,.9+d,t),1.3,5.5);
-  // 2) orden: lo que no es H se encoge y se apaga desde el centro hacia afuera
-  const dist=Math.hypot(o.c-7,o.r-4)/9,k2=S(1.9+dist*.7,2.9+dist*.7,t),e2=eO(k2);
-  let sc=s1*(o.h?1:L(1,.3,e2)),col=o.h?mix(o.col,'#f4eee0',eO(S(2.2+dist*.5,3.1+dist*.5,t))):mix(o.col,'#0f2f29',e2);
-  // 3) barrido dorado sobre la H, queda un bloque "ahora"
-  if(o.h){const g=S(3.4+(o.c+o.r)*.07,3.9+(o.c+o.r)*.07,t);const pulse=Math.sin(g*Math.PI);col=pulse>.02?mix('#f4eee0','#d9aa4a',pulse):col;
-   if(o.c===7&&o.r===4&&t>3.9)col=mix('#f4eee0','#d9aa4a',eO(S(4.3,4.9,t)))}
-  if(sc<=.002)continue;
-  const ww=CELL*sc,hh=(o.tall&&!o.h?CELL*L(1,1,0):CELL)*sc;x.fillStyle=col;x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=16;x.shadowOffsetY=8;
-  rr(x,0,cx-ww/2,cy-hh/2,ww,hh,R*sc);x.shadowColor='transparent';x.shadowBlur=0;x.shadowOffsetY=0;const vg2=x.createLinearGradient(0,cy-hh/2,0,cy+hh/2);vg2.addColorStop(0,'rgba(255,255,255,.22)');vg2.addColorStop(.5,'rgba(255,255,255,0)');vg2.addColorStop(1,'rgba(0,0,0,.25)');x.fillStyle=vg2;rr(x,0,cx-ww/2,cy-hh/2,ww,hh,R*sc);
- }
- x.restore();
- // golpe de luz: floración radial suave desde el centro (sin bordes) cuando la H se ordena
- const bl=S(3.0,4.2,t);if(bl>0&&bl<1){x.save();x.globalCompositeOperation='screen';const e1=Math.pow(1-bl,1.6),R0=Math.max(w,h)*(.35+.4*bl),lg=x.createRadialGradient(w/2,h/2-24*k,0,w/2,h/2-24*k,R0);lg.addColorStop(0,`rgba(244,238,224,${.34*e1})`);lg.addColorStop(.5,`rgba(244,238,224,${.12*e1})`);lg.addColorStop(1,'rgba(244,238,224,0)');x.fillStyle=lg;x.fillRect(0,0,w,h);x.restore()}
- // nombre del colegio ficticio: serif cursiva
- const a=eO(S(4.6,5.8,t));x.save();x.globalAlpha=a;x.fillStyle='#f4eee0';x.textAlign='center';
- x.font=`italic 300 ${Math.round(54*k)}px Display,serif`;x.fillText('Monteclaro',w/2,h/2+gh/2*k-24*k+78*k+(1-a)*14);x.restore();
- vig(x,w,h,.55);grain(x,w,h,t,.09);
-});
+
+const $=id=>document.getElementById(id),rail=$('rail'),GAP=540;
+const dock=a=>`<div class="dock">${['Inicio','Horario','Asistencia','Notas','Más'].map((n,i)=>`<span class="${i===a?'sel':''}">${n}</span>`).join('')}</div>`;
+const topbar=()=>`<div class="bar"><div class="hm"><i></i><i></i><i></i></div><div class="crest">M</div><div class="bell">●<b>3</b></div><div class="av">DI</div></div>`;
+const P=[];
+P[0]=`<div class="sc"><div class="isl"></div><section class="s" data-a="4.0" data-b="99" data-flat="1">${topbar()}
+ <div class="pad" style="top:112px"><div class="eb" data-in=".2">Ciclo escolar 2026</div><div class="big" data-in=".4" style="margin-top:12px">Hola,<br><em>Dirección</em></div><div class="chipd" data-in=".7" style="margin-top:14px">Datos de ejemplo</div></div>
+ <div class="pad st" style="top:318px"><div data-in="1.0"><small>Alumnos activos</small><b data-count="1.0" data-to="248">0</b><span>de 252 en total</span></div><div data-in="1.2"><small>Docentes activos</small><b data-count="1.2" data-to="14">0</b><span>de 14 en total</span></div><div data-in="1.4"><small>Cursos</small><b data-count="1.4" data-to="32">0</b><span>en el sistema</span></div><div data-in="1.6"><small>Asistencia del mes</small><b data-count="1.6" data-to="95" data-suf=" %">0</b><span>estudiantes</span></div></div>
+ <div class="pad gl" style="top:536px;bottom:96px;padding:14px 16px" data-in="2.2"><h3>Por revisar <small>2 pendientes</small></h3><div style="display:flex;gap:14px;align-items:center;margin:14px 0 12px"><b style="font:400 44px Caslon">5</b><div><b style="font:700 14px Manrope">Notas por revisar</b><div style="font-size:12px;color:#a9bdbf">la primera vence el 23/10/2026</div></div></div><span class="pill" data-in="2.8">Revisar</span></div>
+ <i class="tapd" data-tap="3.3" style="left:155px;top:628px"></i>${dock(0)}</section></div>`;
+P[1]=`<div class="sc"><div class="isl"></div><section class="s" data-a="8.6" data-b="99" data-flat="1">${topbar()}
+ <div class="pad" style="top:108px"><div class="seg" data-in=".1"><span class="on">Entre semana</span><span>Fin de semana</span></div><div class="eb" data-in=".3">Horario · hoy</div><div class="big" style="font-size:46px;margin:6px 0 8px" data-in=".4">Viernes</div><span class="selx" data-in=".5">4.º Bachillerato ⌄</span><span class="selx" data-in=".6">Ciclo escolar 2026 ⌄</span><span class="chipd" data-in=".7">Datos de ejemplo</span>
+ <div class="days" data-in=".8"><span><b>Lun</b>8 clases</span><span><b>Mar</b>8 clases</span><span><b>Mié</b>8 clases</span></div></div>
+ <div class="pad gl sch" style="top:336px;bottom:96px;padding:8px 14px" data-in="1.0"><div class="now" id="now"><i id="nowb"></i><span class="ah" style="top:19px">AHORA</span></div>
+ ${[['07:30','Matemática','Lic. Elena Rivas'],['08:15','Programación I','Lic. Óscar Tun'],['09:00','Ciencias Sociales','Profa. Marta Coy'],['09:45','Estadística','Lic. Elena Rivas'],['10:50','Hardware y Redes','Ing. Daniel Pop'],['11:35','Inglés','Prof. Julio Barrios'],['12:20','Seminario','Profa. Marta Coy']].map((r,i)=>`<div class="pr" data-in="${1.1+i*.12}"><time>${r[0]}</time><div><b>${r[1]}</b><span>${r[2]}</span></div></div>`).join('')}</div>${dock(1)}</section></div>`;
+P[2]=`<div class="sc"><div class="isl"></div><section class="s" data-a="13.4" data-b="17.4" data-flat="1" data-to=".3" data-ti=".22">${topbar()}
+ <div class="pad" style="top:108px"><div class="eb">Horario</div><div class="big" style="font-size:46px;margin:4px 0 10px">Semana</div><div class="seg"><span class="on">Entre semana</span><span>Fin de semana</span></div><div class="days"><span><b>Lun</b></span><span><b>Mar</b></span><span><b>Mié</b></span><span><b>Jue</b></span><span class="on" style="background:#f6f4f0;color:#142229"><b style="color:#142229">Vie</b></span></div>${[['07:30','Matemática'],['08:15','Programación I'],['09:00','Ciencias Sociales']].map(r=>`<div class="pr" style="opacity:.55"><time>${r[0]}</time><div><b>${r[1]}</b></div></div>`).join('')}</div>
+ <div class="por" style="top:230px"><div class="eb" style="color:#4b5a5e" data-in=".2">Horario · Semana</div><h2 data-in=".3" style="font-size:30px">Generar horario automático</h2><p data-in=".4">Llena la semana completa para que cada maestro cubra su carga docente, sin choques de período.</p>
+  <div class="eb" style="color:#142229;margin:10px 0 6px" data-in=".5">Período académico</div><div class="sel2" data-in=".5">Ciclo escolar 2026 <span>⌄</span></div><div class="eb" style="color:#142229;margin:4px 0 6px" data-in=".6">Jornada a generar</div><div class="seg3" data-in=".6"><span>Entre semana</span><span>Fin de semana</span><span id="amb" >Ambas</span></div>
+  <div class="chk" data-in=".7"><i>✓</i><span>Reemplazar horario existente de este período</span></div><div style="display:flex;gap:10px;justify-content:space-between;margin-top:6px" data-in=".8"><span class="btn t">Cancelar</span><span class="btn" style="flex:1;text-align:center" id="gen">✦ Generar</span></div></div>
+ <i class="tapd" data-tap="1.2" style="left:260px;top:470px"></i><i class="tapd" data-tap="2.6" style="left:230px;top:690px"></i></section>
+ <section class="s" data-a="17.2" data-b="99" data-flat="1" data-ti=".35"><div class="sc lt" style="position:absolute;inset:0;border-radius:0;background:#f3f1ec;color:#142229"></div><div class="bar" style="color:#142229"><div class="hm"><i style="background:#142229"></i><i style="background:#142229"></i><i style="background:#142229"></i></div><div class="crest">M</div></div>
+  <div class="pad" style="top:104px;color:#142229"><div class="eb" style="color:#4b5a5e" data-in=".1">Horario</div><div class="big" style="font-size:38px;color:#142229" data-in=".2">Horario generado</div>
+  <div class="okb" data-in=".6">✓ Generado: 56 períodos asignados.<span>11 de 13 maestros con su carga completa</span><span>3 períodos sin asignar</span></div><span class="chipd" style="border-color:#c9b48b;color:#8a6420" data-in="1.0">Generador v2 · propuesto</span>
+  <div class="eb" style="color:#4b5a5e;margin:16px 0 4px" data-in="1.2">Carga por maestro</div>
+  ${[['Lic. Elena Rivas','10 de 12 períodos',83],['Lic. Óscar Tun','8 de 8 períodos',100],['Prof. Julio Barrios','6 de 6 períodos',100],['Profa. Marta Coy','3 de 4 períodos',75],['Ing. Daniel Pop','4 de 4 períodos',100]].map((r,i)=>`<div class="ld" data-in="${1.4+i*.2}"><b>${r[0]}</b><span>${r[1]}</span><div class="m"><i data-bar="${1.5+i*.2}" data-from="0" data-to="${r[2]}" data-d=".8"></i></div></div>`).join('')}
+  <div class="amb" style="margin-top:14px" data-in="2.9"><b>No cupo</b><span>Profa. Marta Coy · Seminario: falta 1 período, sin espacio en la semana completa.</span></div></div></section></div>`;
+P[3]=`<div class="sc lt" style="background:#14393f"><div class="isl"></div><section class="s" data-a="19.4" data-b="99" data-flat="1" data-ti=".22">${topbar()}
+ <div class="por" style="top:150px"><div style="width:44px;height:5px;border-radius:3px;background:#cfc6b4;margin:-6px auto 10px"></div><div class="eb" style="color:#4b5a5e" data-in=".2">Plan diario</div><h2 data-in=".3" style="font-size:36px">Calificaciones</h2>
+  <div style="display:flex;gap:8px;margin:6px 0 4px" data-in=".5"><div class="sel2" style="flex:1;font-size:13px">4.º Bachillerato ⌄</div><div class="sel2" style="flex:1;font-size:13px">Unidad 3 · cerrada ⌄</div></div>
+  <div class="amb" data-in=".8"><b>3 solicitudes de cambio de nota</b><span>La primera vence el 23/10/2026</span><span class="btn" style="display:block;text-align:center">Revisar solicitudes</span></div>
+  <div class="eb" style="color:#4b5a5e;margin:10px 0 2px" data-in="1.2">Cursos · 12</div>
+  ${[['Matemática','Lic. Elena Rivas · 32 alumnos',''],['Programación I','Lic. Óscar Tun · 32 alumnos','1'],['Ciencias Sociales','Profa. Marta Coy · 32 alumnos','1'],['Inglés','Prof. Julio Barrios · 32 alumnos',''],['Hardware y Redes','Ing. Daniel Pop · 32 alumnos','1']].map((r,i)=>`<div class="crs" data-in="${1.4+i*.18}"><div><b>${r[0]}</b><span>${r[1]}</span></div>${r[2]?'<em>✎ 1</em>':''}</div>`).join('')}
+  <p style="margin:10px 0 0;font-size:11.5px;color:#4b5a5e" data-in="2.6">Unidad 3 cerrada el 25/09/2026: las notas están bloqueadas; los cambios se hacen por solicitud.</p></div>
+ <i class="tapd" data-tap="2.0" style="left:180px;top:420px"></i></section></div>`;
+P.forEach((h,i)=>{const d=document.createElement('div');d.className='dv';d.style.left=((i-1.5)*GAP-195)+'px';d.innerHTML=h;rail.appendChild(d)});
+/* motor de UI por línea de tiempo (inlined): pantallas con entrada/salida, revelados relativos, escritura, barras, toques, cámara 3D y pies de foto */
+const stage=document.getElementById('stage'),cam=document.getElementById('cam');
+const SCR=[...document.querySelectorAll('.s')],CAPS=[...document.querySelectorAll('.cp')];
+const eO=bez(.16,.84,.2,1),eI=bez(.65,0,.2,1),eC=bez(.45,0,.2,1);
+const fitStage=()=>{const k=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(-50%,-50%) scale(${k})`};fitStage();addEventListener('resize',fitStage);
+const win=(e,t)=>{const a=+e.dataset.a,b=+e.dataset.b,di=+e.dataset.ti||.55,dd=+e.dataset.to||.45;return[eO(S(a,a+di,t)),eI(S(b-dd,b,t)),t>=a-.02&&t<=b+.02]};
+function camAt(t,KF){let i=0;while(i<KF.length-2&&t>=KF[i+1][0])i++;const A=KF[i],B=KF[i+1],e=eC(S(A[0],B[0],t));return A.slice(1).map((v,j)=>L(v,B[j+1],e))}
+function ui(t,KF,{onScreen}={}){
+ SCR.forEach(s=>{const[i,o,v]=win(s,t);s.style.visibility=v?'visible':'hidden';if(!v)return;s.style.opacity=(i*(1-o)).toFixed(3);const fl=s.dataset.flat?0:1;s.style.transform=`translateX(${(((1-i)*70-o*60)*fl).toFixed(1)}px)`;
+  const rel=t-(+s.dataset.a);
+  s.querySelectorAll('[data-in]').forEach(e=>{const a=+e.dataset.in,d=+e.dataset.d||.5,k=eO(S(a,a+d,rel));e.style.opacity=k.toFixed(3);const y=+(e.dataset.y??14),sc=+(e.dataset.s||0);e.style.transform=`translateY(${((1-k)*y).toFixed(1)}px) scale(${(1-(1-k)*sc).toFixed(3)})`});
+  s.querySelectorAll('[data-out]').forEach(e=>{const a=+e.dataset.out,k=eI(S(a,a+.6,rel));e.style.opacity=(1-k).toFixed(3);e.style.filter=`blur(${(k*6).toFixed(1)}px)`;});
+  s.querySelectorAll('[data-type]').forEach(e=>{const a=+e.dataset.type,tx=e.dataset.text,n=Math.floor(S(a,a+(+e.dataset.d||1),rel)*tx.length);e.textContent=tx.slice(0,n)});
+  s.querySelectorAll('[data-bar]').forEach(e=>{e.style.width=(L(+e.dataset.from,+e.dataset.to,S(+e.dataset.bar,+e.dataset.bar+(+e.dataset.d||1),rel))).toFixed(1)+'%'});
+  s.querySelectorAll('[data-count]').forEach(e=>{const a=+e.dataset.count,k=eO(S(a,a+(+e.dataset.d||1.2),rel));e.textContent=(e.dataset.pre||'')+Math.round(L(0,+e.dataset.to,k))+(e.dataset.suf||'')});
+  s.querySelectorAll('[data-tap]').forEach(e=>{const p=S(+e.dataset.tap,+e.dataset.tap+.7,rel);e.style.opacity=p>0&&p<1?(1-p)*.9:0;e.style.transform=`translate(-50%,-50%) scale(${.3+eO(p)*1.2})`});
+  s.querySelectorAll('[data-draw]').forEach(e=>{const a=+e.dataset.draw,p=eO(S(a,a+(+e.dataset.d||1.4),rel));e.style.strokeDasharray=1;e.style.strokeDashoffset=1-p});
+  if(onScreen)onScreen(s,rel,t)});
+ CAPS.forEach(c=>{const[i,o,v]=win(c,t);c.style.visibility=v?'visible':'hidden';c.style.opacity=(i*(1-o)).toFixed(3);c.style.transform=`translateY(${((1-i)*26-o*14).toFixed(1)}px)`});
+ const c=camAt(t,KF);cam.style.transform=`translate3d(${c[0]}px,${c[1]}px,${c[5]||0}px) scale(${c[2]}) rotateY(${c[3]}deg) rotateX(${c[4]}deg)`}
+// cuadrícula de celdas: la H de Havren abre y cierra
+const COLS=15,ROWS=9,CS=58,inH=(c,r)=>[3,4,10,11].includes(c)||(r>=3&&r<=5&&c>=5&&c<=9),cells=[],rr=rng(5);
+const cl=$('cells');for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const e=document.createElement('div');e.className='cell';e.style.left=(800-COLS*CS/2+c*CS+4)+'px';e.style.top=(450-ROWS*CS/2+r*CS+4)+'px';cl.appendChild(e);cells.push({e,c,r,h:inH(c,r),j:rr()})}
+const nowEl=$('now'),nowB=$('nowb'),rowH=44;
+const F=(t,i,s,ry=0)=>[t,-(i-1.5)*GAP*s,0,s,ry,0,0];
+const KF=[[0,0,0,.9,0,0,0],[3.2,0,0,.56,-3,0,0],F(4.1,0,1.18,-5),F(8.4,0,1.22,4),F(9.0,1,1.2,-4),F(13.2,1,1.24,4),F(13.9,2,1.2,-4),F(19.0,2,1.24,4),F(19.8,3,1.2,-4),F(23.6,3,1.22,4),[25.0,0,0,.56,0,0,0],[31,0,0,.56,0,0,0]];
+const FILL=[1,1,1,1,1].map(()=>0);
+const dvs=[...rail.children];
+play(29500,t=>{t/=1000;
+ const cc=camAt(t,KF),fi=1.5-cc[0]/(cc[2]*GAP),wide=1-S(.66,1.0,cc[2]);dvs.forEach((d,i)=>{d.style.opacity=(Math.abs(i-fi)<.5?1:wide).toFixed(3)});
+ // apertura (0–3.8) y cierre (25.2–29.5) con celdas
+ cells.forEach(o=>{let k=0,sc=1;const dist=Math.hypot(o.c-7,o.r-4)/9;
+  if(t<4.2){const d=(o.c+o.r)*.04+o.j*.15,a=sp(S(.2+d,.9+d,t),1.2,5.5),dim=eO(S(1.9+dist*.6,2.9+dist*.6,t)),fade=S(3.0,3.9,t);sc=a*(o.h?1:L(1,.2,dim));k=sc>0?(o.h?1:L(1,.18,dim))*(1-fade):0}
+  else{const a=sp(S(25.4+dist*.5,26.2+dist*.5,t),1.2,5);sc=o.h?a:0;k=o.h?1:0}
+  o.e.style.opacity=k.toFixed(3);o.e.style.transform=`scale(${Math.max(0,sc*(t>4.2?.72:1)).toFixed(3)}) translateY(${t>4.2?-140:0}px)`});
+ // la línea de «ahora»: del bloque de 09:45 al de 10:50 con la barra de progreso
+ const a=t-8.6,mv=eI(S(3.6,4.4,a)),y=L(8+3*rowH+(3*0),8+4*rowH,mv);nowEl.style.top=((3+mv)*rowH+3)+'px';nowEl.style.opacity=S(1.4,2.0,a);nowB.style.width=(S(4.4,9,a)*60+(mv>0?8:0))+'%';
+ rail.style.opacity=(S(2.9,3.7,t)*(1-S(24.9,25.8,t))).toFixed(3);ui(t,KF);film(t)},{hold:0,still:25000});
 </script></body></html>

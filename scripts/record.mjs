@@ -14,8 +14,7 @@ const CHROME = process.env.CHROME || `${process.env.HOME}/.cache/ms-playwright/c
 // w,h: tamaño de grabación · thumbAt: segundo del fotograma representativo · bg: color de relleno del jpg (si no cubre 4:3) · crf
 export const pieces = {
   'alyron-reveal':     { w: 1280, h: 720,  thumbAt: 5.2, crf: 24 },
-  'mconnect-circulo':  { w: 1280, h: 720,  thumbAt: 4.85, crf: 24 },
-  'havren-horario':    { w: 1280, h: 720,  thumbAt: 5.4, crf: 24 },
+  'mconnect-circulo':  { w: 1280, h: 720,  thumbAt: 18.8, crf: 28, cropX: 112 },
   'scroll-apertura':   { w: 1280, h: 720,  thumbAt: 5.2, crf: 24 },
   'cuerda-resorte':    { w: 1280, h: 720,  thumbAt: 3.9, crf: 24, cropX: 40 },
   'loader-morph':      { w: 1280, h: 720,  thumbAt: 3.45, crf: 24 },
@@ -23,6 +22,8 @@ export const pieces = {
   'spot-mconnect-916': { w: 720,  h: 1280, thumbAt: 8.6, crf: 25, bg: '#19152f' },
   'spot-alyron-11':    { w: 720,  h: 720,  thumbAt: 7.4, crf: 25, bg: '#0a1424' },
   'logo-orbe-tinta':   { w: 1280, h: 720,  thumbAt: 5.6, crf: 30 },
+  'gustello-pos-lanzamiento': { w: 1280, h: 720, thumbAt: 4.7, crf: 28, cropX: 50 },
+  'havren-horario': { w: 1280, h: 720, thumbAt: 25.0, crf: 28 },
   'social-rumbo':      { w: 720,  h: 720,  thumbAt: 1.04, crf: 24, bg: '#0b0d0c' },
   'gustello-plato':    { w: 720,  h: 720,  thumbAt: 6.6, crf: 24, bg: '#0c0705' },
 };
