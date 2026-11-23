@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Havren — lanzamiento: horario, generador y calificaciones (colegio ficticio Monteclaro)</title>
+<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Havren — lanzamiento: el horario que se resuelve (colegio ficticio Monteclaro)</title>
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#071a1d}
-#stage{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:50% 50%;overflow:hidden;perspective:2600px;background:radial-gradient(1100px 800px at 50% 38%,#1c525b,#0f2e33 55%,#061619)}
-#cam{position:absolute;left:800px;top:450px;width:0;height:0;transform-style:preserve-3d}
-.dv{position:absolute;top:-400px;width:390px;height:800px;border-radius:60px;background:linear-gradient(145deg,#2c3a3d,#091214 55%,#222f32);box-shadow:0 70px 110px rgba(0,0,0,.55),inset 0 0 0 1.5px rgba(246,244,240,.16)}
+
+
+
+
 .sc{position:absolute;inset:11px;border-radius:50px;overflow:hidden;background:linear-gradient(180deg,#14393f,#0f2e33 45%,#0a2226);color:#f6f4f0;font:500 14px/1.35 Manrope,sans-serif}
 .sc.lt{background:#14393f}.isl{position:absolute;left:50%;top:13px;width:100px;height:28px;margin-left:-50px;border-radius:15px;background:#000;z-index:9}
 .s{position:absolute;inset:0;visibility:hidden}
@@ -28,19 +28,62 @@ html,body{margin:0;height:100%;overflow:hidden;background:#071a1d}
 .crs{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #e6dfd2}.crs b{display:block;font:700 14px Manrope}.crs span{font-size:12px;color:#4b5a5e}.crs em{font:700 11px Manrope;background:#f1e6cf;color:#8a6420;padding:3px 9px;border-radius:999px;font-style:normal}
 .amb{background:#f1e6cf;border-radius:14px;padding:12px 14px;margin:8px 0}.amb b{font:700 14px Manrope}.amb span{display:block;font-size:12.5px;color:#4b5a5e;margin:2px 0 8px}.amb span.btn{color:#fff}
 .tapd{position:absolute;width:56px;height:56px;border-radius:50%;border:3px solid #e7d3a6;opacity:0}.por .tapd{border-color:#1c525b}
-.cell{position:absolute;width:50px;height:50px;border-radius:10px;background:#f6f4f0}
+
+
+
+
+
+
+html,body{margin:0;height:100%;overflow:hidden;background:#061619}
+#stage{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:50% 50%;overflow:hidden;perspective:2400px;background:radial-gradient(1200px 800px at 50% 40%,#1c525b,#0f2e33 55%,#061619)}
+#world{position:absolute;left:0;top:0;width:10px;height:10px;transform-origin:0 0}
+.dv{position:absolute;top:0;width:390px;height:800px;border-radius:60px;background:linear-gradient(145deg,#2c3a3d,#091214 55%,#222f32);box-shadow:0 70px 110px rgba(0,0,0,.55),inset 0 0 0 1.5px rgba(246,244,240,.16)}
+#P1{left:0}#P2{left:2780px}
+#L{position:absolute;left:880px;top:-30px;width:1400px;height:860px;border-radius:22px;background:#0a2226;box-shadow:0 70px 110px rgba(0,0,0,.55),0 0 0 1.5px rgba(246,244,240,.16);overflow:hidden;color:#f6f4f0;font:500 14px/1.35 Manrope,sans-serif}
+#L .sb{position:absolute;left:0;top:0;bottom:0;width:210px;background:#0f2e33;border-right:1px solid rgba(246,244,240,.1);padding:26px 18px;box-sizing:border-box}
+#L .sb .hm{margin-bottom:34px}#L .sb span{display:block;padding:11px 14px;border-radius:14px;margin-bottom:6px;color:#a9bdbf;font:700 14px Manrope}#L .sb span.sel{background:#1c525b;color:#f6f4f0}
+#L .mn{position:absolute;left:210px;right:0;top:0;bottom:0;padding:30px 40px;box-sizing:border-box}
+#L .ttl{font:400 52px/1 Caslon,serif}.sub{color:#a9bdbf;margin-top:6px}
+#L .bn{position:absolute;right:40px;top:34px;display:flex;gap:12px;align-items:center}
+.ch{padding:10px 16px;border-radius:999px;font:700 13px Manrope;border:1px solid rgba(246,244,240,.18)}.ch.bad{background:rgba(169,60,42,.25);border-color:#d2614a;color:#ffb9ab}.ch.good{background:rgba(111,207,140,.16);border-color:#6fcf8c;color:#9fe3b5}
+.gbtn{padding:13px 22px;border-radius:999px;background:#f6f4f0;color:#142229;font:700 14px Manrope}.gbtn.glow{box-shadow:0 0 0 5px rgba(231,211,166,.35),0 0 34px rgba(231,211,166,.6)}
+.grid{position:absolute;left:250px;top:150px;right:40px;bottom:36px}
+.gh{position:absolute;top:0;font:700 12px Manrope;letter-spacing:.2em;text-transform:uppercase;color:#a9bdbf}
+.gl{position:absolute;left:0;font:500 12px Manrope;color:#a9bdbf}
+.cell{position:absolute;border:1px solid rgba(246,244,240,.08);border-radius:10px}
+.cd{position:absolute;width:196px;height:74px;border-radius:14px;padding:10px 14px;box-sizing:border-box;background:linear-gradient(160deg,#2b6f79,#1c525b);border:1px solid rgba(246,244,240,.22);box-shadow:0 10px 20px rgba(0,0,0,.35);font:700 15px Manrope}.cd span{display:block;font:500 12px Manrope;color:#c3d2d3;margin-top:2px}.cd.bad{background:linear-gradient(160deg,#8c3a2d,#5b2119);border-color:#ff8a73;box-shadow:0 0 22px rgba(255,120,95,.45),0 10px 20px rgba(0,0,0,.4)}
+#stamp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-6deg);padding:18px 44px;border:6px solid #6fcf8c;border-radius:18px;color:#6fcf8c;font:700 64px Manrope;letter-spacing:.06em;opacity:0;text-transform:uppercase;background:rgba(10,34,38,.55)}
+.req{margin-top:8px;padding:11px 14px;border-radius:12px;border:1px solid #ddd3c2;background:#fff;color:#142229;font:500 13px Manrope;min-height:20px}.req .cr2{display:inline-block;width:2px;height:15px;background:#1c525b;vertical-align:middle;margin-left:1px}
+#pal{position:absolute;left:14px;right:14px;top:150px;z-index:10;padding:14px;border-radius:24px;background:rgba(15,46,51,.96);border:1px solid rgba(246,244,240,.18);box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden}
+#pal .in{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:rgba(246,244,240,.08);font:500 16px Manrope}#pal .in i{font-style:normal;color:#a9bdbf}#pal .in .cr{display:inline-block;width:2px;height:20px;background:#e7d3a6;vertical-align:middle;margin-left:1px}
+#pal .rs div{padding:11px 14px;border-radius:12px;margin-top:6px;font:500 14px Manrope;display:flex;justify-content:space-between}#pal .rs div span{color:#a9bdbf;font-size:11px}#pal .rs div.on{background:#1c525b}
+.fing{position:absolute;left:0;top:0;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(255,255,255,.5);border:2px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.45);opacity:0;z-index:30}
+.rp{position:absolute;border-radius:50%;border:3px solid #e7d3a6;opacity:0;pointer-events:none;z-index:29}
+#wtxt{position:absolute;font:400 460px/1 Caslon,serif;color:#e7d3a6;white-space:nowrap;letter-spacing:-.03em;pointer-events:none}
+.ot{position:absolute;font:400 120px/.98 Caslon,serif;color:#f6f4f0;mix-blend-mode:screen;opacity:0;visibility:hidden;white-space:nowrap;letter-spacing:-.02em}.ot em{color:#e7d3a6}.ot small{display:block;font:700 14px Manrope;letter-spacing:.34em;text-transform:uppercase;color:#a9bdbf;margin-bottom:16px}
 .rmb{position:absolute;left:70px;bottom:56px;display:none;font:400 40px Caslon,serif;color:#f6f4f0;z-index:7}.rmb small{display:block;font:700 12px Manrope;letter-spacing:.3em;text-transform:uppercase;color:#a9bdbf;margin-bottom:6px}@media (prefers-reduced-motion:reduce){.rmb{display:block}}
-.cp{position:absolute;left:70px;bottom:70px;width:430px;visibility:hidden;z-index:5}.cp small{display:block;font:700 12px Manrope;letter-spacing:.3em;text-transform:uppercase;color:#a9bdbf;margin-bottom:14px}.cp h2{margin:0;font:400 54px/1.05 Caslon,serif;color:#f6f4f0}.cp h2 em{color:#e7d3a6}.cp p{margin:14px 0 0;font:500 16px/1.45 Manrope;color:#c3d2d3}
-#end{left:0;bottom:auto;top:0;width:1600px;height:900px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:96px;box-sizing:border-box;text-align:center;z-index:6}#end h2{font-size:92px;margin:0}#end p{margin:14px auto 0}
+.nocap .ot,.nocap .rmb,.nocap #wtxt{display:none!important}
+#cells .cell{position:absolute;width:50px;height:50px;border-radius:10px;background:#f6f4f0;border:0}
+#endt{position:absolute;left:0;right:0;bottom:96px;text-align:center;font:400 96px Caslon,serif;color:#f6f4f0;opacity:0}#endt p{margin:10px 0 0;font:500 20px Manrope;color:#c3d2d3}
 #film{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.2;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}.vg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 48%,transparent 52%,rgba(0,0,0,.5))}
 </style></head><body>
 <div id="stage"><div id="cells"></div>
- <section class="cp" data-a="4.4" data-b="8.5"><small>01 — Inicio</small><h2>Hola, <em>Dirección</em></h2><p>El día del colegio, en una sola mirada: alumnos, docentes y lo que falta por revisar.</p></section>
- <section class="cp" data-a="9.1" data-b="13.3"><small>02 — Horario de hoy</small><h2>La línea de <em>ahora</em></h2><p>Qué clase toca, con quién, y cuánto falta para la siguiente.</p></section>
- <section class="cp" data-a="14.0" data-b="19.1"><small>03 — Generador v2</small><h2>Una semana completa, <em>sin choques</em></h2><p>Cada maestro cubre su carga docente; lo que no cabe se avisa.</p></section>
- <section class="cp" data-a="19.9" data-b="24.0"><small>04 — Calificaciones</small><h2>Notas <em>con control</em></h2><p>Unidades cerradas y cambios de nota por solicitud.</p></section>
- <section class="cp" id="end" data-a="26.4" data-b="99"><div><h2>Monteclaro</h2><p>Havren · el colegio, en orden.</p></div></section>
- <div class="rmb"><small>Havren · lanzamiento</small>Monteclaro</div><div id="cam"><div id="rail"></div></div><div class="vg"></div><div id="film"></div>
+ <div id="world"><div id="wtxt">Monteclaro</div>
+  <div class="dv" id="P1"></div>
+  <div id="L"><div class="sb"><div class="hm"><i></i><i></i><i></i></div><span>Inicio</span><span class="sel">Horario</span><span>Asistencia</span><span>Calificaciones</span></div>
+   <div class="mn"><div class="ttl">Horario · <em style="color:#e7d3a6;font-style:italic">Semana</em></div><div class="sub">4.º Bachillerato · Ciclo escolar 2026 · Datos de ejemplo</div>
+    <div class="bn"><span class="ch bad" id="conf">3 choques</span><span class="gbtn" id="gen">✦ Generar</span></div>
+    <div class="grid" id="grid"></div><div id="stamp">Sin choques</div></div></div>
+  <div class="dv" id="P2"></div>
+  <div class="fing" id="fing"></div><div id="rips"></div></div>
+ <div class="ot" data-a="3.0" data-b="6.4" data-x="1010" data-y="60"><small>Inicio</small>El día,<br><em>en orden.</em></div>
+ <div class="ot" data-a="7.6" data-b="11.6" data-x="56" data-y="640"><small>Horario de hoy</small><em>Ahora.</em></div>
+ <div class="ot" data-a="14.0" data-b="17.0" data-x="56" data-y="660"><small>Generador v2</small>Tres choques.</div>
+ <div class="ot" data-a="18.8" data-b="22.0" data-x="56" data-y="660"><small>Resuelto</small><em>Sin choques.</em></div>
+ <div class="ot" data-a="22.8" data-b="26.4" data-x="1000" data-y="60"><small>Calificaciones</small>Notas<br><em>con control.</em></div>
+ <div id="endt">Monteclaro<p>Havren · el colegio, en orden.</p></div>
+ <div class="rmb"><small>Havren · lanzamiento</small>Monteclaro</div>
+ <div class="vg"></div><div id="film"></div>
 </div>
 <script>
 /* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
@@ -65,8 +108,28 @@ let t0=performance.now(),on=true;
 document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
 if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
 const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)})}
-
-const $=id=>document.getElementById(id),rail=$('rail'),GAP=540;
+/* director de cámara (inlined): cámara DENTRO de la UI (zoom 1–6×, panorámicas, cortes), DOF, typing y ripples. Requiere kit.js */
+const stage=document.getElementById('stage'),world=document.getElementById('world');
+const fitStage=()=>{const k=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(-50%,-50%) scale(${k})`};fitStage();addEventListener('resize',fitStage);
+const eO=bez(.16,.84,.2,1),eI=bez(.65,0,.2,1),ezCam=bez(.5,0,.12,1);
+const res=v=>typeof v==='function'?v():v;
+/* KF: [t, destino [x,y]|fn, escala, rotZ, rotX, rotY, ease?]  (mismo t dos veces = corte seco) */
+function camAt(KF,t){let i=0;while(i<KF.length-2&&t>=KF[i+1][0])i++;const A=KF[i],B=KF[i+1];let e;if(B[0]===A[0])e=t>=B[0]?1:0;else e=(A[6]||ezCam)(S(A[0],B[0],t));const a=res(A[1]),b=res(B[1]);
+ return{cx:L(a[0],b[0],e),cy:L(a[1],b[1],e),s:Math.exp(L(Math.log(A[2]),Math.log(B[2]),e)),rz:L(A[3]||0,B[3]||0,e),rx:L(A[4]||0,B[4]||0,e),ry:L(A[5]||0,B[5]||0,e)}}
+const applyCam=c=>{world.style.transform=`translate(800px,450px) rotateX(${c.rx.toFixed(2)}deg) rotateY(${c.ry.toFixed(2)}deg) rotateZ(${c.rz.toFixed(2)}deg) scale(${c.s.toFixed(4)}) translate(${(-c.cx).toFixed(2)}px,${(-c.cy).toFixed(2)}px)`};
+/* DOF: KD=[[t,b0,b1,b2..]] en px de pantalla; blur local = px/escala */
+const lerpArr=(KD,t)=>{let i=0;while(i<KD.length-2&&t>=KD[i+1][0])i++;const A=KD[i],B=KD[i+1],e=eO(S(A[0],B[0],t));return A.slice(1).map((v,j)=>L(v,B[j+1],e))};
+const setBlur=(el,px,s)=>{if(!el)return;const b=px/s;el.style.filter=b>.25?`blur(${b.toFixed(2)}px)`:'none'};
+const typed=(tx,t,t0,cps=14)=>tx.slice(0,C(Math.floor((t-t0)*cps),0,tx.length));
+const caretOn=t=>Math.floor(t*2.4)%2===0;
+/* pantallas por ventanas de tiempo con revelados relativos (data-in) */
+const SCR=[...document.querySelectorAll('.s')];
+function screens(t,hook){SCR.forEach(s=>{const a=+s.dataset.a,b=+s.dataset.b,di=+(s.dataset.ti||.12),dd=+(s.dataset.to||.12),v=t>=a&&t<=b;s.style.visibility=v?'visible':'hidden';if(!v)return;s.style.opacity=(S(a,a+di,t)*(1-S(b-dd,b,t))).toFixed(3);const rel=t-a;
+ s.querySelectorAll('[data-in]').forEach(e=>{const a0=+e.dataset.in,k=eO(S(a0,a0+(+(e.dataset.d||.45)),rel)),y=e.dataset.y!=null?+e.dataset.y:14;e.style.opacity=k.toFixed(3);e.style.transform=`translateY(${((1-k)*y).toFixed(1)}px) scale(${(1-(1-k)*(+(e.dataset.s||0))).toFixed(3)})`});if(hook)hook(s,rel,t)})}
+const wpos=el=>{let x=0,y=0,n=el;while(n&&n.id!=='world'){x+=n.offsetLeft;y+=n.offsetTop;n=n.offsetParent}return[x+el.offsetWidth/2,y+el.offsetHeight/2]};
+const $=id=>document.getElementById(id),fing=$('fing'),rips=$('rips');
+if(/nocap/.test(location.search))stage.classList.add('nocap');
+const cap=/[?&]cap/.test(location.search),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const dock=a=>`<div class="dock">${['Inicio','Horario','Asistencia','Notas','Más'].map((n,i)=>`<span class="${i===a?'sel':''}">${n}</span>`).join('')}</div>`;
 const topbar=()=>`<div class="bar"><div class="hm"><i></i><i></i><i></i></div><div class="crest">M</div><div class="bell">●<b>3</b></div><div class="av">DI</div></div>`;
 const P=[];
@@ -80,18 +143,7 @@ P[1]=`<div class="sc"><div class="isl"></div><section class="s" data-a="8.6" dat
  <div class="days" data-in=".8"><span><b>Lun</b>8 clases</span><span><b>Mar</b>8 clases</span><span><b>Mié</b>8 clases</span></div></div>
  <div class="pad gl sch" style="top:336px;bottom:96px;padding:8px 14px" data-in="1.0"><div class="now" id="now"><i id="nowb"></i><span class="ah" style="top:19px">AHORA</span></div>
  ${[['07:30','Matemática','Lic. Elena Rivas'],['08:15','Programación I','Lic. Óscar Tun'],['09:00','Ciencias Sociales','Profa. Marta Coy'],['09:45','Estadística','Lic. Elena Rivas'],['10:50','Hardware y Redes','Ing. Daniel Pop'],['11:35','Inglés','Prof. Julio Barrios'],['12:20','Seminario','Profa. Marta Coy']].map((r,i)=>`<div class="pr" data-in="${1.1+i*.12}"><time>${r[0]}</time><div><b>${r[1]}</b><span>${r[2]}</span></div></div>`).join('')}</div>${dock(1)}</section></div>`;
-P[2]=`<div class="sc"><div class="isl"></div><section class="s" data-a="13.4" data-b="17.4" data-flat="1" data-to=".3" data-ti=".22">${topbar()}
- <div class="pad" style="top:108px"><div class="eb">Horario</div><div class="big" style="font-size:46px;margin:4px 0 10px">Semana</div><div class="seg"><span class="on">Entre semana</span><span>Fin de semana</span></div><div class="days"><span><b>Lun</b></span><span><b>Mar</b></span><span><b>Mié</b></span><span><b>Jue</b></span><span class="on" style="background:#f6f4f0;color:#142229"><b style="color:#142229">Vie</b></span></div>${[['07:30','Matemática'],['08:15','Programación I'],['09:00','Ciencias Sociales']].map(r=>`<div class="pr" style="opacity:.55"><time>${r[0]}</time><div><b>${r[1]}</b></div></div>`).join('')}</div>
- <div class="por" id="por3" style="top:230px"><div class="eb" style="color:#4b5a5e">Horario · Semana</div><h2 style="font-size:30px">Generar horario automático</h2><p>Llena la semana completa para que cada maestro cubra su carga docente, sin choques de período.</p>
-  <div class="eb" style="color:#142229;margin:10px 0 6px">Período académico</div><div class="sel2">Ciclo escolar 2026 <span>⌄</span></div><div class="eb" style="color:#142229;margin:4px 0 6px">Jornada a generar</div><div class="seg3"><span>Entre semana</span><span>Fin de semana</span><span id="amb" >Ambas</span></div>
-  <div class="chk"><i>✓</i><span>Reemplazar horario existente de este período</span></div><div style="display:flex;gap:10px;justify-content:space-between;margin-top:6px"><span class="btn t">Cancelar</span><span class="btn" style="flex:1;text-align:center" id="gen">✦ Generar</span></div></div>
- <i class="tapd" data-tap="1.2" style="left:260px;top:470px"></i><i class="tapd" data-tap="2.6" style="left:230px;top:690px"></i></section>
- <section class="s" data-a="17.2" data-b="99" data-flat="1" data-ti=".35"><div class="sc lt" style="position:absolute;inset:0;border-radius:0;background:#f3f1ec;color:#142229"></div><div class="bar" style="color:#142229"><div class="hm"><i style="background:#142229"></i><i style="background:#142229"></i><i style="background:#142229"></i></div><div class="crest">M</div></div>
-  <div class="pad" style="top:104px;color:#142229"><div class="eb" style="color:#4b5a5e" data-in=".1">Horario</div><div class="big" style="font-size:38px;color:#142229" data-in=".2">Horario generado</div>
-  <div class="okb" data-in=".6">✓ Generado: 56 períodos asignados.<span>11 de 13 maestros con su carga completa</span><span>3 períodos sin asignar</span></div><span class="chipd" style="border-color:#c9b48b;color:#8a6420" data-in="1.0">Generador v2 · propuesto</span>
-  <div class="eb" style="color:#4b5a5e;margin:16px 0 4px" data-in="1.2">Carga por maestro</div>
-  ${[['Lic. Elena Rivas','10 de 12 períodos',83],['Lic. Óscar Tun','8 de 8 períodos',100],['Prof. Julio Barrios','6 de 6 períodos',100],['Profa. Marta Coy','3 de 4 períodos',75],['Ing. Daniel Pop','4 de 4 períodos',100]].map((r,i)=>`<div class="ld" data-in="${1.4+i*.2}"><b>${r[0]}</b><span>${r[1]}</span><div class="m"><i data-bar="${1.5+i*.2}" data-from="0" data-to="${r[2]}" data-d=".8"></i></div></div>`).join('')}
-  <div class="amb" style="margin-top:14px" data-in="2.9"><b>No cupo</b><span>Profa. Marta Coy · Seminario: falta 1 período, sin espacio en la semana completa.</span></div></div></section></div>`;
+
 P[3]=`<div class="sc lt" style="background:#14393f"><div class="isl"></div><section class="s" data-a="19.4" data-b="99" data-flat="1" data-ti=".22">${topbar()}
  <div class="por" style="top:150px"><div style="width:44px;height:5px;border-radius:3px;background:#cfc6b4;margin:-6px auto 10px"></div><div class="eb" style="color:#4b5a5e" data-in=".2">Plan diario</div><h2 data-in=".3" style="font-size:36px">Calificaciones</h2>
   <div style="display:flex;gap:8px;margin:6px 0 4px" data-in=".5"><div class="sel2" style="flex:1;font-size:13px">4.º Bachillerato ⌄</div><div class="sel2" style="flex:1;font-size:13px">Unidad 3 · cerrada ⌄</div></div>
@@ -100,43 +152,68 @@ P[3]=`<div class="sc lt" style="background:#14393f"><div class="isl"></div><sect
   ${[['Matemática','Lic. Elena Rivas · 32 alumnos',''],['Programación I','Lic. Óscar Tun · 32 alumnos','1'],['Ciencias Sociales','Profa. Marta Coy · 32 alumnos','1'],['Inglés','Prof. Julio Barrios · 32 alumnos',''],['Hardware y Redes','Ing. Daniel Pop · 32 alumnos','1']].map((r,i)=>`<div class="crs" data-in="${1.4+i*.18}"><div><b>${r[0]}</b><span>${r[1]}</span></div>${r[2]?'<em>✎ 1</em>':''}</div>`).join('')}
   <p style="margin:10px 0 0;font-size:11.5px;color:#4b5a5e" data-in="2.6">Unidad 3 cerrada el 25/09/2026: las notas están bloqueadas; los cambios se hacen por solicitud.</p></div>
  <i class="tapd" data-tap="2.0" style="left:180px;top:420px"></i></section></div>`;
-P.forEach((h,i)=>{const d=document.createElement('div');d.className='dv';d.style.left=((i-1.5)*GAP-195)+'px';d.innerHTML=h;rail.appendChild(d)});
-/* motor de UI por línea de tiempo (inlined): pantallas con entrada/salida, revelados relativos, escritura, barras, toques, cámara 3D y pies de foto */
-const stage=document.getElementById('stage'),cam=document.getElementById('cam');
-const SCR=[...document.querySelectorAll('.s')],CAPS=[...document.querySelectorAll('.cp')];
-const eO=bez(.16,.84,.2,1),eI=bez(.65,0,.2,1),eC=bez(.45,0,.2,1);
-const fitStage=()=>{const k=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(-50%,-50%) scale(${k})`};fitStage();addEventListener('resize',fitStage);
-const win=(e,t)=>{const a=+e.dataset.a,b=+e.dataset.b,di=+e.dataset.ti||.55,dd=+e.dataset.to||.45;return[eO(S(a,a+di,t)),eI(S(b-dd,b,t)),t>=a-.02&&t<=b+.02]};
-function camAt(t,KF){let i=0;while(i<KF.length-2&&t>=KF[i+1][0])i++;const A=KF[i],B=KF[i+1],e=eC(S(A[0],B[0],t));return A.slice(1).map((v,j)=>L(v,B[j+1],e))}
-function ui(t,KF,{onScreen}={}){
- SCR.forEach(s=>{const[i,o,v]=win(s,t);s.style.visibility=v?'visible':'hidden';if(!v)return;s.style.opacity=(i*(1-o)).toFixed(3);const fl=s.dataset.flat?0:1;s.style.transform=`translateX(${(((1-i)*70-o*60)*fl).toFixed(1)}px)`;
-  const rel=t-(+s.dataset.a);
-  s.querySelectorAll('[data-in]').forEach(e=>{const a=+e.dataset.in,d=+e.dataset.d||.5,k=eO(S(a,a+d,rel));e.style.opacity=k.toFixed(3);const y=+(e.dataset.y??14),sc=+(e.dataset.s||0);e.style.transform=`translateY(${((1-k)*y).toFixed(1)}px) scale(${(1-(1-k)*sc).toFixed(3)})`});
-  s.querySelectorAll('[data-out]').forEach(e=>{const a=+e.dataset.out,k=eI(S(a,a+.6,rel));e.style.opacity=(1-k).toFixed(3);e.style.filter=`blur(${(k*6).toFixed(1)}px)`;});
-  s.querySelectorAll('[data-type]').forEach(e=>{const a=+e.dataset.type,tx=e.dataset.text,n=Math.floor(S(a,a+(+e.dataset.d||1),rel)*tx.length);e.textContent=tx.slice(0,n)});
-  s.querySelectorAll('[data-bar]').forEach(e=>{e.style.width=(L(+e.dataset.from,+e.dataset.to,S(+e.dataset.bar,+e.dataset.bar+(+e.dataset.d||1),rel))).toFixed(1)+'%'});
-  s.querySelectorAll('[data-count]').forEach(e=>{const a=+e.dataset.count,k=eO(S(a,a+(+e.dataset.d||1.2),rel));e.textContent=(e.dataset.pre||'')+Math.round(L(0,+e.dataset.to,k))+(e.dataset.suf||'')});
-  s.querySelectorAll('[data-tap]').forEach(e=>{const p=S(+e.dataset.tap,+e.dataset.tap+.7,rel);e.style.opacity=p>0&&p<1?(1-p)*.9:0;e.style.transform=`translate(-50%,-50%) scale(${.3+eO(p)*1.2})`});
-  s.querySelectorAll('[data-draw]').forEach(e=>{const a=+e.dataset.draw,p=eO(S(a,a+(+e.dataset.d||1.4),rel));e.style.strokeDasharray=1;e.style.strokeDashoffset=1-p});
-  if(onScreen)onScreen(s,rel,t)});
- CAPS.forEach(c=>{const[i,o,v]=win(c,t);c.style.visibility=v?'visible':'hidden';c.style.opacity=(i*(1-o)).toFixed(3);c.style.transform=`translateY(${((1-i)*26-o*14).toFixed(1)}px)`});
- const c=camAt(t,KF);cam.style.transform=`translate3d(${c[0]}px,${c[1]}px,${c[5]||0}px) scale(${c[2]}) rotateY(${c[3]}deg) rotateX(${c[4]}deg)`}
-// cuadrícula de celdas: la H de Havren abre y cierra
-const COLS=15,ROWS=9,CS=58,inH=(c,r)=>[3,4,10,11].includes(c)||(r>=3&&r<=5&&c>=5&&c<=9),cells=[],rr=rng(5);
-const cl=$('cells');for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const e=document.createElement('div');e.className='cell';e.style.left=(800-COLS*CS/2+c*CS+4)+'px';e.style.top=(450-ROWS*CS/2+r*CS+4)+'px';cl.appendChild(e);cells.push({e,c,r,h:inH(c,r),j:rr()})}
-const nowEl=$('now'),nowB=$('nowb'),rowH=44;
-const F=(t,i,s,ry=0)=>[t,-(i-1.5)*GAP*s,0,s,ry,0,0];
-const KF=[[0,0,0,.9,0,0,0],[3.2,0,0,.56,-3,0,0],F(4.1,0,1.18,-5),F(8.4,0,1.22,4),F(9.0,1,1.2,-4),F(13.2,1,1.24,4),F(13.9,2,1.2,-4),F(19.0,2,1.24,4),F(19.8,3,1.2,-4),F(23.6,3,1.22,4),[25.0,0,0,.56,0,0,0],[31,0,0,.56,0,0,0]];
-const FILL=[1,1,1,1,1].map(()=>0);
-const dvs=[...rail.children];
-play(29500,t=>{t/=1000;
- const cc=camAt(t,KF),fi=1.5-cc[0]/(cc[2]*GAP),wide=1-S(.66,1.0,cc[2]);dvs.forEach((d,i)=>{d.style.opacity=(Math.abs(i-fi)<.5?1:wide).toFixed(3)});
- // apertura (0–3.8) y cierre (25.2–29.5) con celdas
+
+const sec=h=>h.match(/<section[\s\S]*<\/section>/)[0];
+const win=(h,a,b)=>h.replace(/data-a="[0-9.]+" data-b="[0-9.]+"/,`data-a="${a}" data-b="${b}"`);
+const palette=`<div id="pal"><div class="in"><i>⌕</i><span id="palT"></span><b class="cr" id="palC"></b><i style="margin-left:auto;font-size:11px">Ctrl K</i></div><div class="rs"><div data-k="hor"><b>Horario de hoy</b><span>Viernes · 4.º Bachillerato</span></div><div data-k="hor"><b>Horario semanal</b><span>Generador v2</span></div><div data-k="asi"><b>Asistencia</b><span>Hoy</span></div><div data-k="men"><b>Mensajes</b><span>3 nuevos</span></div></div></div>`;
+$('P1').innerHTML='<div class="sc"><div class="isl"></div>'+win(sec(P[0]),2.4,7.0)+win(sec(P[1]),7.0,30)+palette+'</div>';
+$('P2').innerHTML='<div class="sc lt" style="background:#14393f"><div class="isl"></div>'+win(sec(P[3]).replace('<i class="tapd" data-tap="2.0" style="left:180px;top:420px"></i>',''),21.2,99)+'</div>';
+SCR.length=0;SCR.push(...document.querySelectorAll('.s'));const sP2=$('P2').querySelector('.s');const por=sP2.querySelector('.por');
+por.querySelector('.amb').insertAdjacentHTML('afterend','<div class="eb" style="color:#4b5a5e;margin:12px 0 4px">Solicitud de cambio</div><div class="req" id="req"><span id="reqT"></span><b class="cr2" id="reqC"></b></div><span class="btn" id="rsend" style="display:block;text-align:center;margin-top:10px;opacity:.5">Enviar solicitud</span>');
+// cuadrícula de la semana: tarjetas con choques que se resuelven con física
+const DAYS=['Lun','Mar','Mié','Jue','Vie'],CW=212,RH=96;
+$('grid').innerHTML=DAYS.map((d,i)=>`<div class="gh" style="left:${60+i*CW}px">${d}</div>`).join('')+[0,1,2,3].map(r=>`<div class="gl" style="top:${34+r*RH+30}px">${['07:30','08:15','09:00','09:45'][r]}</div>`).join('')+[0,1,2,3,4].flatMap(c=>[0,1,2,3].map(r=>`<div class="cell" style="left:${52+c*CW}px;top:${30+r*RH}px;width:${CW-10}px;height:${RH-10}px"></div>`)).join('');
+const CARDS=[['Matemática','Lic. Elena Rivas',0,0],['Programación I','Lic. Óscar Tun',0,1],['Ciencias Sociales','Profa. Marta Coy',0,2],['Estadística','Lic. Elena Rivas',1,0],['Inglés','Prof. Julio Barrios',1,1],['Hardware y Redes','Ing. Daniel Pop',1,2],['Seminario','Profa. Marta Coy',2,0],['Contabilidad','Lic. Rosa Ixcoy',2,1],['Matemática','Lic. Elena Rivas',2,2],['Educación Física','Prof. Edgar Tum',3,0],['Programación I','Lic. Óscar Tun',3,1],['Inglés','Prof. Julio Barrios',4,0]];
+const MOV=[['Estadística','Lic. Elena Rivas',1,1,1,3,17.0],['Seminario','Profa. Marta Coy',3,1,3,3,17.35],['Hardware y Redes','Ing. Daniel Pop',0,2,4,1,17.7]];
+const mkc=(c,bad)=>{const e=document.createElement('div');e.className='cd'+(bad?' bad':'');e.innerHTML=`${c[0]}<span>${c[1]}</span>`;$('grid').appendChild(e);return e};
+const cards=CARDS.map(c=>{const e=mkc(c,false);e.style.left=(52+c[2]*CW)+'px';e.style.top=(30+c[3]*RH)+'px';return e});
+const movs=MOV.map(m=>({e:mkc(m,true),m}));
+const conflictPairs=[[4,0],[10,1],[2,2]]; // índice de la tarjeta fija chocando con cada móvil
+const KFd=[]; const OTS=[...document.querySelectorAll('.ot')],TAPT=[17.0,24.4],TAPE=['gen','rsend'];
+const dvs=[$('P1'),$('L'),$('P2')];
+const cells=[],COLS=15,ROWS=9,CS=58,inH=(c,r)=>[3,4,10,11].includes(c)||(r>=3&&r<=5&&c>=5&&c<=9),rr0=rng(5);const cl=$('cells');for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const e=document.createElement('div');e.className='cell';e.style.left=(800-COLS*CS/2+c*CS+4)+'px';e.style.top=(450-ROWS*CS/2+r*CS+4)+'px';cl.appendChild(e);cells.push({e,c,r,h:inH(c,r),j:rr0()})}
+const T=id=>()=>wpos($(id)),Tq=(root,sel)=>()=>{const e=root.querySelector(sel);return e?wpos(e):[195,400]};
+const sc1=Tq($('P1'),'.st'),tS=Tq($('P1'),'.now'),tSeg=Tq($('P1'),'.seg');
+const palIn=()=>wpos($('pal').querySelector('.in')),palRow=()=>wpos($('pal').querySelector('.rs div'));
+const gcell=()=>{const g=wpos($('grid'));return[g[0]-250+52+1*CW+CW/2-120,g[1]-(860/2-150)+30+RH*1.3]};
+const KF=[[0,[900,380],.5,0,10,-14],[2.3,[560,400],.52,0,8,-20],[3.0,[195,400],.92,0,4,-12],[3.6,sc1,2.8],[4.9,sc1,2.8],[5.4,palIn,3.4],[6.9,palRow,3.8],[7.1,tS,3.4],[8.6,tS,3.6],[9.4,tSeg,3.6],[11.0,tSeg,3.6],[11.8,[195,400],1.1,0,3,-10],[13.4,[1580,380],.62,0,4,-8],[14.2,[1560,380],.95],[15.0,gcell,3.4],[16.5,gcell,3.4],[16.9,T('gen'),3.2],[17.5,[1560,420],1.6],[19.2,T('conf'),4.0],[19.8,[1560,380],1.0],[21.4,[1560,380],.7],[22.2,[2975,400],1.0,0,3,-8],[22.8,Tq($('P2'),'.amb'),2.4],[23.4,T('req'),3.6],[24.8,T('req'),3.6],[25.2,T('rsend'),3.2],[26.2,[1560,380],.5,0,5,-10],[31,[1560,380],.5,0,5,-10]];
+const FP=[[16.9,'gen'],[24.9,'rsend']];
+play(30500,t=>{t/=1000;const tt=RM&&!cap?19.4:t;
+ // apertura y cierre con la H de celdas
  cells.forEach(o=>{let k=0,sc=1;const dist=Math.hypot(o.c-7,o.r-4)/9;
-  if(t<4.2){const d=(o.c+o.r)*.04+o.j*.15,a=sp(S(.2+d,.9+d,t),1.2,5.5),dim=eO(S(1.9+dist*.6,2.9+dist*.6,t)),fade=S(3.0,3.9,t);sc=a*(o.h?1:L(1,.2,dim));k=sc>0?(o.h?1:L(1,.18,dim))*(1-fade):0}
-  else{const a=sp(S(25.4+dist*.5,26.2+dist*.5,t),1.2,5);sc=o.h?a:0;k=o.h?1:0}
-  o.e.style.opacity=k.toFixed(3);o.e.style.transform=`scale(${Math.max(0,sc*(t>4.2?.72:1)).toFixed(3)}) translateY(${t>4.2?-140:0}px)`});
- // la línea de «ahora»: del bloque de 09:45 al de 10:50 con la barra de progreso
- const a=t-8.6,mv=eI(S(3.6,4.4,a)),y=L(8+3*rowH+(3*0),8+4*rowH,mv);nowEl.style.top=((3+mv)*rowH+3)+'px';nowEl.style.opacity=S(1.4,2.0,a);nowB.style.width=(S(4.4,9,a)*60+(mv>0?8:0))+'%';
- rail.style.opacity=(S(2.9,3.7,t)*(1-S(24.9,25.8,t))).toFixed(3);ui(t,KF);{const p3=$('por3');const r3=t-13.4;p3.style.transform=`translateY(${((1-eO(S(.25,.95,r3)))*560).toFixed(1)}px)`}film(t)},{hold:0,still:25000});
+  if(t<3.2){const d=(o.c+o.r)*.04+o.j*.15,a=sp(S(.2+d,.9+d,t),1.2,5.5),dim=eO(S(1.5+dist*.6,2.4+dist*.6,t)),fade=S(2.5,3.1,t);sc=a*(o.h?1:L(1,.2,dim));k=sc>0?(o.h?1:L(1,.18,dim))*(1-fade):0}
+  else if(t>26.8){const a=sp(S(27+dist*.4,27.8+dist*.4,t),1.2,5);sc=o.h?a*.72:0;k=o.h?1:0}
+  o.e.style.opacity=k.toFixed(3);o.e.style.transform=`translateY(${t>26.8?-120:0}px) scale(${Math.max(0,sc).toFixed(3)})`});
+ $('world').style.opacity=(S(2.4,3.0,t)*(1-S(26.2,26.8,t))).toFixed(3);
+ screens(tt,(s,rel)=>{s.querySelectorAll('[data-count]').forEach(e=>{const a=+e.dataset.count,k=eO(S(a,a+(+(e.dataset.d||1.2)),rel));e.textContent=(e.dataset.pre||'')+Math.round(L(0,+e.dataset.to,k))+(e.dataset.suf||'')});s.querySelectorAll('[data-bar]').forEach(e=>{e.style.width=L(+e.dataset.from,+e.dataset.to,S(+e.dataset.bar,+e.dataset.bar+(+(e.dataset.d||1)),rel)).toFixed(1)+'%'})});
+ // paleta de comandos con typing en vivo
+ const pl=$('pal'),pk=eO(S(5.2,5.7,tt))*(1-eO(S(6.9,7.2,tt)));pl.style.visibility=pk>0?'visible':'hidden';pl.style.opacity=pk;pl.style.transform=`translateY(${(1-eO(S(5.2,5.7,tt)))*-30}px)`;
+ const pt=typed('hor',tt,5.7,5);$('palT').textContent=pt;$('palC').style.display=(tt>5.5&&tt<6.9&&caretOn(tt))?'inline-block':'none';
+ [...pl.querySelectorAll('.rs div')].forEach((d,i)=>{const hit=pt.length>=3&&d.dataset.k!=='hor';d.style.opacity=hit?.18:1;d.className=(i===0&&pt.length>=3)?'on':''});
+ // la línea de «ahora» se desliza con resorte; el selector Entre/Fin de semana
+ const now=P1q('.now');if(now){const mv=sp(S(8.6,9.5,tt),1.2,5.5);now.style.top=((3+mv)*44+3)+'px';const nb=P1q('#nowb');if(nb)nb.style.width=(S(7.6,12,tt)*70+8)+'%'}
+ const sg=P1q('.seg');if(sg){const on=tt>10.2;[...sg.children].forEach((x,i)=>{x.className=(on?i===1:i===0)?'on':''})}
+ // semana: choques → resolución con física (signature)
+ CARDS.forEach((c,i)=>{});
+ movs.forEach(({e,m},i)=>{const a=m[6],k=sp(S(a,a+1.3,tt),1.3,4.5),lx0=52+m[2]*CW,ly0=30+m[3]*RH,lx1=52+m[4]*CW,ly1=30+m[5]*RH,jit=(1-S(a,a+.4,tt))*(tt<a?(Math.sin(tt*40+i)*4):0);
+  e.style.left=(L(lx0+(tt<a?8:0)+jit,lx1,k)).toFixed(1)+'px';e.style.top=(L(ly0+(tt<a?-8:0),ly1,k)).toFixed(1)+'px';e.className='cd'+(tt<a+.5?' bad':'');e.style.transform=`rotate(${(tt<a?-2.5:(1-k)*4).toFixed(2)}deg)`;
+  const fx=cards[conflictPairs[i][0]];if(fx)fx.className='cd'+(tt<a+.5?' bad':'')});
+ const left=3-[17.9,18.3,18.7].filter(v=>tt>=v).length;$('conf').textContent=left>0?left+(left===1?' choque':' choques'):'Sin choques';$('conf').className='ch '+(left>0?'bad':'good');
+ $('gen').className='gbtn'+(tt>16.2&&tt<17.0?' glow':'');
+ $('stamp').style.opacity=(eO(S(18.9,19.3,tt))*(1-eI(S(20.4,20.9,tt)))).toFixed(3);$('stamp').style.transform=`translate(-50%,-50%) rotate(-6deg) scale(${(1.4-.4*sp(S(18.9,19.7,tt),1.2,5)).toFixed(3)})`;
+ // typing de la solicitud
+ const rt=typed('Error de suma en el parcial',tt,23.4,13);$('reqT').textContent=rt;$('reqC').style.display=(tt>23.2&&tt<25&&caretOn(tt))?'inline-block':'none';$('rsend').style.opacity=rt.length>0?(rt.length>20?1:.7):.5;$('rsend').style.boxShadow=(tt>24.4&&tt<25.4)?'0 0 0 4px rgba(28,82,91,.35)':'none';
+ // cámara, DOF por dispositivo, dedo, ondas
+ const c=camAt(KF,tt);applyCam(c);
+ const fi=c.cx<600?0:c.cx<2200?1:2;dvs.forEach((d,i)=>{const b=(i===fi||c.s<.8)?0:12;d.style.filter=b?`blur(${b/c.s}px)`:'none'});
+ const pal=$('pal');[...$('P1').querySelectorAll('.pad,.dock,.bar')].forEach(e=>setBlur(e,(tt>5.3&&tt<7.0)?7:0,c.s));
+ $('wtxt').style.left='-720px';$('wtxt').style.top='-520px';$('wtxt').style.opacity=(eO(S(2.3,3.2,t))*(1-eI(S(4.2,5.2,t)))*.8).toFixed(3);$('wtxt').style.filter=`blur(${(10)/Math.max(.5,c.s)}px)`;
+ let fx=0,fy=0,fo=0;if(t>FP[0][0]-.8&&t<FP[1][0]+.6){const a=T(FP[0][1])(),b=T(FP[1][1])(),k=eO(S(FP[1][0]-1.6,FP[1][0]-.1,t));const base=t<FP[1][0]-1.6?a:[L(a[0],b[0],k),L(a[1],b[1],k)];fx=base[0];fy=base[1];fo=1}
+ fing.style.opacity=fo;fing.style.transform=`translate(${fx.toFixed(1)}px,${fy.toFixed(1)}px) scale(${(1/c.s).toFixed(4)})`;
+ while(rips.children.length<TAPT.length){const e=document.createElement('div');e.className='rp';rips.appendChild(e)}
+ [...rips.children].forEach((e,i)=>{const p=S(TAPT[i],TAPT[i]+.7,t);if(p<=0||p>=1){e.style.opacity=0;return}const ps=wpos($(TAPE[i])),sz=(80/c.s)*(.25+eO(p)*1.2);e.style.width=e.style.height=sz+'px';e.style.left=(ps[0]-sz/2)+'px';e.style.top=(ps[1]-sz/2)+'px';e.style.borderWidth=(3/c.s)+'px';e.style.opacity=(1-p)*.95});
+ OTS.forEach(o=>{const a=+o.dataset.a,b=+o.dataset.b,i=eO(S(a,a+.7,t)),out=eI(S(b-.5,b,t)),vis=t>=a-.01&&t<=b+.01;o.style.visibility=vis?'visible':'hidden';if(!vis)return;o.style.left=o.dataset.x+'px';o.style.top=o.dataset.y+'px';o.style.opacity=(i*(1-out)*.42).toFixed(3);o.style.transform=`translateY(${((1-i)*40-out*20).toFixed(1)}px)`;o.style.filter=`blur(${((1-i)*16+out*10).toFixed(1)}px)`});
+ $('endt').style.opacity=eO(S(28.0,29.2,t)).toFixed(3);
+ film(t)},{hold:0,still:19400});
+function P1q(sel){return $('P1').querySelector(sel)}
 </script></body></html>
