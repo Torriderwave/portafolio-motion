@@ -1,76 +1,31 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>MConnect — lanzamiento de la app (concepto)</title>
+<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>MConnect — lanzamiento de la app (concepto, dirección «Círculo cercano»)</title>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#0c0a16}
 #stage{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:50% 50%;overflow:hidden;perspective:2400px;background:radial-gradient(900px 700px at 62% 48%,#2a2150,#12101f 62%,#0a0912)}
 #cam{position:absolute;left:1060px;top:450px;width:0;height:0;transform-style:preserve-3d}
 #dev{position:absolute;left:-195px;top:-400px;width:390px;height:800px;border-radius:62px;background:linear-gradient(145deg,#34333f,#0b0a10 50%,#2a2933);box-shadow:0 70px 120px rgba(0,0,0,.65),inset 0 0 0 1.5px rgba(255,255,255,.2)}
-#scr{position:absolute;inset:11px;border-radius:52px;overflow:hidden;background:#14121f;color:#eceaf5;font:500 15px/1.35 Sans,sans-serif}
-.isl{position:absolute;left:50%;top:13px;width:104px;height:30px;margin-left:-52px;border-radius:16px;background:#000;z-index:9}
-.hd{position:absolute;left:0;right:0;top:0;padding:56px 18px 0;z-index:5;background:#14121f}
-.hd h1{margin:0;font:600 22px/1 Sans;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center}.dot{font:500 12px Sans;color:#66bb6a}
-.nav{display:flex;gap:16px;margin:14px 0 8px;font:500 14px Sans;color:#9a97b3;position:relative;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,.08)}.nav span.sel{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:6px}
-.s{position:absolute;inset:0;padding:158px 18px 0;visibility:hidden}
-.hint{margin:0 0 10px;color:#9a97b3;font-size:13px}.sharing{color:#66bb6a;font-weight:600;margin:0 0 10px;font-size:13px}
-.ptt{display:block;width:100%;margin-top:26px;padding:60px 0;border:0;border-radius:28px;background:#25213a;color:#eceaf5;font:600 20px Sans;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;position:relative}
-.ptt.on{background:#c62828;color:#fff;box-shadow:0 0 60px rgba(198,40,40,.55)}
-.wave{display:flex;gap:4px;align-items:center;justify-content:center;height:84px;margin-top:20px}.wave i{width:6px;border-radius:3px;background:#c6b8ff;height:8px}
-.speaking{font-weight:600;margin:14px 0 0;text-align:center;font-size:15px;height:20px}
-.who{display:flex;gap:10px;margin-top:8px}.who b{font:600 12px Sans;padding:5px 10px;border-radius:12px;background:rgba(255,255,255,.07)}.who b:before{content:"";display:inline-block;width:8px;height:8px;border-radius:4px;background:#66bb6a;margin-right:6px}
-.msgs{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}.msgs li{padding:8px 12px;border-radius:14px;max-width:78%;display:flex;flex-direction:column}
-.msgs .mine{align-self:flex-end;background:#1565c0;color:#fff}.msgs .theirs{align-self:flex-start;background:rgba(136,136,136,.24)}.msgs b{font-size:12px;color:#c6b8ff}.msgs time{font-size:11px;opacity:.65;margin-top:2px}
-.row{position:absolute;left:18px;right:18px;bottom:30px;display:flex;gap:8px}.inp{flex:1;padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.07);color:#eceaf5;min-height:20px;border:1px solid rgba(255,255,255,.1)}.inp.ph:empty:before{content:"Escribe un mensaje";color:#8b88a6}.btn{padding:11px 16px;border-radius:12px;background:#1565c0;color:#fff;font-weight:600}
-.map{width:100%;height:auto;border-radius:10px;display:block;margin-top:8px}.mapw{position:relative}.attr{position:absolute;right:6px;bottom:6px;font-size:10px;color:#1a1a1a;background:rgba(255,255,255,.82);padding:1px 6px;border-radius:3px}
-.members{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}.members li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.05)}
-code{font:600 14px ui-monospace,monospace;color:#eceaf5}.tag{font-size:12px;padding:2px 8px;border-radius:6px;background:rgba(136,136,136,.25)}.tag.ok{background:rgba(46,125,50,.35);color:#a5d6a7}
-h3{font:600 15px Sans;margin:20px 0 8px}.btn2{display:inline-block;padding:9px 12px;border-radius:10px;background:#25213a;margin-right:6px;font-size:13px;box-shadow:0 0 0 1px rgba(255,255,255,.1) inset}.token{font:600 14px ui-monospace,monospace;color:#c6b8ff;margin:10px 0 0;word-break:break-all;min-height:20px}
-.tapdot{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid #fff;opacity:0}
-.cp{position:absolute;left:150px;top:330px;width:640px;visibility:hidden}
-.cp small{display:block;font:500 14px Sans;letter-spacing:.34em;text-transform:uppercase;color:#8f8ab0;margin-bottom:22px}.cp h2{margin:0;font:italic 300 96px/1 Display,serif;color:#f3eefc;letter-spacing:-.02em}.cp p{margin:22px 0 0;font:500 22px/1.4 Sans;color:#b9b3d6;max-width:520px}
-#end h2{font-size:92px}#ico{position:absolute;left:-110px;top:-110px;width:220px;height:220px;border-radius:52px;background:linear-gradient(145deg,#352b66,#151326);box-shadow:0 50px 80px rgba(0,0,0,.55),inset 0 0 0 1.5px rgba(255,255,255,.2);opacity:0;display:grid;place-items:center}#ico svg{width:150px;height:150px;overflow:visible}.rmb{position:absolute;left:70px;bottom:56px;display:none;font:italic 300 34px Display,serif;color:#f3eefc}.rmb small{display:block;font:500 12px Sans;letter-spacing:.3em;text-transform:uppercase;color:#8f8ab0;margin-bottom:6px;font-style:normal}@media (prefers-reduced-motion:reduce){.rmb{display:block}}
-#film{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.2;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}.vg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 48%,transparent 55%,rgba(0,0,0,.5))}
+#scr{position:absolute;inset:11px;border-radius:52px;overflow:hidden;background:#151326}
+#app{position:absolute;left:4px;top:0;width:390px;height:844px;border:0;transform-origin:0 0;transform:scale(.922)}
+#ico{position:absolute;left:-110px;top:-110px;width:220px;height:220px;border-radius:52px;background:linear-gradient(145deg,#352b66,#151326);box-shadow:0 50px 80px rgba(0,0,0,.55),inset 0 0 0 1.5px rgba(255,255,255,.2);opacity:0;display:grid;place-items:center}#ico svg{width:150px;height:150px}
+.cp{position:absolute;left:150px;top:330px;width:620px;visibility:hidden}
+.cp small{display:block;font:500 14px Sans;letter-spacing:.34em;text-transform:uppercase;color:#8f8ab0;margin-bottom:22px}.cp h2{margin:0;font:italic 300 90px/1 Display,serif;color:#f3eefc;letter-spacing:-.02em}.cp p{margin:22px 0 0;font:500 22px/1.4 Sans;color:#b9b3d6;max-width:520px}
+#end h2{font-size:96px}
+.rmb{position:absolute;left:70px;bottom:56px;display:none;font:italic 300 34px Display,serif;color:#f3eefc}.rmb small{display:block;font:500 12px Sans;letter-spacing:.3em;text-transform:uppercase;color:#8f8ab0;margin-bottom:6px;font-style:normal}@media (prefers-reduced-motion:reduce){.rmb{display:block}}
+#film{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.18;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}.vg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 48%,transparent 55%,rgba(0,0,0,.5))}
 </style></head><body>
 <div id="stage">
- <section class="cp" data-a="0.2" data-b="2.8"><small>Presentamos</small><h2>MConnect</h2><p>Tu círculo cercano, en una app.</p></section>
- <section class="cp" data-a="3.0" data-b="7.2"><small>01 — Radio</small><h2>Habla al instante</h2><p>Radio en tiempo real, tipo walkie-talkie, solo con tu círculo.</p></section>
- <section class="cp" data-a="7.6" data-b="12.4"><small>02 — Chat</small><h2>Mensajes que se van</h2><p>Chat cifrado. Los mensajes desaparecen solos a la hora.</p></section>
- <section class="cp" data-a="12.8" data-b="17.6"><small>03 — Ubicación</small><h2>Cerca, aunque no estés</h2><p>Ubicación familiar en un mapa. Tú decides cuándo pausar.</p></section>
- <section class="cp" data-a="18.0" data-b="22.8"><small>04 — Miembros</small><h2>Un círculo cerrado</h2><p>Solo entra quien invitas, con un código de un solo uso.</p></section>
- <section class="cp" id="end" data-a="23.9" data-b="99"><small>Ya puedes conocerla</small><h2>Radio, chat y ubicación.</h2><p>MConnect. Solo tu círculo.</p></section>
+ <section class="cp" data-a="0.3" data-b="2.4"><small>Presentamos</small><h2>MConnect</h2><p>Círculo cercano: tu gente, en un mapa privado.</p></section>
+ <section class="cp" data-a="2.7" data-b="5.5"><small>01 — Canal privado</small><h2>Cifrado, a la vista</h2><p>Verificar dispositivo, acordar claves, abrir canal.</p></section>
+ <section class="cp" data-a="5.7" data-b="9.0"><small>02 — Mapa</small><h2>Tu círculo, en el mapa</h2><p>Quién está cerca, dónde y hace cuánto.</p></section>
+ <section class="cp" data-a="9.2" data-b="15.4"><small>03 — Conversación</small><h2>Habla con tu círculo</h2><p>Chats sobre el mapa. Cada mensaje viaja por el túnel.</p></section>
+ <section class="cp" data-a="15.7" data-b="21.6"><small>04 — Túnel</small><h2>Si cae, nada sale</h2><p>Sin túnel se bloquean el envío y la ubicación.</p></section>
+ <section class="cp" data-a="21.8" data-b="25.8"><small>05 — Control</small><h2>Tú decides</h2><p>Dispositivos y sesiones del círculo, a un toque.</p></section>
+ <section class="cp" id="end" data-a="27.0" data-b="99"><small>Ya puedes conocerla</small><h2>MConnect</h2><p>Tu círculo cercano.</p></section>
  <div class="rmb"><small>Lanzamiento</small>MConnect</div>
- <div id="cam"><div id="ico"><svg viewBox="-110 -80 220 160"><g fill="none" stroke-width="22" stroke-linecap="round"><path d="M-98 56V-4A49 49 0 0 1 0 -4" stroke="#c6b8ff"/><path d="M0 -4A49 49 0 0 1 98 -4V56" stroke="#f3bea9"/></g><circle id="icd" cx="0" cy="34" r="15" fill="#86e0cf"/></svg></div><div id="dev"><div id="scr"><div class="isl"></div>
-  <div class="hd"><h1>MConnect<span class="dot">● conectado</span></h1><div class="nav" id="nav"><span>Chat</span><span>Radio</span><span>Ubicación</span><span>Miembros</span></div></div>
-  <section class="s" id="sA" data-a="2.8" data-b="7.4" data-tab="1">
-   <p class="hint" data-in=".2">Canal del círculo · 3 conectados</p>
-   <div class="who" data-in=".4"><b>tú</b><b>Alma</b><b>Leo</b></div>
-   <button class="ptt" id="ptt" data-in=".6" data-y="30">Mantén para hablar</button>
-   <div class="wave" id="wave" data-in=".7"></div><p class="speaking" id="spk"></p>
-   <i class="tapdot" data-tap="1.2" style="left:175px;top:332px"></i>
-  </section>
-  <section class="s" id="sB" data-a="7.4" data-b="12.6" data-tab="0">
-   <p class="hint" data-in=".1">Los mensajes desaparecen solos a la hora.</p>
-   <ul class="msgs"><li class="theirs" data-out="4.0" data-in=".4"><b>Alma</b><span>¿Ya saliste?</span><time>14:02</time></li>
-    <li class="mine" data-in="1.1"><span>Voy en camino</span><time>14:02</time></li>
-    <li class="theirs" data-in="1.9"><b>Leo</b><span>Te esperamos en la puerta</span><time>14:03</time></li>
-    <li class="mine" data-in="3.9"><span>Listo, ya llegué</span><time>14:04</time></li></ul>
-   <div class="row"><div class="inp ph" id="inp" data-in=".2" data-type="2.6" data-text="Listo, ya llegué" data-d="1"></div><div class="btn" data-in=".2">Enviar</div></div>
-  </section>
-  <section class="s" id="sC" data-a="12.6" data-b="17.8" data-tab="2">
-   <p class="sharing" data-in=".1">● Estás compartiendo tu ubicación con el círculo</p>
-   <div class="mapw" data-in=".3"><svg class="map" viewBox="0 0 600 400"><rect width="600" height="400" rx="8" fill="rgba(136,136,136,.12)"/>
-    <g fill="none" stroke-width="2.5" stroke-linejoin="round" opacity=".85"><polyline id="r1" points="70,320 120,290 180,300 240,250 300,230 360,190 430,170" stroke="#3aa8e8" pathLength="1" data-draw=".8" data-d="3"/><polyline id="r2" points="90,110 150,140 210,130 280,170 340,150 410,200 500,230" stroke="#e8923a" pathLength="1" data-draw="1.1" data-d="3"/><polyline id="r3" points="520,90 470,110 430,100 380,130 350,160" stroke="#58c47a" pathLength="1" data-draw="1.4" data-d="2.2"/></g>
-    <g id="pins"><circle r="9" fill="#3aa8e8"/><circle r="9" fill="#e8923a"/><circle r="9" fill="none" stroke="#58c47a" stroke-width="2.5"/></g>
-    <g font-size="15" fill="#eceaf5" id="lbl"><text>tú</text><text>alma</text><text>leo (pausado)</text></g></svg><span class="attr">© OpenStreetMap contributors</span></div>
-   <p class="hint" data-in="2.6" style="margin-top:14px">Recorridos de la última hora. Leo pausó su ubicación.</p>
-  </section>
-  <section class="s" id="sD" data-a="17.8" data-b="23.0" data-tab="3">
-   <ul class="members"><li data-in=".2"><code>a3f9c1</code> (tú) <span class="tag">admin</span> <span class="tag ok">en el grupo</span></li><li data-in=".5"><code>7be2d0</code> <span class="tag">member</span> <span class="tag ok">en el grupo</span></li><li data-in=".8"><code>c41a98</code> <span class="tag">member</span> <span class="tag" id="pend">pendiente</span></li></ul>
-   <h3 data-in="1.2">Invitar un dispositivo</h3><div data-in="1.4"><span class="btn2" id="bm">Invitación de miembro</span><span class="btn2">Invitación de admin</span></div>
-   <p class="hint" data-in="2.8" style="margin-top:14px">Un solo uso, caduca pronto:</p><p class="token" data-type="2.9" data-text="mc1-7Q4K-9XDA-2PLM" data-d="1.2"></p>
-   <i class="tapdot" data-tap="2.5" style="left:100px;top:420px"></i>
-  </section>
- </div></div></div>
+ <div id="cam"><div id="ico"><svg viewBox="0 0 48 48"><path d="M8 38V23a8 8 0 0 1 16 0v15" fill="none" stroke="#C6B8FF" stroke-width="4.2" stroke-linecap="round"/><path d="M24 38V23a8 8 0 0 1 16 0v15" fill="none" stroke="#F3BEA9" stroke-width="4.2" stroke-linecap="round"/><circle cx="24" cy="30" r="4.4" fill="#151326" stroke="#86E0CF" stroke-width="2.4"/><circle cx="24" cy="30" r="1.4" fill="#86E0CF"/></svg></div>
+  <div id="dev"><div id="scr"><iframe id="app" src="app.html" title="MConnect · demostración" tabindex="-1"></iframe></div></div></div>
  <div class="vg"></div><div id="film"></div>
 </div>
 <script>
@@ -87,7 +42,8 @@ const vig=(x,w,h,a=.5)=>{const g=x.createRadialGradient(w/2,h/2,Math.min(w,h)*.3
 const film=t=>{const e=document.getElementById('film');if(e){const r=rng(Math.floor(t*24)+3);e.style.backgroundPosition=`${r()*220|0}px ${r()*220|0}px`}};
 const shake=(t,t0,a=6,d=.3)=>{const k=S(t0,t0+d,t);if(k<=0||k>=1)return[0,0];const e=(1-k)*(1-k)*a;return[Math.sin(k*67)*e,Math.cos(k*59)*e]};
 const FONTS=()=>document.fonts?Promise.all(['300 40px Display','italic 300 40px Display','500 20px Sans'].map(f=>document.fonts.load(f,'AÁaáÍí0'))):Promise.resolve();
-function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+function play(D,draw,o={}){if(/nocap/.test(location.search))document.querySelectorAll('.cp,.rmb').forEach(e=>e.style.display='none');
+const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 window.__D=D;
 FONTS().then(()=>{window.__seek=t=>{draw(C(t,0,D));return rf()};
 if(cap){draw(0);return}
@@ -101,10 +57,10 @@ const stage=document.getElementById('stage'),cam=document.getElementById('cam');
 const SCR=[...document.querySelectorAll('.s')],CAPS=[...document.querySelectorAll('.cp')];
 const eO=bez(.16,.84,.2,1),eI=bez(.65,0,.2,1),eC=bez(.45,0,.2,1);
 const fitStage=()=>{const k=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(-50%,-50%) scale(${k})`};fitStage();addEventListener('resize',fitStage);
-const win=(e,t)=>{const a=+e.dataset.a,b=+e.dataset.b;return[eO(S(a,a+.55,t)),eI(S(b-.45,b,t)),t>=a-.02&&t<=b+.02]};
+const win=(e,t)=>{const a=+e.dataset.a,b=+e.dataset.b,di=+e.dataset.ti||.55,dd=+e.dataset.to||.45;return[eO(S(a,a+di,t)),eI(S(b-dd,b,t)),t>=a-.02&&t<=b+.02]};
 function camAt(t,KF){let i=0;while(i<KF.length-2&&t>=KF[i+1][0])i++;const A=KF[i],B=KF[i+1],e=eC(S(A[0],B[0],t));return A.slice(1).map((v,j)=>L(v,B[j+1],e))}
 function ui(t,KF,{onScreen}={}){
- SCR.forEach(s=>{const[i,o,v]=win(s,t);s.style.visibility=v?'visible':'hidden';if(!v)return;s.style.opacity=(i*(1-o)).toFixed(3);s.style.transform=`translateX(${((1-i)*70-o*60).toFixed(1)}px)`;
+ SCR.forEach(s=>{const[i,o,v]=win(s,t);s.style.visibility=v?'visible':'hidden';if(!v)return;s.style.opacity=(i*(1-o)).toFixed(3);const fl=s.dataset.flat?0:1;s.style.transform=`translateX(${(((1-i)*70-o*60)*fl).toFixed(1)}px)`;
   const rel=t-(+s.dataset.a);
   s.querySelectorAll('[data-in]').forEach(e=>{const a=+e.dataset.in,d=+e.dataset.d||.5,k=eO(S(a,a+d,rel));e.style.opacity=k.toFixed(3);const y=+(e.dataset.y??14),sc=+(e.dataset.s||0);e.style.transform=`translateY(${((1-k)*y).toFixed(1)}px) scale(${(1-(1-k)*sc).toFixed(3)})`});
   s.querySelectorAll('[data-out]').forEach(e=>{const a=+e.dataset.out,k=eI(S(a,a+.6,rel));e.style.opacity=(1-k).toFixed(3);e.style.filter=`blur(${(k*6).toFixed(1)}px)`;});
@@ -116,19 +72,21 @@ function ui(t,KF,{onScreen}={}){
   if(onScreen)onScreen(s,rel,t)});
  CAPS.forEach(c=>{const[i,o,v]=win(c,t);c.style.visibility=v?'visible':'hidden';c.style.opacity=(i*(1-o)).toFixed(3);c.style.transform=`translateY(${((1-i)*26-o*14).toFixed(1)}px)`});
  const c=camAt(t,KF);cam.style.transform=`translate3d(${c[0]}px,${c[1]}px,${c[5]||0}px) scale(${c[2]}) rotateY(${c[3]}deg) rotateX(${c[4]}deg)`}
-const KF=[[0,40,60,.84,-38,6,0],[2.8,0,0,1.04,-12,3,0],[3.7,0,0,1.04,-5,1,0],[4.5,0,0,1.5,-3,0,0],[6.5,0,0,1.5,3,0,0],[7.6,0,0,1.04,8,-1,0],[8.4,0,0,1.04,6,0,0],[9.2,0,-80,1.3,3,0,0],[11.8,0,-80,1.3,-3,0,0],[12.8,0,0,1.04,-8,1,0],[13.5,0,0,1.04,-6,0,0],[14.3,0,200,1.5,-3,0,0],[16.6,0,200,1.5,3,0,0],[17.5,0,0,1.04,9,-1,0],[18.4,0,0,1.04,6,0,0],[19.2,0,150,1.5,3,0,0],[22.0,0,150,1.5,-2,0,0],[22.8,0,0,1.02,0,0,0],[24.4,0,0,1.0,-8,0,0],[27,0,0,1.0,10,0,0]];
-const nav=[...document.getElementById('nav').children],wave=document.getElementById('wave');for(let i=0;i<26;i++)wave.appendChild(document.createElement('i'));
-const bars=[...wave.children],ptt=document.getElementById('ptt'),spk=document.getElementById('spk'),pins=[...document.querySelectorAll('#pins circle')],lbl=[...document.querySelectorAll('#lbl text')];
-const R=[[70,320,120,290,180,300,240,250,300,230,360,190,430,170],[90,110,150,140,210,130,280,170,340,150,410,200,500,230],[520,90,470,110,430,100,380,130,350,160]];
-const at=(a,f)=>{const n=a.length/2-1,u=Math.min(.9999,f)*n,i=Math.floor(u),r=u-i;return[L(a[i*2],a[i*2+2],r),L(a[i*2+1],a[i*2+3],r)]};
-const dev=document.getElementById('dev'),$=id=>document.getElementById(id);
-play(27000,t=>{t/=1000;
- dev.style.opacity=(eO(S(.0,.8,t))*(1-S(23.5,23.9,t))).toFixed(3);dev.style.transform=`rotateY(${(-90*eI(S(22.9,23.9,t))).toFixed(1)}deg)`;const ic=$('ico'),k4=eO(S(23.7,24.9,t));ic.style.opacity=S(23.7,24.0,t).toFixed(3);ic.style.transform=`rotateY(${(90*(1-k4)).toFixed(1)}deg) scale(${(1+.25*k4).toFixed(3)})`;$('icd').setAttribute('r',15*sp(S(24.2,25.2,t),1.4,5));
- ui(t,KF,{onScreen:(s,rel)=>{const tab=+s.dataset.tab;nav.forEach((n,i)=>n.className=i===tab?'sel':'');
-  if(s.id==='sA'){const on=rel>1.3&&rel<2.9,rx=rel>3.2&&rel<4.5;ptt.className='ptt'+(on?' on':'');ptt.textContent=on?'Hablando…':'Mantén para hablar';spk.textContent=on?'Tú estás hablando':rx?'Leo está hablando':'';spk.style.color=on?'#ef9a9a':'#c6b8ff';
-   bars.forEach((b,i)=>{const a=(on||rx)?1:.08;b.style.height=(8+a*(10+60*Math.abs(Math.sin(rel*7+i*.7))*Math.abs(Math.sin(i*.5+rel*2.3))))+'px';b.style.background=on?'#ef9a9a':'#c6b8ff'})}
-  if(s.id==='sB'){const i=document.getElementById('inp');if(rel>3.9)i.textContent=''}
-  if(s.id==='sC'){const f=[eO(S(.8,3.8,rel)),eO(S(1.1,4.1,rel)),eO(S(1.4,3.6,rel))];R.forEach((a,k)=>{const p=at(a,f[k]);pins[k].setAttribute('cx',p[0]);pins[k].setAttribute('cy',p[1]);lbl[k].setAttribute('x',p[0]+14);lbl[k].setAttribute('y',p[1]+5);pins[k].style.opacity=lbl[k].style.opacity=S(.8+k*.3,1.4+k*.3,rel)})}
-  if(s.id==='sD'){const pe=document.getElementById('pend');const ok=rel>4.1;pe.textContent=ok?'en el grupo':'pendiente';pe.className='tag'+(ok?' ok':'')}}});
- film(t)},{hold:0,still:18800});
+const $=id=>document.getElementById(id),ifr=$('app'),dev=$('dev'),ico=$('ico');
+const KF=[[0,40,100,.84,-38,6,0],[1.3,0,0,1.04,-10,2,0],[2.2,0,0,1.04,-6,0,0],[2.8,0,20,1.3,-3,0,0],[5.0,0,20,1.3,3,0,0],[5.6,0,0,1.04,8,-1,0],[8.6,0,0,1.06,10,-1,0],[9.4,0,-70,1.32,4,0,0],[14.6,0,-70,1.32,-4,0,0],[15.4,0,0,1.04,-9,1,0],[16.4,0,0,1.04,-4,0,0],[17.2,0,0,1.08,0,0,0],[21.6,0,0,1.06,8,0,0],[24.0,0,0,1.04,-6,0,0],[26.0,0,0,1.04,0,0,0],[30,0,0,1.0,0,0,0]];
+if(/nocap/.test(location.search))document.querySelectorAll('.cp,.rmb').forEach(e=>e.style.display='none');
+const cap=/[?&]cap/.test(location.search),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let A,Dc,now=0,q=[],qid=0,lastT=1e9;
+// reloj virtual dentro del iframe: los temporizadores de su demo y sus transiciones CSS se avanzan por tiempo (determinista, grabable)
+const hook=()=>{q=[];now=0;A.setTimeout=(fn,ms)=>{q.push({id:++qid,at:now+Math.max(0,ms||0),fn});return qid};A.clearTimeout=i=>{q=q.filter(x=>x.id!==i)}};
+const adv=to=>{for(;;){q.sort((a,b)=>a.at-b.at);const n=q[0];if(!n||n.at>to)break;q.shift();now=n.at;const b=new Set(Dc.getAnimations());n.fn();void Dc.body.offsetWidth;Dc.getAnimations().forEach(a=>{if(!b.has(a))a.__t=now})}now=to;Dc.getAnimations().forEach(a=>{if(a.__t!=null){a.pause();a.currentTime=Math.max(0,now-a.__t)}})};
+const restart=()=>{hook();A.MConnect.playDemo();void Dc.body.offsetWidth};
+const start=()=>{A=ifr.contentWindow;Dc=A.document;
+ play(30000,t=>{t/=1000;
+  if(RM&&!cap){if(A.MConnect.state.scene!=='home')A.MConnect.setScene('home')}
+  else{if(t<lastT-.05)restart();lastT=t;adv(Math.min(30,t*1.1)*1000)}
+  const k=eO(S(.0,.8,t));dev.style.opacity=(k*(1-S(26.0,26.6,t))).toFixed(3);dev.style.transform=`rotateY(${(-55*eI(S(26.0,26.8,t))).toFixed(1)}deg)`;
+  const k4=eO(S(26.4,27.6,t));ico.style.opacity=S(26.4,26.8,t).toFixed(3);ico.style.transform=`rotateY(${(55*(1-k4)).toFixed(1)}deg) scale(${(1+.22*k4).toFixed(3)})`;
+  ui(t,KF);film(t)},{hold:0,still:7200})};
+if(ifr.contentDocument&&ifr.contentDocument.readyState==='complete'&&ifr.contentWindow.MConnect)start();else ifr.addEventListener('load',()=>setTimeout(start,50));
 </script></body></html>
