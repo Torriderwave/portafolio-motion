@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Alyron — reveal de lanzamiento</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#0a1424}svg{position:absolute;inset:0;width:100%;height:100%;display:block}#film{position:fixed;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.22;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}#fl{position:fixed;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse 70% 80% at 50% 42%,rgba(241,222,172,.55),rgba(241,222,172,.12) 55%,rgba(241,222,172,0) 100%)}.vg{position:fixed;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 48%,transparent 52%,rgba(0,0,0,.55))}</style></head>
+<body>
+<svg id="s" viewBox="0 0 1600 900" role="img" aria-label="Alyron: isotipo y logotipo">
+<defs><radialGradient id="bgr" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="#14263f"/><stop offset=".6" stop-color="#0a1424"/><stop offset="1" stop-color="#050a14"/></radialGradient>
+<radialGradient id="glow"><stop offset="0" stop-color="#cba052" stop-opacity=".34"/><stop offset="1" stop-color="#cba052" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="300" y2="0"><stop offset="0" stop-color="#b98f46"/><stop offset=".5" stop-color="#f4e1ae"/><stop offset="1" stop-color="#b98f46"/></linearGradient>
+<clipPath id="slabClip"><rect id="slabRect" x="0" y="0" width="938" height="0"/></clipPath>
+<clipPath id="isoWipe"><rect id="isoRect" x="0" y="0" width="0" height="806"/></clipPath>
+<clipPath id="wmWipe"><rect id="wmRect" x="480" y="600" width="0" height="200"/></clipPath>
+<clipPath id="triClip"><rect id="triRect" x="300" y="380" width="360" height="260"/></clipPath>
+</defs>
+<rect width="1600" height="900" fill="#0a1424"/><rect width="1600" height="900" fill="url(#bgr)"/>
+<ellipse id="g" cx="800" cy="380" rx="620" ry="420" fill="url(#glow)" opacity="0"/>
+<g id="cam" style="transform-origin:800px 450px">
+ <g id="iso" transform="translate(800 318) scale(.52) translate(-469 -402)">
+  <g id="net" fill="none" stroke="#cba052" stroke-linecap="round"></g>
+  <g id="nodes" fill="#cba052"></g>
+  <g clip-path="url(#triClip)"><polygon id="tri" points="330,636 476,380 628,636" fill="#cba052"/></g>
+  <g id="drawn"><g clip-path="url(#slabClip)"><polygon id="slab" points="476,3 938,785 765,788 755,780 390,150" fill="url(#sheen)"/></g></g>
+  <g clip-path="url(#isoWipe)"><image id="isoImg" href="../_brand/alyron-iso-gold.webp" x="0" y="0" width="940" height="806"/></g>
+ </g>
+ <g clip-path="url(#wmWipe)"><image id="wmImg" href="../_brand/alyron-gold.webp" x="486" y="640" width="628" height="129"/></g>
+</g>
+</svg><div id="fl"></div><div class="vg"></div><div id="film"></div>
+<script>
+/* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
+const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
+const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;return x=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1,t=x;for(let i=0;i<24;i++){const v=f(a,c,t);if(Math.abs(v-x)<1e-5)break;v<x?lo=t:hi=t;t=(lo+hi)/2}return f(b,d,t)}};
+const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+/* acabado: grano de película (24 fps), viñeta, micro-shake de impacto */
+let _g;const grain=(x,w,h,t,a=.09)=>{if(!_g){_g=document.createElement('canvas');_g.width=_g.height=180;const g=_g.getContext('2d'),d=g.createImageData(180,180),r=rng(9);for(let i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=r()*255|0;d.data[i+3]=255}g.putImageData(d,0,0)}
+ const r=rng(Math.floor(t*24)+1),ox=r()*180|0,oy=r()*180|0;x.save();x.globalAlpha=a;x.globalCompositeOperation='overlay';x.translate(-ox,-oy);x.fillStyle=x.createPattern(_g,'repeat');x.fillRect(ox,oy,w,h);x.restore()};
+const vig=(x,w,h,a=.5)=>{const g=x.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.78);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${a})`);x.fillStyle=g;x.fillRect(0,0,w,h)};
+const film=t=>{const e=document.getElementById('film');if(e){const r=rng(Math.floor(t*24)+3);e.style.backgroundPosition=`${r()*220|0}px ${r()*220|0}px`}};
+const shake=(t,t0,a=6,d=.3)=>{const k=S(t0,t0+d,t);if(k<=0||k>=1)return[0,0];const e=(1-k)*(1-k)*a;return[Math.sin(k*67)*e,Math.cos(k*59)*e]};
+const FONTS=()=>document.fonts?Promise.all(['300 40px Display','italic 300 40px Display','500 20px Sans'].map(f=>document.fonts.load(f,'AÁaáÍí0'))):Promise.resolve();
+function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+window.__D=D;
+FONTS().then(()=>{window.__seek=t=>{draw(C(t,0,D));return rf()};
+if(cap){draw(0);return}
+if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
+let t0=performance.now(),on=true;
+document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
+if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)})}
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id),mk=(p,n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+const nodes=[[369,185,13],[370,332,12],[457,346,12],[200,478,19],[380,479,12],[287,639,19],[160,710,13],[198,784,13],[20,785,19]];
+const edges=[[0,3,3.4],[0,2,3.4],[2,5,3.4],[3,8,3.4],[8,7,3.4],[7,5,3.4],[1,3,1.3],[0,1,1.3],[1,4,1.3],[3,5,1.3],[3,6,1.3],[6,5,1.3],[6,7,1.3],[6,8,1.3],[4,5,1.3]];
+const E=edges.map(([a,b,w],i)=>{const A=nodes[a],B=nodes[b];return{e:mk($('net'),'line',{x1:A[0],y1:A[1],x2:B[0],y2:B[1],'stroke-width':w*1.6,pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1}),d:.05+i*.07}});
+const N=nodes.map((n,i)=>({e:mk($('nodes'),'circle',{cx:n[0],cy:n[1],r:n[2]*1.2}),r:n[2]*1.2,d:.08+i*.13}));
+const eO=bez(.2,.8,.2,1),eIn=bez(.6,0,.1,1),eW=bez(.5,0,.1,1);const dr=[$('net'),$('nodes'),$('tri'),$('slab')];
+play(6600,t=>{t/=1000;
+ E.forEach(o=>o.e.setAttribute('stroke-dashoffset',1-eIn(S(o.d,o.d+.9,t))));
+ N.forEach(o=>{const p=sp(S(o.d,o.d+.8,t),1.4,5);o.e.setAttribute('r',Math.max(0,o.r*p))});
+ const tr=eO(S(1.2,2.1,t));$('tri').setAttribute('transform',`translate(0 ${(1-tr)*150})`);$('triRect').setAttribute('y',640-260*tr);
+ $('slabRect').setAttribute('height',805*bez(.75,0,.12,1)(S(1.7,2.7,t)));
+ const sh=S(2.5,3.9,t);$('sheen').setAttribute('x1',-300+sh*1500);$('sheen').setAttribute('x2',sh*1500);
+ 
+ $('g').setAttribute('opacity',eO(S(.6,3,t))*(.8+.2*Math.sin(t*1.6))+.5*Math.sin(Math.PI*S(3.4,4.8,t)));
+ const z=1+.045*S(0,6.4,t);
+ // cross-reveal: el isotipo oficial barre de izquierda a derecha sobre la construcción animada, que se apaga detrás
+ const w=eW(S(3.0,4.0,t));$('isoRect').setAttribute('width',940*w);const fd=1-S(3.5,4.3,t);dr.forEach(e=>e.style.opacity=t<3?1:fd);
+ $('wmRect').setAttribute('width',640*eW(S(3.9,5.0,t)));$('wmImg').setAttribute('transform',`translate(0 ${(1-eO(S(3.9,5.0,t)))*14})`);
+ const imp=bez(.1,.9,.2,1)(S(3.55,4.05,t));$('fl').style.opacity=(.55*(1-S(3.55,3.95,t))*(t>3.55?1:0)).toFixed(3);
+ const sk=shake(t,3.55,7,.35),sk2=shake(t,2.45,4,.3);$('cam').style.transform=`translate(${sk[0]+sk2[0]}px,${sk[1]+sk2[1]}px) scale(${z})`;film(t);
+ if(t>2.4)$('iso').setAttribute('transform',`translate(800 ${318-16*eO(S(3,4.2,t))}) scale(.52) translate(-469 -402)`);
+});
+</script></body></html>

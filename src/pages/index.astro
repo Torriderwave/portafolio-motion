@@ -205,11 +205,34 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const art = (w) => `<div class="art" data-t="${esc(w.type)}" style="--c:${esc(w.color)}" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></div>`;
     const mediaOf = (w, big) => {
+      if (big && w.demo) return demoOf(w);
       if (big && w.embed) return `<iframe src="${esc(w.embed)}" allowfullscreen title="${esc(w.title)}"></iframe>`;
       if (big && w.video) return `<video src="${base}/media/${esc(w.video)}" controls ${reduce ? '' : 'autoplay muted'} playsinline></video>`;
       if (w.thumb) return `<img src="${base}/media/${esc(w.thumb)}" alt="${esc(w.title)} — ${esc(w.type)}, ${w.year}" />`;
       return art(w);
     };
+
+    /* Demo viva: el iframe solo existe mientras la ficha está abierta (show() lo monta, close/step lo desmonta con body.innerHTML) */
+    const demoSrc = (w) => `${base}/demos/${esc(w.demo)}`;
+    const demoOf = (w) => `<iframe class="demo" src="${demoSrc(w)}" title="${esc(w.title)} — demo" loading="lazy" referrerpolicy="no-referrer"></iframe>`;
+    const rec = (w) => `<video src="${base}/media/${esc(w.video)}" poster="${base}/media/${esc(w.thumb)}" controls loop muted playsinline preload="none" aria-label="${esc(w.title)} — grabación"></video>`;
+    /* Vista previa al pasar el cursor: mp4 con preload="none", se crea y reproduce solo al hover (nunca con movimiento reducido) */
+    const hoverVid = (host, w) => {
+      if (reduce || !w.video || !matchMedia('(hover: hover)').matches) return null;
+      let v = host.querySelector('video.hv');
+      if (!v) {
+        v = document.createElement('video');
+        v.className = 'hv'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none'; v.setAttribute('aria-hidden', 'true'); v.tabIndex = -1;
+        v.src = `${base}/media/${w.video}`;
+        /* spots 16:9 y 9:16: sin recorte, con el color de la pieza de fondo (el resto conserva cover) */
+        if (w.hoverFit === 'contain') { v.classList.add('hv-contain'); v.style.backgroundColor = w.color; }
+        v.addEventListener('playing', () => v.classList.add('on'));
+        host.append(v);
+      }
+      return v;
+    };
+    const playHover = (host, w) => { const v = hoverVid(host, w); if (v) v.play().catch(() => {}); };
+    const stopHover = (host) => { const v = host.querySelector('video.hv'); if (v) { v.pause(); v.classList.remove('on'); v.currentTime = 0; } };
 
     /* Arte: animar solo cuando está en pantalla */
     const artIO = 'IntersectionObserver' in window && !reduce
@@ -342,11 +365,15 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     let pvi = -1;
     const preview = (i) => {
       if (i === pvi) return; pvi = i; const w = works[i];
-      pvm.innerHTML = mediaOf(w, false); watchArt(pvm);
+      pvm.innerHTML = mediaOf(w, false); watchArt(pvm); playHover(pvm, w);
       pvt.textContent = w.title; pvmeta.textContent = `${w.type} · ${w.year}`;
       items.forEach((el, k) => k === i ? el.setAttribute('data-active', '') : el.removeAttribute('data-active'));
     };
-    items.forEach((el, i) => { el.addEventListener('mouseenter', () => preview(i)); el.addEventListener('focusin', () => preview(i)); });
+    items.forEach((el, i) => {
+      el.addEventListener('mouseenter', () => { preview(i); if (list.dataset.view === 'grid') playHover(el.querySelector('.card-media'), works[i]); });
+      el.addEventListener('mouseleave', () => stopHover(el.querySelector('.card-media')));
+      el.addEventListener('focusin', () => preview(i));
+    });
     if (works.length) preview(0);
 
     /* Modal */
@@ -355,7 +382,8 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
     const visible = () => items.map((_, i) => i).filter((i) => !items[i].hidden);
     function show(i) {
       const w = works[i]; cur = i;
-      body.innerHTML = `<div class="m-media">${mediaOf(w, true)}</div>
+      body.innerHTML = `<div class="m-media" data-ratio="${esc(w.ratio || '16:9')}">${mediaOf(w, true)}</div>
+        ${w.demo && w.video ? `<p class="m-alt"><button type="button" class="m-btn" data-alt aria-pressed="false">Ver grabación</button><span class="mute">Demo en vivo · ${esc(w.ratio || '16:9')}</span></p>` : ''}
         <div class="m-grid grid12">
           <h2 id="m-title" class="m-title">${esc(w.title)}</h2>
           <dl class="m-dl">
@@ -368,10 +396,27 @@ const nav = [['trabajo', 'Trabajo'], ['servicios', 'Servicios'], ['contacto', 'C
         <p class="m-desc">${esc(w.description)}</p>`;
       mcount.textContent = `${String(i + 1).padStart(2, '0')} / ${String(works.length).padStart(2, '0')}`;
       watchArt(body);
+      if (w.demo) wireDemo(w);
       if (!modal.open) { opener = document.activeElement; modal.showModal(); }
       document.getElementById('m-close').focus();
       modal.scrollTop = 0;
       history.replaceState(null, '', '#' + w.slug);
+    }
+    /* Alternar demo en vivo ↔ grabación (la demo se desmonta al cambiar a la grabación); si el iframe no carga en 7 s, cae a la grabación */
+    function wireDemo(w) {
+      const box = body.querySelector('.m-media'), btn = body.querySelector('[data-alt]');
+      if (!box || !btn) return;
+      let live = true, loaded = false, timer = 0;
+      const set = (on, user) => {
+        live = on; clearTimeout(timer);
+        btn.setAttribute('aria-pressed', String(!on)); btn.textContent = on ? 'Ver grabación' : 'Ver demo en vivo';
+        box.innerHTML = on ? demoOf(w) : rec(w);
+        if (on) { loaded = false; box.querySelector('iframe').addEventListener('load', () => { loaded = true; }); timer = setTimeout(() => { if (!loaded && live) set(false); }, 7000); }
+        else if (user && !reduce) box.querySelector('video').play().catch(() => {});
+      };
+      btn.addEventListener('click', () => set(!live, true));
+      const f = box.querySelector('iframe'); f.addEventListener('load', () => { loaded = true; });
+      timer = setTimeout(() => { if (!loaded && live) set(false); }, 7000);
     }
     function step(d) { const v = visible(); if (!v.length) return; show(v[(v.indexOf(cur) + d + v.length) % v.length]); }
     items.forEach((el, i) => el.querySelector('.open').addEventListener('click', () => show(i)));

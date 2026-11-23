@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../_brand/fonts/fonts.css"><title>Rumbo — bumper para redes 1:1 (marca ficticia)</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#0b0d0c}canvas{display:block;width:100%;height:100%}</style></head>
+<body><canvas id="c" role="img" aria-label="Rumbo: una pelota rebota sobre las letras de la palabra y cada una cede al impacto"></canvas>
+<script>
+/* kit mínimo de línea de tiempo (inlined en cada demo): draw(t) es función pura del tiempo → grabable y con estado estático */
+const C=(v,a=0,b=1)=>v<a?a:v>b?b:v,L=(a,b,t)=>a+(b-a)*t,S=(a,b,t)=>C((t-a)/(b-a));
+const bez=(a,b,c,d)=>{const f=(p,q,t)=>3*p*(1-t)*(1-t)*t+3*q*(1-t)*t*t+t*t*t;return x=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1,t=x;for(let i=0;i<24;i++){const v=f(a,c,t);if(Math.abs(v-x)<1e-5)break;v<x?lo=t:hi=t;t=(lo+hi)/2}return f(b,d,t)}};
+const sp=(x,f=2,d=6)=>x<=0?0:x>=1?1:1-Math.exp(-d*x)*Math.cos(f*6.2832*x);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const fit=c=>{const d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return[x,w,h]};
+/* acabado: grano de película (24 fps), viñeta, micro-shake de impacto */
+let _g;const grain=(x,w,h,t,a=.09)=>{if(!_g){_g=document.createElement('canvas');_g.width=_g.height=180;const g=_g.getContext('2d'),d=g.createImageData(180,180),r=rng(9);for(let i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=r()*255|0;d.data[i+3]=255}g.putImageData(d,0,0)}
+ const r=rng(Math.floor(t*24)+1),ox=r()*180|0,oy=r()*180|0;x.save();x.globalAlpha=a;x.globalCompositeOperation='overlay';x.translate(-ox,-oy);x.fillStyle=x.createPattern(_g,'repeat');x.fillRect(ox,oy,w,h);x.restore()};
+const vig=(x,w,h,a=.5)=>{const g=x.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.78);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${a})`);x.fillStyle=g;x.fillRect(0,0,w,h)};
+const film=t=>{const e=document.getElementById('film');if(e){const r=rng(Math.floor(t*24)+3);e.style.backgroundPosition=`${r()*220|0}px ${r()*220|0}px`}};
+const shake=(t,t0,a=6,d=.3)=>{const k=S(t0,t0+d,t);if(k<=0||k>=1)return[0,0];const e=(1-k)*(1-k)*a;return[Math.sin(k*67)*e,Math.cos(k*59)*e]};
+const FONTS=()=>document.fonts?Promise.all(['300 40px Display','italic 300 40px Display','500 20px Sans'].map(f=>document.fonts.load(f,'AÁaáÍí0'))):Promise.resolve();
+function play(D,draw,o={}){const cap=/[?&]cap/.test(location.search),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,H=o.hold??1500,st=o.still??D,rf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+window.__D=D;
+FONTS().then(()=>{window.__seek=t=>{draw(C(t,0,D));return rf()};
+if(cap){draw(0);return}
+if(rm){draw(st);addEventListener('resize',()=>draw(st));return}
+let t0=performance.now(),on=true;
+document.addEventListener('visibilitychange',()=>{on=!document.hidden;t0=performance.now()});
+if(o.replay!==false)addEventListener('pointerdown',()=>{t0=performance.now()});
+const f=n=>{if(on){const t=(n-t0)%(D+H);draw(C(t,0,D))}requestAnimationFrame(f)};requestAnimationFrame(f)})}
+const cv=document.getElementById('c'),WORD='rumbo',BONE='#ece6d8',RED='#e8452c',BY=715,SZ=425,BEAT=.5;
+// aterrizajes (s): ida de R→O y vuelta de O→R; entra por la izquierda, sale por la derecha, vuelve por la derecha y sale por la izquierda (loop sin corte)
+const LAND=[[0,.5],[1,1],[2,1.5],[3,2],[4,2.5],[4,4],[3,4.5],[2,5],[1,5.5],[0,6]];
+const eO=bez(.16,.84,.2,1);
+let M=null;
+const measure=x=>{x.font=`italic 300 ${SZ}px Display`;if('letterSpacing'in x)x.letterSpacing='-6px';const ws=[...WORD].map(c=>x.measureText(c).width),tot=ws.reduce((a,b)=>a+b,0);let px=540-tot/2;M={ws,xs:ws.map(w=>{const c=px+w/2;px+=w;return c})}};
+const imp=dt=>dt<0?0:Math.exp(-6.5*dt)*Math.cos(22*dt);
+const ant=dt=>dt<0&&dt>-.16?S(-.18,0,dt)*.6:0; // anticipación: la letra se tensa antes del golpe
+function ball(t){ // posición de la pelota a lo largo de arcos parabólicos
+ const pts=[[-140,BY-360,0],...LAND.map(([i,tt])=>[M.xs[i],BY-SZ*.43,tt]),[1220,BY-360,3.0],[1220,BY-360,3.5]];
+ // pasada 1: 0→3.0 ; pasada 2: 3.5→6.5 (sale por la izquierda)
+ const seq1=[[-140,BY-360,0],...LAND.slice(0,5).map(([i,tt])=>[M.xs[i],BY-SZ*.43,tt]),[1220,BY-360,3.0]];
+ const seq2=[[1220,BY-360,3.5],...LAND.slice(5).map(([i,tt])=>[M.xs[i],BY-SZ*.43,tt]),[-140,BY-360,6.5]];
+ const seq=t<3.25?seq1:seq2;
+ for(let k=0;k<seq.length-1;k++){const a=seq[k],b=seq[k+1];if(t>=a[2]&&t<=b[2]){const u=(t-a[2])/(b[2]-a[2]),h=(a[1]<BY-340||b[1]<BY-340)?330:270;return[L(a[0],b[0],u),L(a[1],b[1],u)-h*4*u*(1-u)+0]}}
+ return[t<3.25?-140:(t>=6.5?-140:1220),BY-360]}
+play(7000,t=>{t/=1000;
+ const[x,w,h]=fit(cv),k=Math.min(w,h)/1080;if(!M)measure(x);
+ const bg=x.createRadialGradient(w/2,h*.45,0,w/2,h*.45,Math.max(w,h)*.7);bg.addColorStop(0,'#1b211d');bg.addColorStop(1,'#080a09');x.fillStyle=bg;x.fillRect(0,0,w,h);
+ x.save();x.translate((w-1080*k)/2,(h-1080*k)/2);x.scale(k,k);
+ let sh=[0,0],pu=0;LAND.forEach(([i,tt])=>{const s=shake(t,tt,14,.3);sh=[sh[0]+s[0],sh[1]+s[1]];if(t>=tt)pu+=Math.exp(-9*(t-tt))});x.translate(540+sh[0],540+sh[1]);x.scale(1+.028*Math.min(1.3,pu),1+.028*Math.min(1.3,pu));x.translate(-540,-540);
+ LAND.forEach(([i,tt])=>{const e=t>=tt?Math.exp(-11*(t-tt)):0;if(e>.01){const g=x.createRadialGradient(M.xs[i],BY-100,0,M.xs[i],BY-100,700);g.addColorStop(0,`rgba(232,69,44,${.3*e})`);g.addColorStop(1,'rgba(232,69,44,0)');x.fillStyle=g;x.fillRect(-1500,-1500,4100,4100)}});
+ // suelo: línea fina + reflejo
+ x.strokeStyle='rgba(236,230,216,.16)';x.lineWidth=1.5;x.beginPath();x.moveTo(90,BY+8);x.lineTo(990,BY+8);x.stroke();
+ const b=ball(t);
+ // impulsos por letra
+ const I=[...WORD].map((_,i)=>{let v=0;const rw=t-(6.3+i*.07);if(rw>0&&rw<.6)v+=Math.sin(Math.PI*rw/.6)*-.55*(1-rw/.9);LAND.forEach(([j,tt])=>{const dj=Math.abs(j-i);if(dj===0)v+=imp(t-tt)-ant(t-tt);else v+=imp(t-tt-.075*dj)*Math.pow(.5,dj)*.9});return v});
+ const drawWord=(refl)=>{x.font=`italic 300 ${SZ}px Display`;if('letterSpacing'in x)x.letterSpacing='-6px';x.textAlign='center';x.textBaseline='alphabetic';
+  [...WORD].forEach((c,i)=>{const v=I[i];x.save();x.translate(M.xs[i],BY+8);if(refl)x.scale(1,-.5);x.translate(0,-8);x.scale(1+.26*v,1-.44*v);x.translate(0,v*58);x.fillStyle=BONE;x.fillText(c,0,0);x.restore()})};
+ // reflejo con degradado
+ x.save();x.beginPath();x.rect(0,BY+8,1080,400);x.clip();x.globalAlpha=.1;drawWord(true);x.restore();
+ x.globalAlpha=1;drawWord(false);
+ // luz de la pelota sobre las letras y sombra en el suelo
+ const hh=C((BY-b[1])/340);x.save();x.globalCompositeOperation='screen';const gl=x.createRadialGradient(b[0],b[1],0,b[0],b[1],260);gl.addColorStop(0,'rgba(232,69,44,.34)');gl.addColorStop(1,'rgba(232,69,44,0)');x.fillStyle=gl;x.fillRect(0,0,1080,1080);x.restore();
+ x.fillStyle=`rgba(0,0,0,${.35*hh})`;x.beginPath();x.ellipse(b[0],BY+10,30+60*(1-hh),6+8*(1-hh),0,0,6.283);x.fill();
+ // onda de choque en el suelo y destello
+ LAND.forEach(([i,tt])=>{const p=S(tt,tt+.55,t);if(p>0&&p<1){x.strokeStyle=RED;x.globalAlpha=(1-p)*.8;x.lineWidth=3;x.beginPath();x.ellipse(M.xs[i],BY+8,40+eO(p)*520,6+eO(p)*26,0,0,6.283);x.stroke();x.globalAlpha=1}const fl=t>=tt?Math.exp(-16*(t-tt)):0;if(fl>.01){x.fillStyle=`rgba(255,220,200,${.14*fl})`;x.fillRect(-1500,-1500,4100,4100)}});
+ // anillos de impacto
+ LAND.forEach(([i,tt])=>{const p=S(tt,tt+.5,t);if(p>0&&p<1){x.strokeStyle=RED;x.globalAlpha=(1-p)*.7;x.lineWidth=2.5;x.beginPath();x.arc(M.xs[i],BY-SZ*.43+22,14+eO(p)*120,0,6.283);x.stroke();x.globalAlpha=1}});
+ for(let q=9;q>=1;q--){const bq=ball(Math.max(0,t-q*.02));x.globalAlpha=.34*(1-q/10);x.fillStyle=RED;x.beginPath();x.arc(bq[0],bq[1],24*(1-q*.05),0,6.283);x.fill()}x.globalAlpha=1;
+ // pelota (estiramiento por velocidad)
+ x.fillStyle=RED;x.beginPath();x.arc(b[0],b[1],24,0,6.283);x.fill();x.fillStyle='rgba(255,255,255,.35)';x.beginPath();x.arc(b[0]-7,b[1]-8,7,0,6.283);x.fill();
+ x.restore();vig(x,w,h,.55);grain(x,w,h,t,.1)},{hold:0,still:2.5});
+</script></body></html>

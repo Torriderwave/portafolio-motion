@@ -353,6 +353,15 @@ dialog::backdrop { background: rgb(14 14 14 / .82); }
 .m-desc { margin: var(--s4) 0 var(--s4); max-width: 62ch; font-size: 1rem; line-height: 1.6; }
 .m-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--color-ink); }
 .m-media iframe, .m-media video, .m-media img { width: 100%; height: 100%; object-fit: contain; display: block; border: 0; }
+.m-media[data-ratio="9:16"] { aspect-ratio: 9 / 16; width: min(100%, calc(78dvh * 9 / 16)); margin-inline: auto; }
+.m-media[data-ratio="1:1"] { aspect-ratio: 1 / 1; width: min(100%, 78dvh); margin-inline: auto; }
+.m-media[data-ratio="4:3"] { aspect-ratio: 4 / 3; width: min(100%, calc(78dvh * 4 / 3)); margin-inline: auto; }
+.m-alt { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); margin: .5rem 0 0; font-size: var(--fs-xs); }
+.m-alt .m-btn { padding-left: 0; text-decoration: underline; text-underline-offset: .25em; }
+.card-media video.hv, .pv-media video.hv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s var(--ease); pointer-events: none; }
+.pv-media > video.hv { animation: none; }
+.card-media video.hv.hv-contain, .pv-media video.hv.hv-contain { object-fit: contain; }
+.card-media video.hv.on, .pv-media video.hv.on { opacity: 1; }
 @media (min-width: 900px) {
   .m-body { padding: var(--s5) var(--s5) var(--s6); }
   .m-title { grid-column: 1 / span 7; }
